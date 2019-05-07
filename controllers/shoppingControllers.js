@@ -70,7 +70,7 @@ exports.product_other = function(req, res) {
       discount: 0.2,
       isStandOut: true,
       isDeleted: false,
-      isNew: false
+      isNew: false,
       name: "Xe cẩu",
       price: 234000,
       currentPrice: 210000,
@@ -87,7 +87,7 @@ exports.product_other = function(req, res) {
       discount: 0.2,
       isStandOut: true,
       isDeleted: false,
-      isNew: false
+      isNew: false,
       name: "Cá vui vẻ",
       price: 234000,
       currentPrice: 210000,
@@ -104,7 +104,7 @@ exports.product_other = function(req, res) {
       discount: 0.2,
       isStandOut: true,
       isDeleted: false,
-      isNew: false
+      isNew: false,
       name: "Thú xanh",
       price: 234000,
       currentPrice: 210000,
