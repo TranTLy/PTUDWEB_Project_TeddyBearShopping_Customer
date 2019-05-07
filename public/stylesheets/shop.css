@@ -305,7 +305,9 @@ p.sbmincart-empty-text {
 /*-- Model-Slider --*/
 /*-- effect on products --*/
 .img-deals img {
-    width: 100%;
+	/* width: 100%; */
+	width: 96px;
+	height: 96px;
     border: 1px solid #ddd;
 }
 .men-cart-pro {
@@ -804,7 +806,9 @@ span.item_price {
 	color: #000;
 }
 .product-men img {
-    width: 100%;
+	/* width: 100%; */
+	width: 276px;
+	height: 302px;
 }
 .grid_meta {
     float: left;

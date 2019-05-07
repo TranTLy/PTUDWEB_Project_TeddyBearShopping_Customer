@@ -15,7 +15,11 @@ router.get("/checkout", shopping_controller.checkout);
 router.post("/checkout", shopping_controller.checkout_post);
 router.get("/payment", shopping_controller.payment);
 router.post("/payment", shopping_controller.payment_post);
-router.get("/product", shopping_controller.product);
+// router.get("/product", shopping_controller.product);
+router.get("/product-barbie", shopping_controller.product_barbie);
+router.get("/product-car", shopping_controller.product_car);
+router.get("/product-bear", shopping_controller.product_bear);
+router.get("/product-other", shopping_controller.product_other);
 router.get("/shop", shopping_controller.shop);
 //TODO: add id
 router.get("/single", shopping_controller.single);
