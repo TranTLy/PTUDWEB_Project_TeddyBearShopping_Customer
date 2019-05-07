@@ -1,0 +1,16 @@
+#back-home {
+  display: inline-block;
+  background-color: rgb(255, 203, 45, 0.5);
+  padding: 15px;
+  margin-top: 20px;
+  border-radius: 15px;
+}
+#back-home a {
+  color: #26bb48 !important;
+  font-family: "Open Sans", sans-serif;
+  font-weight: bold;
+}
+
+#back-home:hover {
+  background-color: rgb(255, 203, 45);
+}

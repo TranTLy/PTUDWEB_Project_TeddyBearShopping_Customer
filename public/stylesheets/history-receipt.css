@@ -1,0 +1,24 @@
+#table-wrap {
+  margin: auto;
+  text-align: center;
+}
+#lable-history {
+  display: block;
+  margin: 20px;
+  text-shadow: 2px 2px 2px rgb(189, 188, 188);
+}
+#table-history-receipt {
+  display: inline-table;
+  align-self: center;
+  width: 100%;
+  white-space: pre-line;
+  margin-bottom: 30px;
+}
+
+#table-history-receipt tbody tr:hover {
+  background-color: #e1e0df;
+}
+
+#table-history-receipt tbody tr td a {
+  color: #26bb48;
+}

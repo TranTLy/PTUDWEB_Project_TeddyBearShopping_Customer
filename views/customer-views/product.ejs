@@ -1,0 +1,113 @@
+<%include ../components/header%>
+<script>
+  document.getElementById("navbarDropdown1").classList.add("active"); //product nav-item
+</script>
+<!-- short -->
+<div class="using-border py-3">
+  <div class="inner_breadcrumb  ml-4">
+    <ul class="short_ls">
+      <li>
+        <a href="index.html">Trang chủ</a>
+        <span>/ /</span>
+      </li>
+      <li><a href="shop">Cửa hàng</a> <span>/ /</span></li>
+      <li><a href=<%=link%>><%=title%></a></li>
+    </ul>
+  </div>
+</div>
+<!-- //short-->
+<!--show Now-->
+<!--show Now-->
+<section class="contact py-lg-4 py-md-3 py-sm-3 py-3">
+  <div class="container-fluid py-lg-5 py-md-4 py-sm-4 py-3">
+    <!-- <h3 class="title text-center mb-lg-5 mb-md-4 mb-sm-4 mb-3">
+      Cửa hàng Toys Shop
+    </h3> -->
+    <div class="row">
+      <div class="side-bar col-lg-3">
+        <div class="search-hotel">
+          <h3 class="agileits-sear-head">Tìm kiếm</h3>
+          <form action="#" method="post">
+            <input
+              type="search"
+              placeholder="Tên sản phẩm"
+              name="search"
+              required=""
+            />
+            <input type="submit" value=" " />
+          </form>
+        </div>
+        <!--preference -->
+        <div class="left-side">
+          <h3 class="agileits-sear-head">Loại</h3>
+          <ul>
+            <li>
+              <input type="checkbox" class="checked" />
+              <span class="span">Gấu bông</span>
+            </li>
+            <li>
+              <input type="checkbox" class="checked" />
+              <span class="span">Búp bê</span>
+            </li>
+            <li>
+              <input type="checkbox" class="checked" />
+              <span class="span">Lego</span>
+            </li>
+            <li>
+              <input type="checkbox" class="checked" />
+              <span class="span">Xe</span>
+            </li>
+          </ul>
+        </div>
+        <!-- // preference -->
+        <!-- discounts -->
+        <div class="left-side">
+          <h3 class="agileits-sear-head">Giảm giá</h3>
+          <ul>
+            <li>
+              <input type="checkbox" class="checked" />
+              <span class="span">5%</span>
+            </li>
+            <li>
+              <input type="checkbox" class="checked" />
+              <span class="span">10%</span>
+            </li>
+            <li>
+              <input type="checkbox" class="checked" />
+              <span class="span">20%</span>
+            </li>
+            <li>
+              <input type="checkbox" class="checked" />
+              <span class="span">30%</span>
+            </li>
+            <li>
+              <input type="checkbox" class="checked" />
+              <span class="span">50%</span>
+            </li>
+            <li>
+              <input type="checkbox" class="checked" />
+              <span class="span">60%</span>
+            </li>
+          </ul>
+        </div>
+        <!-- //discounts -->
+        <!-- deals -->
+        <div class="deal-leftmk left-side">
+          <h3 class="agileits-sear-head">Sản phẩm nổi bật</h3>
+          <% standOutProducts.forEach(function(item){ %> <%-
+          include('../components/standOutProduct', {product: item}); %> <% });
+          %>
+        </div>
+        <!-- //deals -->
+      </div>
+      <div class="left-ads-display col-lg-9">
+        <div class="row">
+          <% products.forEach(function(item){ %> <%-
+          include('../components/productItem', {product: item}); %> <% }); %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- //show Now-->
+<% include ../components/footer%>

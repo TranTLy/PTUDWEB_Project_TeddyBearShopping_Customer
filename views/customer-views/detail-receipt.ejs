@@ -1,0 +1,145 @@
+<!-- TRANG GIỎ HÀNG -->
+<%include ../components/header%>
+<link rel="stylesheet" type="text/css" href="stylesheets/checkout.css" />
+
+<!-- short -->
+<div class="using-border py-3">
+  <div class="inner_breadcrumb  ml-4">
+    <ul class="short_ls">
+      <li>
+        <a href="index">Trang chủ</a>
+        <span>/ /</span>
+      </li>
+      <li><a href="history">Lịch sử mua hàng</a><span>/ /</span></li>
+      <li><a href="detail-receipt">Chi tiết hóa đơn</a></li>
+    </ul>
+  </div>
+</div>
+<!-- //short-->
+<!--Checkout-->
+<!-- //banner -->
+<!-- top Products -->
+<section class="checkout py-lg-4 py-md-3 py-sm-3 py-3">
+  <div class="container py-lg-5 py-md-4 py-sm-4 py-3">
+    <div class="shop_inner_inf">
+      <div class="privacy about">
+        <h3>Giỏ hàng</h3>
+        <div class="checkout-right">
+          <h4>Giỏ hàng của bạn gồm: <span>2 sản phẩm</span></h4>
+          <table class="timetable_sub">
+            <thead>
+              <tr>
+                <th>STT</th>
+                <th>Hình ảnh</th>
+                <th>Số lượng</th>
+                <th>Tên hàng</th>
+                <th>Đơn giá</th>
+                <th>Thành tiền</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="rem1">
+                <td class="invert">1</td>
+                <td class="invert-image">
+                  <a href="single.html"
+                    ><img src="images/f1.jpg" alt=" " class="img-responsive"
+                  /></a>
+                </td>
+                <td class="invert">
+                  <div class="quantity">
+                    2
+                  </div>
+                </td>
+                <td class="invert">Bella Gấu</td>
+                <td class="invert">600.000đ</td>
+                <td class="invert">1.200.000đ</td>
+              </tr>
+              <tr class="rem2">
+                <td class="invert">2</td>
+                <td class="invert-image">
+                  <a href="single.html"
+                    ><img src="images/f2.jpg" alt=" " class="img-responsive"
+                  /></a>
+                </td>
+                <td class="invert">
+                  <div class="quantity">
+                    <div class="quantity-select">
+                      1
+                    </div>
+                  </div>
+                </td>
+                <td class="invert">Gấu Bellies</td>
+                <td class="invert">325.000đ</td>
+                <td class="invert">325.000đ</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="checkout-left">
+          <div class="col-md-4 checkout-left-basket">
+            <h4>Hóa đơn</h4>
+            <ul>
+              <li>Tên hàng 1 <i>-</i> <span>$675.000 </span></li>
+              <li>Tên hàng 2 <i>-</i> <span>$325.000 </span></li>
+              <li>Phí dịch vụ <i>-</i> <span>50.000</span></li>
+              <li>Tổng cộng <i>-</i> <span>1.050.000</span></li>
+            </ul>
+          </div>
+          <div class="col-md-8 address_form">
+            <h4>Thông tin giao hàng chi tiết</h4>
+            <form
+              action="payment"
+              method="post"
+              class="creditly-card-form agileinfo_form"
+            >
+              <section class="creditly-wrapper wrapper">
+                <div class="information-wrapper">
+                  <div class="first-row form-group">
+                    <div class="controls">
+                      <label class="control-label">Họ và tên: </label>
+                      <span id="name">Trần Văn <A></A></span>
+                    </div>
+                    <div class="card_number_grids">
+                      <div class="card_number_grid_left">
+                        <div class="controls">
+                          <label class="control-label">Điện thoại:</label>
+                          <span id="phone">0909 992 890</span>
+                        </div>
+                      </div>
+                      <div class="card_number_grid_right">
+                        <div class="controls">
+                          <label class="control-label"
+                            >Số nhà, đường, phường/ khu phố:
+                          </label>
+                          <span id="landmark"
+                            >Số 233, đường Trần Văn Ơn, khu 5</span
+                          >
+                        </div>
+                      </div>
+                      <div class="clear"></div>
+                    </div>
+                    <div class="controls">
+                      <label class="control-label">Thị trấn/ thành phố</label>
+                      <span id="city"
+                        >Hồ Chí <i class="fas fa-minus-hexagon    "></i
+                      ></span>
+                    </div>
+                    <div class="controls">
+                      <label class="control-label">Loại địa chỉ: </label>
+                      <span id="typeAddress">Nhà riêng</span>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </form>
+          </div>
+          <div class="clearfix"></div>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+    </div>
+    <!-- //top products -->
+  </div>
+</section>
+
+<% include ../components/footer%>
