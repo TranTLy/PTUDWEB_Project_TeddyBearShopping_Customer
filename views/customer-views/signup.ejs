@@ -1,0 +1,142 @@
+<%include ../components/header%>
+<link rel="stylesheet" href="stylesheets/signup.css" />
+<div class="form-group from-signup">
+  <label id="lable-sign-up" for="sign-up">Đăng ký</label>
+  <div class="login-others">
+    <button id="login-fb">
+      <i class="fab fa-facebook-f"></i>Đăng nhập bằng facebook
+    </button>
+    <button id="login-gmail">
+      <i class="fab fa-google"></i> Đăng nhập bằng gmail
+    </button>
+  </div>
+
+  <div class="label-input-signup ">Họ và tên<span>*</span></div>
+  <input
+    type="text"
+    class="form-control required"
+    name="sign-up"
+    id="nameUser"
+    aria-describedby="helpId"
+    required
+  />
+  <div class="label-input-signup">Ngày tháng năm sinh<span></span></div>
+  <input
+    type="date"
+    class="form-control"
+    name="sign-up"
+    id="dob"
+    aria-describedby="helpId"
+    data-date-format="DD MM YYYY"
+    value="2000-07-22"
+  />
+
+  <div class="label-input-signup ">Email đăng nhập<span>*</span></div>
+  <input
+    type="email"
+    class="form-control required"
+    name="sign-up"
+    id="email"
+    aria-describedby="helpId"
+    required
+  />
+  <small></small>
+
+  <div class="label-input-signup">Số điện thoại<span></span></div>
+  <input
+    type="text"
+    class="form-control"
+    name="sign-up"
+    id="phone"
+    aria-describedby="helpId"
+  />
+
+  <div class="label-input-signup" id="label-pass">Mật khẩu<span>*</span></div>
+  <input
+    type="password"
+    class="form-control required"
+    name="sign-up"
+    id="password"
+    aria-describedby="helpId"
+    required
+    onkeydown="onValidPass()"
+  />
+
+  <div class="label-input-signup " id="label-repass">
+    Nhập lại mật khẩu<span>*</span>
+  </div>
+  <input
+    type="password"
+    class="form-control required"
+    name="sign-up"
+    id="re-password"
+    aria-describedby="helpId"
+    required
+    onkeydown="onValidPass()"
+  />
+
+  <button id="btn-sign-up" type="submit" onclick="checkSignUp()">
+    Đăng ký
+  </button>
+
+  <script>
+    const onValidPass = () => {
+      document.getElementById("label-pass").innerHTML =
+        "Mật khẩu<span>*</span>";
+      document.getElementById("label-repass").innerHTML =
+        "Nhập lại mật khẩu<span>*</span>";
+    };
+    const checkPassword = () => {
+      const pass = document.getElementById("password");
+      const repass = document.getElementById("re-password");
+      console.log("in check pass");
+      if (pass.value.length < 8) {
+        document.getElementById("label-pass").innerHTML =
+          'Mật khẩu<span>*</span>  <span class = "alert"> (Mật khẩu phải từ 8 ký tự trở lên) </span>';
+        pass.focus();
+        return false;
+      }
+
+      if (pass.value == repass.value) {
+        alert("Đăng ký thành công");
+        return true;
+      } else {
+        document.getElementById("label-repass").innerHTML =
+          'Nhập lại mật khẩu<span>*</span>  <span class = "alert"> (Vui lòng nhập lại password) </span>';
+        document.getElementById("re-password").focus();
+        return false;
+      }
+    };
+
+    checkEmailValid = () => {
+      const email = document.getElementById("email");
+      var regax = RegExp("@");
+      if (regax.test(email.value)) {
+        return true;
+      } else {
+        email.focus();
+        return false;
+      }
+    };
+
+    const checkEmpty = () => {
+      const required = document.getElementsByClassName("required");
+      Array.from(required)
+        .reverse()
+        .forEach(item => {
+          if (item.value == "") {
+            item.focus();
+            return false;
+          }
+        });
+      return true;
+    };
+    const checkSignUp = () => {
+      if (checkEmpty() && checkEmailValid() && checkPassword()) {
+        console.log("success");
+      }
+    };
+  </script>
+</div>
+
+<% include ../components/footer%>

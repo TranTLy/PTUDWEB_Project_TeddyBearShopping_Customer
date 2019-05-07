@@ -1,0 +1,63 @@
+<%include ../components/header%>
+<link rel="stylesheet" href="stylesheets/signup.css" />
+<link rel="stylesheet" href="stylesheets/forgetpassword.css" />
+<div class="form-group from-signup">
+  <label id="lable-sign-up" for="sign-up">Thay đổi thông tin cá nhân</label>
+  <br />
+  <a href="#" id="link-change-password">Thay đổi mật khẩu?</a>
+  <br />
+
+  <div class="label-input-signup ">Họ và tên<span>*</span></div>
+  <input
+    type="text"
+    class="form-control required"
+    name="sign-up"
+    id="nameUser"
+    aria-describedby="helpId"
+    required
+    value="Trần Trúc Lam"
+  />
+  <div class="label-input-signup">Ngày tháng năm sinh<span></span></div>
+  <input
+    type="datetime-local"
+    class="form-control"
+    name="sign-up"
+    id="dob"
+    aria-describedby="helpId"
+    value="23/01/2000"
+  />
+
+  <div class="label-input-signup">Số điện thoại<span></span></div>
+  <input
+    type="text"
+    class="form-control"
+    name="sign-up"
+    id="phone"
+    aria-describedby="helpId"
+    value="0919 009 001"
+  />
+
+  <button id="btn-sign-up" type="submit" onclick="checkInfor()">
+    Lưu
+  </button>
+
+  <script>
+    const checkEmpty = () => {
+      const required = document.getElementsByClassName("required");
+      Array.from(required)
+        .reverse()
+        .forEach(item => {
+          if (item.value == "") {
+            item.focus();
+            return false;
+          }
+        });
+      return true;
+    };
+    const checkInfor = () => {
+      checkEmpty();
+    };
+  </script>
+</div>
+
+<% include ../components/footer%>
