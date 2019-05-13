@@ -1,3 +1,6 @@
+const { db } = require("../dbs/index");
+const { productsDb } = require("../models/products");
+
 exports.checkout = function(req, res) {
   res.render("customer-views/checkout", { title: "Giỏ hàng" });
 };
@@ -11,7 +14,7 @@ exports.payment = function(req, res) {
 exports.payment_post = function(req, res) {
   res.render("customer-views/payment", { title: "Thanh toán" });
 };
-exports.product_other = function(req, res) {
+exports.product_other = async function(req, res) {
   const productDb = [
     {
       id: 4,
@@ -167,13 +170,71 @@ exports.product_other = function(req, res) {
         "Được làm từ chất liệu cao cấp, an toàn cho sức khỏe của trẻ nhỏ"
     }
   ];
-  // res.render("customer-views/product", { title: "Sản phẩm", products: productBarbie });
-  res.render("customer-views/product", {
-    title: "Đồ chơi khác",
-    link: "product-other",
-    products: productDb,
-    standOutProducts: productDb.filter((item, index) => item.isStandOut == true)
+
+  const MongoClient = require("mongodb").MongoClient;
+  const assert = require("assert");
+
+  // Connection URL
+  const url = "mongodb+srv://admin:admin123@cluster0-yxmrz.mongodb.net/test";
+
+  // Database Name
+  const dbName = "ToyShopDB";
+
+  // Use connect method to connect to the server
+  await MongoClient.connect(url, function(err, client) {
+    assert.equal(null, err);
+    console.log("Connected correctly to server");
+
+    const db = client.db(dbName);
+
+    const findDocuments = function(db, callback) {
+      // Get the documents collection
+      const collection = db.collection("products");
+      // Find some documents
+      collection.find({}).toArray(function(err, docs) {
+        assert.equal(err, null);
+        console.log("Found the following records");
+        console.log(docs);
+        callback(docs);
+        let myProducts = docs;
+        res.render("customer-views/product", {
+          title: "Đồ chơi khác",
+          link: "product-other",
+          products: myProducts,
+          standOutProducts: myProducts.filter(
+            (item, index) => item.isStandOut == true
+          )
+        });
+      });
+    };
   });
+
+  // let myProducts;
+  // const findDocuments = await function(db, callback) {
+  //   // Get the documents collection
+  //   const collection = db.collection("products");
+  //   // Find some documents
+  //   collection.find({}).toArray(function(err, docs) {
+  //     assert.equal(err, null);
+  //     console.log("my product: " + myProducts);
+  //     myProducts = docs;
+  //     res.render("customer-views/product", {
+  //       title: "Đồ chơi khác",
+  //       link: "product-other",
+  //       products: productDb,
+  //       standOutProducts: productDb.filter(
+  //         (item, index) => item.isStandOut == true
+  //       )
+  //     });
+  //   });
+  // };
+
+  // res.render("customer-views/product", {
+  //   title: "Đồ chơi khác",
+  //   link: "product-other",
+  //   products: myProducts,
+  //   standOutProducts: myProducts.filter((item, index) => item.isStandOut == true)
+  // });
 };
 exports.product_barbie = function(req, res) {
   const productBarbie = [
