@@ -304,11 +304,18 @@ p.sbmincart-empty-text {
 
 /*-- Model-Slider --*/
 /*-- effect on products --*/
-.img-deals img {
+.img-deals{
+	overflow: hidden;
+}
+.img-deals a img {
 	/* width: 100%; */
 	width: 96px;
 	height: 96px;
-    border: 1px solid #ddd;
+	border: 1px solid #ddd;
+	transition: transform 1s ease-out;
+}
+.img-deals a img:hover {
+	transform: scale(1.3);
 }
 .men-cart-pro {
 	bottom: 0;

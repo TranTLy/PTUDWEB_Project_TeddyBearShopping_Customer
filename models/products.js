@@ -1,26 +1,64 @@
-const MongoClient = require("mongodb").MongoClient;
-const uri =
-  "mongodb+srv://admin:admin123@cluster0-yxmrz.mongodb.net/test?retryWrites=true";
+const MongoClient = require('mongodb').MongoClient;
+var ObjectId = require('mongodb').ObjectID;
+const uri = 'mongodb+srv://admin:admin123@cluster0-yxmrz.mongodb.net/test?retryWrites=true';
 const client = new MongoClient(uri, { useNewUrlParser: true });
-let productsDb;
+
+const DATABASE = 'ToyShopDB';
+const COLLECTION_PRODUCTS = 'products';
+const BEAR_TYPE = 1;
+const BARBIE_TYPE = 2;
+const CAR_TYPE = 3;
+const OTHER_TYPE = 4;
 
 const getProducts = async function() {
-  const connect = await client.connect();
+	const connect = await client.connect();
+	const collection = client.db(DATABASE).collection(COLLECTION_PRODUCTS);
 
-  //await client.connect(err => {
-  const collection = client.db("ToyShopDB").collection("products");
+	return await collection.find({}).toArray();
+};
 
-  return await collection.find({}).toArray();
-  //return collection.find({}).toArray((error, products) => {
-  //  console.log("product in db: ", products);
-  //  return products;
-  //});
-  // client.close();
-  //});
+const getBearProduct = async function() {
+	const connect = await client.connect();
+	const collection = client.db(DATABASE).collection(COLLECTION_PRODUCTS);
 
-  // console.log("product in db: ", productsDb);
-  // return productsDb;
+	return await collection.find({ type: BEAR_TYPE }).toArray();
+};
+
+const getBarbiePoduct = async function() {
+	const connect = await client.connect();
+	const collection = client.db(DATABASE).collection(COLLECTION_PRODUCTS);
+
+	return await collection.find({ type: BARBIE_TYPE }).toArray();
+};
+const getCarProduct = async function() {
+	const connect = await client.connect();
+	const collection = client.db(DATABASE).collection(COLLECTION_PRODUCTS);
+
+	return await collection.find({ type: CAR_TYPE }).toArray();
+};
+const getOtherProduct = async function() {
+	const connect = await client.connect();
+	const collection = client.db(DATABASE).collection(COLLECTION_PRODUCTS);
+
+	return await collection.find({ type: OTHER_TYPE }).toArray();
+};
+
+const getSingleProduct = async function(id) {
+	const connect = await client.connect();
+	const collection = client.db(DATABASE).collection(COLLECTION_PRODUCTS);
+	return await collection.findOne({ _id: new ObjectId(id) });
+};
+
+const getStandOutProduct = async function(id) {
+	const connect = await client.connect();
+	const collection = client.db(DATABASE).collection(COLLECTION_PRODUCTS);
+	return await collection.findOne({ isStandOut: true });
 };
 
 exports.getProducts = getProducts;
-exports.productsDb = productsDb;
+exports.getBearProduct = getBearProduct;
+exports.getBarbiePoduct = getBarbiePoduct;
+exports.getCarProduct = getCarProduct;
+exports.getOtherProduct = getOtherProduct;
+exports.getSingleProduct = getSingleProduct;
+exports.getStandOutProduct = getStandOutProduct;

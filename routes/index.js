@@ -22,7 +22,8 @@ router.get("/product-bear", shopping_controller.product_bear);
 router.get("/product-other", shopping_controller.product_other);
 router.get("/shop", shopping_controller.shop);
 //TODO: add id
-router.get("/single", shopping_controller.single);
+router.get("/single/:id", shopping_controller.single);
+// router.get("/single", shopping_controller.single);
 router.post("/single", shopping_controller.single_post);
 router.get("/detail-receipt", shopping_controller.detail_receipt);
 router.get("/history", shopping_controller.history);
