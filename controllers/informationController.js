@@ -2,7 +2,7 @@ const { getStandOutProduct } = require('../models/products');
 
 exports.index = async function(req, res) {
 	const standOutProductDb = await getStandOutProduct();
-	console.log('db: ', standOutProductDb);
+	// console.log('db: ', standOutProductDb);
 	res.render('customer-views/index', { title: 'Trang chủ', standOutProducts: standOutProductDb });
 };
 exports.about = function(req, res) {
