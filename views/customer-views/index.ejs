@@ -323,62 +323,9 @@
         </h3>
         <div class="slid-img">
           <ul id="flexiselDemo1">
-
-            <li>
-              <div class="agileinfo_port_grid">
-                <img src="images/a2.jpg" alt=" " class="img-fluid" />
-                <div class="banner-right-icon">
-                  <h4 class="pt-3">Soft Toys</h4>
-                </div>
-                <div class="outs_more-buttn">
-                  <a href="shop">Mua ngay</a>
-                </div>
-              </div>
-            </li>
-            <li>
-              <div class="agileinfo_port_grid">
-                <img src="images/a3.jpg" alt=" " class="img-fluid" />
-                <div class="banner-right-icon">
-                  <h4 class="pt-3">Soft Toys</h4>
-                </div>
-                <div class="outs_more-buttn">
-                  <a href="shop">Mua ngay</a>
-                </div>
-              </div>
-            </li>
-            <li>
-              <div class="agileinfo_port_grid ">
-                <img src="images/a4.jpg" alt=" " class="img-fluid" />
-                <div class="banner-right-icon">
-                  <h4 class="pt-3">Soft Toys</h4>
-                </div>
-                <div class="outs_more-buttn">
-                  <a href="shop">Mua ngay</a>
-                </div>
-              </div>
-            </li>
-            <li>
-              <div class="agileinfo_port_grid">
-                <img src="images/a5.jpg" alt=" " class="img-fluid" />
-                <div class="banner-right-icon">
-                  <h4 class="pt-3">Soft Toys</h4>
-                </div>
-                <div class="outs_more-buttn">
-                  <a href="shop">Mua ngay</a>
-                </div>
-              </div>
-            </li>
-            <li>
-              <div class="agileinfo_port_grid ">
-                <img src="images/a6.jpg" alt=" " class="img-fluid" />
-                <div class="banner-right-icon">
-                  <h4 class="pt-3">Soft Toys</h4>
-                </div>
-                <div class="outs_more-buttn">
-                  <a href="shop">Mua ngay</a>
-                </div>
-              </div>
-            </li>
+              <% standOutProducts.map((item, index)=>{%>
+                <%- include('../components/standOutProductHome', {product: item})%>
+              <%});%>
           </ul>
         </div>
       </div>

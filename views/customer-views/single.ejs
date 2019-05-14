@@ -1,4 +1,4 @@
-<%include ../components/header%>
+<%include ../components/header-router-2%>
 <!-- short -->
 <div class="using-border py-3">
   <div class="inner_breadcrumb  ml-4">
@@ -7,8 +7,10 @@
         <a href="index">Trang chủ</a>
         <span>/ /</span>
       </li>
-      <li><a href="product">Sản phẩm</a></li>
-      <li><a href="single"><%=nameProduct%></a></li>
+      <li><a href="product">Sản phẩm</a>
+        <span>/ /</span>
+      </li>
+      <li><%=product.name%></li>
     </ul>
   </div>
 </div>
@@ -39,10 +41,10 @@
           </div>
         </div>
         <div class="col-lg-8 single-right-left simpleCart_shelfItem">
-          <h3>Gấu Teddy Nâu</h3>
+          <h3><%=product.name%></h3>
           <p>
-            <span class="item_price">120.000</span>
-            <del>200.000</del>
+            <span class="item_price"><%=product.price*(1- product.discount)%></span>
+            <del><%=product.price%></del>
           </p>
           <div class="rating1">
             <ul class="stars">
@@ -81,23 +83,8 @@
             </form>
           </div>
           <div class="occasional">
-            <h5>Màu sắc :</h5>
-            <div class="colr ert">
-              <label class="radio"
-                ><input type="radio" name="radio" checked="" /><i></i>
-                Đen</label
-              >
-            </div>
-            <div class="colr">
-              <label class="radio"
-                ><input type="radio" name="radio" /><i></i>Nâu</label
-              >
-            </div>
-            <div class="colr">
-              <label class="radio"
-                ><input type="radio" name="radio" /><i></i>Hồng</label
-              >
-            </div>
+            <h5>Màu sắc :  <%=product.color%></h5>
+           
             <div class="clearfix"></div>
           </div>
           <div class="occasion-cart">
@@ -198,9 +185,9 @@
   </div>
 </section>
 
-<% include ../components/footer%>
+<% include ../components/footer-router-2%>
 <!-- price range (top products) -->
-<script src="javascripts/jquery-ui.js"></script>
+<script src="../javascripts/jquery-ui.js"></script>
 <script>
   //<![CDATA[
   $(window).load(function() {
@@ -223,10 +210,10 @@
 </script>
 <!-- //price range (top products) -->
 <!-- single -->
-<script src="javascripts/imagezoom.js"></script>
+<script src="../javascripts/imagezoom.js"></script>
 <!-- single -->
 <!-- script for responsive tabs -->
-<script src="javascripts/easy-responsive-tabs.js"></script>
+<script src="../javascripts/easy-responsive-tabs.js"></script>
 <script>
   $(document).ready(function() {
     $("#horizontalTab").easyResponsiveTabs({
@@ -251,7 +238,7 @@
   });
 </script>
 <!-- FlexSlider -->
-<script src="javascripts/jquery.flexslider.js"></script>
+<script src="../javascripts/jquery.flexslider.js"></script>
 <script>
   // Can also be used with $(document).ready()
   $(window).load(function() {

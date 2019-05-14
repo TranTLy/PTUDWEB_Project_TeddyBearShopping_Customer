@@ -51,9 +51,9 @@ const getSingleProduct = async function(id) {
 };
 
 const getStandOutProduct = async function(id) {
-  const connect = await client.connect();
-  const collection = client.db(DATABASE).collection(COLLECTION_PRODUCTS);
-  return await collection.findOne({ isStandOut: true });
+	const connect = await client.connect();
+	const collection = client.db(DATABASE).collection(COLLECTION_PRODUCTS);
+	return await collection.find({ isStandOut: true }).toArray();
 };
 
 exports.getProducts = getProducts;

@@ -41,22 +41,12 @@
         <div class="left-side">
           <h3 class="agileits-sear-head">Loại</h3>
           <ul>
-            <li>
-              <input type="checkbox" class="checked" />
-              <span class="span">Gấu bông</span>
-            </li>
-            <li>
-              <input type="checkbox" class="checked" />
-              <span class="span">Búp bê</span>
-            </li>
-            <li>
-              <input type="checkbox" class="checked" />
-              <span class="span">Lego</span>
-            </li>
-            <li>
-              <input type="checkbox" class="checked" />
-              <span class="span">Xe</span>
-            </li>
+              <% typeProduct.map((item, index)=> {%>
+                <li>
+                    <input type="checkbox" class="checked" />
+                    <span class="span"><%=item.name%></span>
+                  </li>
+              <%})%>
           </ul>
         </div>
         <!-- // preference -->
