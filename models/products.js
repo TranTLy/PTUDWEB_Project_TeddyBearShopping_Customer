@@ -4,26 +4,19 @@ const uri =
 const client = new MongoClient(uri, { useNewUrlParser: true });
 let productsDb;
 
-// client.connect(err => {
-//   const collection = client.db("ToyShopDB").collection("products");
-
-//   collection.find({}).toArray((error, products) => {
-//     console.log("product in db: ", productsDb);
-//     return (productsDb = products);
-//   });
-//   client.close();
-// });
-
 const getProducts = async function() {
-  await client.connect(err => {
-    const collection = client.db("ToyShopDB").collection("products");
+  const connect = await client.connect();
 
-    return collection.find({}).toArray((error, products) => {
-      console.log("product in db: ", products);
-      return products;
-    });
-    // client.close();
-  });
+  //await client.connect(err => {
+  const collection = client.db("ToyShopDB").collection("products");
+
+  return await collection.find({}).toArray();
+  //return collection.find({}).toArray((error, products) => {
+  //  console.log("product in db: ", products);
+  //  return products;
+  //});
+  // client.close();
+  //});
 
   // console.log("product in db: ", productsDb);
   // return productsDb;
