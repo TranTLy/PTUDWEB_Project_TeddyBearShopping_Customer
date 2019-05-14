@@ -1,5 +1,6 @@
 // const { db } = require("../dbs/index");
-const { productsDb } = require("../models/products");
+// const { productsDb } = require("../models/products");
+const { getProducts } = require("../models/products");
 
 exports.checkout = function(req, res) {
   res.render("customer-views/checkout", { title: "Giỏ hàng" });
@@ -170,20 +171,10 @@ exports.product_other = async function(req, res) {
         "Được làm từ chất liệu cao cấp, an toàn cho sức khỏe của trẻ nhỏ"
     }
   ];
+  console.log("get pro", getProducts().then(data => JSON.stringify(data)));
+  const test = await getProducts();
 
-  // await productsDb.products().then(data => {
-  //   const myProducts = productsDb;
-  //   console.log("my data: ", myProducts);
-  //   res.render("customer-views/product", {
-  //     title: "Đồ chơi khác",
-  //     link: "product-other",
-  //     products: myProducts,
-  //     standOutProducts: myProducts.filter(
-  //       (item, index) => item.isStandOut == true
-  //     )
-  //   });
-  // });
-
+  console.log("my product: ", test);
   res.render("customer-views/product", {
     title: "Đồ chơi khác",
     link: "product-other",
@@ -191,6 +182,7 @@ exports.product_other = async function(req, res) {
     standOutProducts: productDb.filter((item, index) => item.isStandOut == true)
   });
 };
+
 exports.product_barbie = function(req, res) {
   const productBarbie = [
     {
@@ -504,7 +496,7 @@ exports.product_car = function(req, res) {
         "Xe được làm bằng nhựa cao cấp, tốt cho trẻ nhỏ. Mẫu mã đa dạng, mới, đẹp."
     }
   ];
-  // res.render("customer-views/product", { title: "Sản phẩm", products: productBarbie });
+
   res.render("customer-views/product", {
     title: "Xe đồ chơi",
     link: "product-car",
@@ -598,7 +590,6 @@ exports.product_bear = function(req, res) {
     }
   ];
 
-  // res.render("customer-views/product", { title: "Sản phẩm", products: productBarbie });
   res.render("customer-views/product", {
     title: "Gấu bông",
     link: "product-bear",
