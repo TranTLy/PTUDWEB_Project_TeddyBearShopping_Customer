@@ -18,10 +18,37 @@ exports.change_password = function(req, res) {
 exports.update_infor = function(req, res) {
 	res.render('customer-views/update-infor', { title: 'Thay đổi thông tin' });
 };
-exports.post_signup = (req, res) => {
+exports.post_signin = function(req, res) {
+	const email = req.body.name;
+	const password = req.body.passport;
+	User.findOne({ email }, (err, user) => {
+		if (err) throw err;
+		if (!user) {
+			res.status(401).send({ success: false, msg: 'Tên đăng nhập hoặc mật khẩu sai.' });
+		} else {
+			// check if password matches
+			user.comparePassword(password, function(err, isMatch) {
+				if (isMatch && !err) {
+					// if user is found and password is right create a token
+					var token = jwt.sign(user.toJSON(), config.secret, {
+						expiresIn: 604800 // 1 week
+					});
+					// return the information including token as JSON
+					res.json({ success: true, token: 'JWT ' + token });
+					// res.render('customer-views/index', { title: 'Trang chủ' });
+				} else {
+					res.status(401).send({ success: false, msg: 'Authentication failed. Wrong password.' });
+				}
+			});
+		}
+	});
+};
+
+exports.post_signup = function(req, res) {
 	if (!req.body.name || !req.body.password || req.body.repassword != req.body.password) {
 		console.log('user empty');
 		//res.render('customer-views/signup', { title: 'Đăng ký' });
+		res.status(401).send({ success: false, msg: 'Điền thông tin chưa chính xác.' });
 	} else {
 		const email = req.body.email;
 		const userExist = User.findOne({ email: email }, (err, results) => {

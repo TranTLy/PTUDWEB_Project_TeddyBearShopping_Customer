@@ -28,6 +28,7 @@ router.post('/single', shopping_controller.single_post);
 router.get('/detail-receipt', shopping_controller.detail_receipt);
 router.get('/history', shopping_controller.history);
 
+router.post('/signin', account_controller.post_signin);
 router.get('/signup', account_controller.signup);
 router.post('/signup', account_controller.post_signup);
 // router.post('/signin', account_controller.signup);
@@ -45,7 +46,7 @@ router.post('/test', function(req, res, next) {
 	const model = new Product(product);
 	model.save();
 
-	const addnew = Product.find({ }, (err, result) => {
+	const addnew = Product.find({}, (err, result) => {
 		res.json({
 			header: 'success',
 			result
