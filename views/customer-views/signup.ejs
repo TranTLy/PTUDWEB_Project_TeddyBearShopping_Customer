@@ -1,4 +1,7 @@
 <%include ../components/header%>
+<h4 id= "message"><%if (title == "Đăng ký thất bại"){%>
+  <%= message%>
+<%}%></h4>
 <link rel="stylesheet" href="stylesheets/signup.css" />
 <div class="form-group from-signup">
   <label id="lable-sign-up" for="sign-up">Đăng ký</label>
@@ -11,11 +14,12 @@
     </button>
   </div>
 
-  <div class="label-input-signup ">Họ và tên<span>*</span></div>
+  <form action="/signup" method="POST">
+  <div class="label-input-signup">Họ và tên<span>*</span></div>
   <input
     type="text"
     class="form-control required"
-    name="sign-up"
+    name="name"
     id="nameUser"
     aria-describedby="helpId"
     required
@@ -24,7 +28,7 @@
   <input
     type="date"
     class="form-control"
-    name="sign-up"
+    name="birthday"
     id="dob"
     aria-describedby="helpId"
     data-date-format="DD MM YYYY"
@@ -35,7 +39,7 @@
   <input
     type="email"
     class="form-control required"
-    name="sign-up"
+    name="email"
     id="email"
     aria-describedby="helpId"
     required
@@ -46,7 +50,7 @@
   <input
     type="text"
     class="form-control"
-    name="sign-up"
+    name="phone"
     id="phone"
     aria-describedby="helpId"
   />
@@ -55,7 +59,7 @@
   <input
     type="password"
     class="form-control required"
-    name="sign-up"
+    name="password"
     id="password"
     aria-describedby="helpId"
     required
@@ -68,8 +72,8 @@
   <input
     type="password"
     class="form-control required"
-    name="sign-up"
-    id="re-password"
+    name="repassword"
+    id="repassword"
     aria-describedby="helpId"
     required
     onkeydown="onValidPass()"
@@ -78,7 +82,7 @@
   <button id="btn-sign-up" type="submit" onclick="checkSignUp()">
     Đăng ký
   </button>
-
+</form>
   <script>
     const onValidPass = () => {
       document.getElementById("label-pass").innerHTML =
@@ -88,7 +92,7 @@
     };
     const checkPassword = () => {
       const pass = document.getElementById("password");
-      const repass = document.getElementById("re-password");
+      const repass = document.getElementById("repassword");
       console.log("in check pass");
       if (pass.value.length < 8) {
         document.getElementById("label-pass").innerHTML =
@@ -98,12 +102,12 @@
       }
 
       if (pass.value == repass.value) {
-        alert("Đăng ký thành công");
+        //alert("Đăng ký thành công");
         return true;
       } else {
         document.getElementById("label-repass").innerHTML =
           'Nhập lại mật khẩu<span>*</span>  <span class = "alert"> (Vui lòng nhập lại password) </span>';
-        document.getElementById("re-password").focus();
+        document.getElementById("repassword").focus();
         return false;
       }
     };
@@ -134,6 +138,10 @@
     const checkSignUp = () => {
       if (checkEmpty() && checkEmailValid() && checkPassword()) {
         console.log("success");
+        return true;
+      }
+      else{
+        return false;
       }
     };
   </script>

@@ -9,7 +9,11 @@ const config = require('./config/database');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
-mongoose.connect(config.database, { useCreateIndex: true, useNewUrlParser: true });
+mongoose.connect(config.database, { useCreateIndex: true, useNewUrlParser: true }, (err, res) => {
+	if (!err) {
+		console.log('connect to databse successfully!');
+	}
+});
 var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

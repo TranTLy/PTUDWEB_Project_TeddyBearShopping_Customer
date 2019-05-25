@@ -12,7 +12,6 @@ const CAR_TYPE = 3;
 const OTHER_TYPE = 4;
 
 const { getType } = require('../models/type');
-const type = getType().then((result) => result);
 
 const getProducts = async function() {
 	// const connect = await client.connect();
@@ -30,12 +29,11 @@ const getProducts = async function() {
 };
 
 const getBearProduct = async function() {
-	console.log('my type: ', type);
-	const bearId = type.find((item) => item.name == 'Gấu bông')[0]._id;
+	// const bearId = type.
 	const connect = await client.connect();
 	const collection = client.db(DATABASE).collection(COLLECTION_PRODUCTS);
 
-	return await collection.find({ type: bearId }).toArray();
+	return await collection.find({ type: BEAR_TYPE }).toArray();
 };
 
 const getBarbiePoduct = async function() {

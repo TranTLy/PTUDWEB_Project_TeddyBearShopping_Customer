@@ -80,7 +80,7 @@ exports.product_bear = async function(req, res) {
 exports.shop = async function(req, res) {
 	//const db = await getProducts();
 	// const type = await getType();
-	const type = await Type.find((err, type) => {
+	const type = await Type.find({}, (err, type) => {
 		if (err) {
 			return next(err);
 		} else {
@@ -88,7 +88,7 @@ exports.shop = async function(req, res) {
 			return type;
 		}
 	});
-	const db = await Product.find(function(err, db) {
+	const db = await Product.find({}, function(err, db) {
 		if (err) {
 			return next(err);
 		} else {
