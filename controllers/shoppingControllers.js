@@ -9,6 +9,8 @@ const {
 	getSingleProduct
 } = require('../models/products');
 const { getType } = require('../models/type');
+const Type = require('../model/type');
+const Product = require('../model/product');
 
 exports.checkout = function(req, res) {
 	res.render('customer-views/checkout', { title: 'Giỏ hàng' });
@@ -76,13 +78,30 @@ exports.product_bear = async function(req, res) {
 	});
 };
 exports.shop = async function(req, res) {
-	const db = await getProducts();
-	const type = await getType();
-	res.render('customer-views/shop', {
-		title: 'Cửa hàng',
-		products: db,
-		standOutProducts: db.filter((item, index) => item.isStandOut == true),
-		typeProduct: type
+	//const db = await getProducts();
+	// const type = await getType();
+	const type = await Type.find({}, (err, type) => {
+		if (err) {
+			return next(err);
+		} else {
+			console.log('my type: ', type);
+			return type;
+		}
+	});
+	const db = await Product.find({}, function(err, db) {
+		if (err) {
+			return next(err);
+		} else {
+			//return products;
+			console.log('my product from mongosee: ', db);
+
+			res.render('customer-views/shop', {
+				title: 'Cửa hàng',
+				products: db,
+				standOutProducts: db.filter((item, index) => item.isStandOut == true),
+				typeProduct: type
+			});
+		}
 	});
 };
 exports.single = async function(req, res) {
