@@ -1,14 +1,6 @@
 // const { db } = require("../dbs/index");
 // const { productsDb } = require("../models/products");
-const {
-	getProducts,
-	getBearProduct,
-	getBarbiePoduct,
-	getCarProduct,
-	getOtherProduct,
-	getSingleProduct
-} = require('../models/products');
-const { getType } = require('../models/type');
+var ObjectId = require('mongodb').ObjectID;
 const Type = require('../model/type');
 const Product = require('../model/product');
 
@@ -138,8 +130,9 @@ exports.shop = async function(req, res) {
 	});
 };
 exports.single = async function(req, res) {
-	const id = req.params.id;
-	const singleProduct = await getSingleProduct(id);
+	const singleProduct = await Product.findOne({ _id: ObjectId(req.params.id) }, (err, result) => {
+		return result;
+	});
 	console.log('single product: ', singleProduct);
 
 	const name = 'Gấu teddy';
