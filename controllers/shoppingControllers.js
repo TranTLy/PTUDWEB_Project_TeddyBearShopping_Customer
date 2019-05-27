@@ -1,14 +1,6 @@
 // const { db } = require("../dbs/index");
 // const { productsDb } = require("../models/products");
-const {
-	getProducts,
-	getBearProduct,
-	getBarbiePoduct,
-	getCarProduct,
-	getOtherProduct,
-	getSingleProduct
-} = require('../models/products');
-const { getType } = require('../models/type');
+var ObjectId = require('mongodb').ObjectID;
 const Type = require('../model/type');
 const Product = require('../model/product');
 
@@ -26,10 +18,18 @@ exports.payment_post = function(req, res) {
 	res.render('customer-views/payment', { title: 'Thanh toán' });
 };
 exports.product_other = async function(req, res) {
-	// console.log('other: ', JSON.stringify(productDb));
-	const db = await getOtherProduct();
-	const type = await getType();
-	console.log('my product: ', db);
+	const type = await Type.find({}, (err, result) => {
+		return result;
+	});
+	const customType = type.filter((item) => item.name == 'Khác')[0];
+
+	let db = [];
+	if (type != null) {
+		db = await Product.find({ type: customType._id }, (err, result) => {
+			return result;
+		});
+	}
+
 	res.render('customer-views/product', {
 		title: 'Đồ chơi khác',
 		link: 'product-other',
@@ -40,9 +40,18 @@ exports.product_other = async function(req, res) {
 };
 
 exports.product_barbie = async function(req, res) {
-	// console.log("barbie: " + JSON.stringify(productBarbie));
-	const db = await getBarbiePoduct();
-	const type = await getType();
+	const type = await Type.find({}, (err, result) => {
+		return result;
+	});
+	const customType = type.filter((item) => item.name == 'Búp bê')[0];
+
+	let db = [];
+	if (type != null) {
+		db = await Product.find({ type: customType._id }, (err, result) => {
+			console.log('barbie: ', result);
+			return result;
+		});
+	}
 
 	res.render('customer-views/product', {
 		title: 'Búp bê barbie',
@@ -53,9 +62,17 @@ exports.product_barbie = async function(req, res) {
 	});
 };
 exports.product_car = async function(req, res) {
-	console.log('CAR: ' + JSON.stringify(productCar));
-	const db = await getCarProduct();
-	const type = await getType();
+	const type = await Type.find({}, (err, result) => {
+		return result;
+	});
+	const customType = type.filter((item) => item.name == 'Xe đồ chơi')[0];
+
+	let db = [];
+	if (type != null) {
+		db = await Product.find({ type: customType._id }, (err, result) => {
+			return result;
+		});
+	}
 
 	res.render('customer-views/product', {
 		title: 'Xe đồ chơi',
@@ -66,8 +83,17 @@ exports.product_car = async function(req, res) {
 	});
 };
 exports.product_bear = async function(req, res) {
-	const db = await getBearProduct();
-	const type = await getType();
+	const type = await Type.find({}, (err, result) => {
+		return result;
+	});
+	const customType = type.filter((item) => item.name == 'Gấu bông')[0];
+
+	let db = [];
+	if (type != null) {
+		db = await Product.find({ type: customType._id }, (err, result) => {
+			return result;
+		});
+	}
 
 	res.render('customer-views/product', {
 		title: 'Gấu bông',
@@ -93,8 +119,7 @@ exports.shop = async function(req, res) {
 			return next(err);
 		} else {
 			//return products;
-			console.log('my product from mongosee: ', db);
-
+			//console.log('my product from mongosee: ', db);
 			res.render('customer-views/shop', {
 				title: 'Cửa hàng',
 				products: db,
@@ -105,8 +130,9 @@ exports.shop = async function(req, res) {
 	});
 };
 exports.single = async function(req, res) {
-	const id = req.params.id;
-	const singleProduct = await getSingleProduct(id);
+	const singleProduct = await Product.findOne({ _id: ObjectId(req.params.id) }, (err, result) => {
+		return result;
+	});
 	console.log('single product: ', singleProduct);
 
 	const name = 'Gấu teddy';

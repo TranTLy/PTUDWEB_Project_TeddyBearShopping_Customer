@@ -1,8 +1,9 @@
-const { getStandOutProduct } = require('../models/products');
+const Product = require('../model/product');
 
 exports.index = async function(req, res) {
-	const standOutProductDb = await getStandOutProduct();
-	// console.log('db: ', standOutProductDb);
+	const standOutProductDb = await Product.find({ isStandOut: true }, (err, results) => {
+		return results;
+	});
 	res.render('customer-views/index', { title: 'Trang chủ', standOutProducts: standOutProductDb });
 };
 exports.about = function(req, res) {
