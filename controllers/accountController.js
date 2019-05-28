@@ -65,7 +65,9 @@ exports.post_signup = async function(req, res) {
 				res.render('customer-views/update-infor', {
 					title: 'Thay đổi thông tin',
 					message: 'Đăng ký thành công',
-					name: req.body.name
+					name: req.body.name,
+					birthday: req.body.birthday,
+					phoneNumber: req.body.phoneNumber
 				});
 
 				// //  create token
