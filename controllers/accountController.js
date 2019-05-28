@@ -58,7 +58,8 @@ exports.post_signup = async function(req, res) {
 				});
 			} else {
 				req.body.password = Bcrypt.hashSync(req.body.password, 10);
-				const user = new User({ name: req.body.name, password: req.body.password, email: req.body.email });
+				const user = new User({ name: req.body.name, password: req.body.password, email: req.body.email,
+										gender: req.body.gender, birthday: req.body.birthday, phoneNumber: req.body.phoneNumber});
 
 				var result = user.save();
 				res.render('customer-views/update-infor', {
