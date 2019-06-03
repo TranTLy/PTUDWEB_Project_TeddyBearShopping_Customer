@@ -1,8 +1,9 @@
 const User = require('../model/user');
 var passport = require('passport');
+require('../config/passport');
 var Bcrypt = require('bcryptjs');
 var config = require('../config/database');
-require('../config/passport')(passport);
+
 var jwt = require('jsonwebtoken');
 
 exports.signup = function(req, res) {
@@ -19,27 +20,30 @@ exports.update_infor = function(req, res) {
 };
 
 exports.post_signin = async function(req, res) {
-	try {
-		await User.findOne({ email: req.body.email }, (err, user) => {
-			if (err) throw err;
-			if (!user) {
-				//user isn't exist
-				res.status(401).send({ success: false, msg: 'Tên đăng nhập hoặc mật khẩu sai.' });
-			} else {
-				if (!Bcrypt.compareSync(req.body.password, user.password)) {
-					//wrong password
-					return res.status(400).send({ message: 'Tên đăng nhập hoặc mật khẩu không đúng' });
-				}
-				var token = jwt.sign(user.toJSON(), config.secret, {
-					expiresIn: 86400 // 1 day
-				});
-				// return the information including token as JSON
-				res.json({ success: true, token: 'JWT ' + token, message: 'Đăng nhập thành công' });
+	passport.authenticate('local', { session: false }, (err, user, info) => {
+		if (err || !user) {
+			return res.status(400).json({
+				message: 'Something is not right',
+				user: user
+			});
+		}
+		req.login(user, { session: false }, (err) => {
+			if (err) {
+				res.send(err);
 			}
+			// generate a signed son web token with the contents of user object and return it in the response
+			var payload = { _id: user._id, email: user.email, name: user.name };
+			var token = jwt.sign(payload, config.secret, {
+				expiresIn: 86400 // 1 day
+			});
+			// jwt.verify(token, config.secret, function(err, data) {
+			// 	console.log('verify jwt');
+			// 	console.log(err, data);
+			// });
+			//return res.json({ user, token });
+			res.json({ success: true, token: 'JWT ' + token });
 		});
-	} catch (err) {
-		res.status(500).send(err);
-	}
+	})(req, res);
 };
 
 exports.post_signup = async function(req, res) {
@@ -53,8 +57,7 @@ exports.post_signup = async function(req, res) {
 			if (results != null) {
 				res.render('customer-views/signup', {
 					title: 'Đăng ký thất bại',
-					message: `Email ${req.body
-						.email} đã tồn tại. Vui lòng dùng email này để đăng nhập hoặc đăng ký tài khoản bằng email khác.`
+					message: `Email ${req.body.email} đã tồn tại. Vui lòng đăng ký tài khoản bằng email khác.`
 				});
 			} else {
 				req.body.password = Bcrypt.hashSync(req.body.password, 10);
@@ -73,5 +76,40 @@ exports.post_signup = async function(req, res) {
 				// });
 			}
 		});
+	}
+};
+
+// (exports.signout = passport.authenticate('jwt', { session: false })),
+// 	function(req, res) {
+// 		console.log('user form req: ', req.user);
+// 		res.json({ message: 'Success! You can not see this without a token' });
+// 	};
+
+// exports.signout = (req, res) => {
+// 	// var token = getToken(req.headers);
+// 	// if (token) {
+// 	// 	res.json(req.user, token);
+// 	// }
+// 	// else{
+
+// 	// }
+// 	console.log('on signout, req header', req.headers.authorization);
+// 	passport.authenticate('jwt', { session: false }, (err, user) => {
+// 		if (user) {
+// 			res.send(req.user);
+// 		}
+// 	});
+// };
+
+getToken = function(headers) {
+	if (headers && headers.authorization) {
+		var parted = headers.authorization.split(' ');
+		if (parted.length === 2) {
+			return parted[1];
+		} else {
+			return null;
+		}
+	} else {
+		return null;
 	}
 };

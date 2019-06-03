@@ -36,29 +36,21 @@ router.get('/forget-password', account_controller.forget_password);
 router.get('/change-password', account_controller.change_password);
 router.get('/update-infor', account_controller.update_infor);
 
-//TODO: this block of code is demo
-const Product = require('../model/product');
-const Type = require('../model/type');
-router.post('/test', function(req, res, next) {
-	const product = {
-		name: 'Test name product 1'
-	};
-	const model = new Product(product);
-	model.save();
+//TODO
+//router.get('/signout', account_controller.signout);
 
-	const addnew = Product.find({}, (err, result) => {
-		res.json({
-			header: 'success',
-			result
-		});
-	});
+var passport = require('passport');
+require('../config/passport');
+
+router.get('/signout', passport.authenticate('jwt', { session: false }), function(req, res) {
+	console.log('on signout');
+	//console.log('user form req: ', req.user);
+
+	res.json({ message: 'Success! You can not see this without a token' });
 });
-router.get('/test', function(req, res, next) {
-	const addnew = Product.find({}, (err, result) => {
-		res.json({
-			header: 'success get product',
-			result
-		});
-	});
+
+router.get('/secret', passport.authenticate('jwt', { session: false }), function(req, res) {
+	res.json({ message: 'Success! You can not see this without a token' });
 });
+
 module.exports = router;

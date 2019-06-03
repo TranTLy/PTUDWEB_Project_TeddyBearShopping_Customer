@@ -6,13 +6,16 @@ var logger = require('morgan');
 const mongoose = require('mongoose');
 const config = require('./config/database');
 var passport = require('passport');
+const session = require('express-session');
 
+var passport = require('passport');
+require('./config/passport');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 mongoose.connect(config.database, { useCreateIndex: true, useNewUrlParser: true }, (err, res) => {
 	if (!err) {
-		console.log('connect to databse successfully!');
+		console.log('connect to database successfully!');
 	}
 });
 var app = express();
@@ -28,7 +31,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
+app.use(
+	session({
+		secret: config.secret,
+		saveUninitialized: true,
+		resave: true
+	})
+);
+
 app.use(passport.initialize());
+app.use(passport.session());
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
