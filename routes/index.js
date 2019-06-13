@@ -34,31 +34,9 @@ router.post('/signup', account_controller.post_signup);
 // router.post('/signin', account_controller.signup);
 router.get('/forget-password', account_controller.forget_password);
 router.get('/change-password', account_controller.change_password);
-router.get('/update-infor', account_controller.update_infor);
+router.get('/update-infor', account_controller.isLogin, account_controller.update_infor);
 
-//TODO: this block of code is demo
-const Product = require('../model/product');
-const Type = require('../model/type');
-router.post('/test', function(req, res, next) {
-	const product = {
-		name: 'Test name product 1'
-	};
-	const model = new Product(product);
-	model.save();
+//TODO
+router.post('/signout', account_controller.signout);
 
-	const addnew = Product.find({}, (err, result) => {
-		res.json({
-			header: 'success',
-			result
-		});
-	});
-});
-router.get('/test', function(req, res, next) {
-	const addnew = Product.find({}, (err, result) => {
-		res.json({
-			header: 'success get product',
-			result
-		});
-	});
-});
 module.exports = router;

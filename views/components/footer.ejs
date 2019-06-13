@@ -82,9 +82,6 @@
                               <div class="styled-input">
                                  <input type="text" placeholder="Email đăng nhập" name="email" required="">
                               </div>
-                              <!-- <div class="styled-input">
-                                 <input type="email" placeholder="Your Email" name="Your Email" required="">
-                              </div> -->
                               <div class="styled-input">
                                  <input type="password" placeholder="Mật khẩu" name="password" required="">
                               </div>
@@ -98,11 +95,30 @@
                   </div> -->
                   <div id="link-forget-password"><a href="forget-password">Quên mật khẩu</a></div>
                   <div id="link-signup"><a href="signup">Đăng ký tài khoản</a></div>
-
                </div>
             </div>
          </div>
          <!-- //Modal 1-->
+          <!--loginedUserModal-->
+          <div class="modal fade" id="loginedUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+               <div class="modal-content" id="modal-user">
+                    <% if (user){%>
+                         <h5 class="modal-title" id="loginedUserModalLabel">Xin chào, <%=user.name%></h5>
+                        <%} %>
+                  <!-- <div id="link-forget-password"><a href="forget-password">Quên mật khẩu</a></div> -->
+                  <a name="" id="" class="btn btn-primary" href="/history" role="button">Lịch sử mua hàng</a>
+                  <a name="" id="" class="btn btn-primary" href="/update-infor" role="button">Chỉnh sửa thông tin cá nhân</a>
+                  <a name="" id="" class="btn btn-primary" href="/change-password" role="button">Đổi mật khẩu</a>
+                  <form action="/signout" method="POST">
+                  <button type="submit" class="btn btn-primary">Đăng xuất</button>
+                     
+                     </form>
+
+               </div>
+            </div>
+         </div>
+         <!-- //loginedUserModal-->
          <!--js working-->
          <script src='javascripts/jquery-2.2.3.min.js'></script>
          <!--//js working-->

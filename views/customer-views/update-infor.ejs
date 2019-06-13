@@ -15,7 +15,10 @@
     id="nameUser"
     aria-describedby="helpId"
     required
-    value=<%= name%> />
+    value=<% if (user) { %>
+         <%=user.name %> 
+            <%} else{%> "" <%}%>
+            />
   <div class="label-input-signup">Ngày tháng năm sinh<span></span></div>
   <input
     type="date"
@@ -24,7 +27,9 @@
     id="dob"
     aria-describedby="helpId"
     data-date-format="DD MM YYYY"
-    value=<%= birthday%>
+    value=  <%if (user!= null) { %>
+      <%=user.birthday %> 
+         <%}%> 
   />
 
   <div class="label-input-signup">Số điện thoại<span></span></div>
@@ -34,8 +39,10 @@
     name="sign-up"
     id="phone"
     aria-describedby="helpId"
-    value=<%= phoneNumber%>
-  />
+    value= <%if (user!= null) { %>
+      <%=user.phoneNumber %> 
+         <%}%> 
+           />
 
   <button id="btn-sign-up" type="submit" onclick="checkInfor()">
     Lưu
