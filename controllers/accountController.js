@@ -27,21 +27,18 @@ exports.post_signin = async function(req, res) {
 				user: user
 			});
 		}
-		req.login(user, { session: false }, (err) => {
+		req.login(user, (err) => {
 			if (err) {
 				res.send(err);
 			}
 			// generate a signed son web token with the contents of user object and return it in the response
-			var payload = { _id: user._id, email: user.email, name: user.name };
-			var token = jwt.sign(payload, config.secret, {
+			var token = jwt.sign({ user }, config.secret, {
 				expiresIn: 86400 // 1 day
 			});
-			// jwt.verify(token, config.secret, function(err, data) {
-			// 	console.log('verify jwt');
-			// 	console.log(err, data);
-			// });
-			//return res.json({ user, token });
-			res.json({ success: true, token: 'JWT ' + token });
+			res.cookie('token', token);
+			res.cookie('user', user);
+			// console.log('login successfully! is login: ', req.isAuthenticated());
+			res.redirect('/');
 		});
 	})(req, res);
 };
@@ -61,22 +58,35 @@ exports.post_signup = async function(req, res) {
 				});
 			} else {
 				req.body.password = Bcrypt.hashSync(req.body.password, 10);
-				const user = new User({ name: req.body.name, password: req.body.password, email: req.body.email,
-										gender: req.body.gender, birthday: req.body.birthday, phoneNumber: req.body.phoneNumber});
-
-				var result = user.save();
-				res.render('customer-views/update-infor', {
-					title: 'Thay đổi thông tin',
-					message: 'Đăng ký thành công',
+				const user = new User({
 					name: req.body.name,
+					password: req.body.password,
+					email: req.body.email,
+					gender: req.body.gender,
 					birthday: req.body.birthday,
 					phoneNumber: req.body.phoneNumber
 				});
 
-				// //  create token
-				// var token = jwt.sign(user.toJSON(), config.secret, {
-				// 	expiresIn: 86400 // 1 day
-				// });
+				var result = user.save();
+				req.login(user, { session: false }, (err) => {
+					if (err) {
+						res.send(err);
+					}
+					// generate a signed son web token with the contents of user object and return it in the response
+					var token = jwt.sign({ user }, config.secret, {
+						expiresIn: 86400 // 1 day
+					});
+					res.cookie('token', token);
+					res.cookie('user', user);
+					console.log('sign up successfully!');
+					res.render('customer-views/update-infor', {
+						title: 'Thay đổi thông tin',
+						message: 'Đăng ký thành công',
+						name: req.body.name,
+						birthday: req.body.birthday,
+						phoneNumber: req.body.phoneNumber
+					});
+				});
 			}
 		});
 	}
@@ -89,31 +99,21 @@ exports.post_signup = async function(req, res) {
 // 	};
 
 exports.signout = (req, res, next) => {
-	// var token = getToken(req.headers);
-	// if (token) {
-	// 	res.json(req.user, token);
-	// }
-	// else{
-
-	// }
-	//console.log('on signout, req header', req.headers.authorization);
-	passport.authenticate('jwt', { session: false }, (err, user) => {
-		if (user) {
-			console.log('successfully!');
-			res.send(req.user);
-		}
-	});
+	console.log('on logout');
+	req.logout();
+	res.clearCookie('user');
+	res.clearCookie('token');
+	res.redirect('/');
+	console.log('on redirect');
 };
 
-getToken = function(headers) {
-	if (headers && headers.authorization) {
-		var parted = headers.authorization.split(' ');
-		if (parted.length === 2) {
-			return parted[1];
-		} else {
-			return null;
-		}
+exports.isLogin = function(req, res, next) {
+	console.log('is authen ', req.isAuthenticated());
+	if (req.isAuthenticated()) {
+		return next();
 	} else {
-		return null;
+		return res.send({
+			message: 'Bạn cần đăng nhập để thực hiện chức năng này.'
+		});
 	}
 };

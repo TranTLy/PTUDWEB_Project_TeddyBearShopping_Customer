@@ -34,7 +34,7 @@ router.post('/signup', account_controller.post_signup);
 // router.post('/signin', account_controller.signup);
 router.get('/forget-password', account_controller.forget_password);
 router.get('/change-password', account_controller.change_password);
-router.get('/update-infor', account_controller.update_infor);
+router.get('/update-infor', account_controller.isLogin, account_controller.update_infor);
 
 //TODO
 router.get('/signout', account_controller.signout);
