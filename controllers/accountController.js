@@ -16,7 +16,8 @@ exports.change_password = function(req, res) {
 	res.render('customer-views/change-password', { title: 'Đổi mật khẩu' });
 };
 exports.update_infor = function(req, res) {
-	res.render('customer-views/update-infor', { title: 'Thay đổi thông tin' });
+	console.log('user before go to update infor: ', req.cookies.user);
+	res.render('customer-views/update-infor', { title: 'Thay đổi thông tin', user: req.cookies.user });
 };
 
 exports.post_signin = async function(req, res) {
@@ -27,6 +28,7 @@ exports.post_signin = async function(req, res) {
 				user: user
 			});
 		}
+		console.log('user in signin: ', user);
 		req.login(user, (err) => {
 			if (err) {
 				res.send(err);
@@ -108,12 +110,20 @@ exports.signout = (req, res, next) => {
 };
 
 exports.isLogin = function(req, res, next) {
-	console.log('is authen ', req.isAuthenticated());
-	if (req.isAuthenticated()) {
+	console.log('is authen 3: ', req.isAuthenticated());
+	// console.log('user in cookie: ', req.cookies.user);
+	if (req.cookies.user) {
 		return next();
 	} else {
 		return res.send({
 			message: 'Bạn cần đăng nhập để thực hiện chức năng này.'
 		});
 	}
+	// if (req.isAuthenticated()) {
+	// 	return next();
+	// } else {
+	// 	return res.send({
+	// 		message: 'Bạn cần đăng nhập để thực hiện chức năng này.'
+	// 	});
+	// }
 };

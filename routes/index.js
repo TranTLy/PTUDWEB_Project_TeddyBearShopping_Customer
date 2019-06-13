@@ -39,18 +39,4 @@ router.get('/update-infor', account_controller.isLogin, account_controller.updat
 //TODO
 router.get('/signout', account_controller.signout);
 
-// var passport = require('passport');
-// require('../config/passport');
-
-// router.get('/signout', passport.authenticate('jwt', { session: false }), function(req, res) {
-// 	console.log('on signout');
-// 	//console.log('user form req: ', req.user);
-
-// 	res.json({ message: 'Success! You can not see this without a token' });
-// });
-
-// router.get('/secret', passport.authenticate('jwt', { session: false }), function(req, res) {
-// 	res.json({ message: 'Success! You can not see this without a token' });
-// });
-
 module.exports = router;

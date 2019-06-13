@@ -21,13 +21,25 @@ passport.use(
 				if (!user || !Bcrypt.compareSync(password, user.password)) {
 					return cb(null, false, { message: 'Incorrect email or password.' });
 				} else {
-					console.log('Found user: ', user.name);
+					console.log('Found user in authen passport: ', user);
 					return cb(null, user, { message: 'Logged In Successfully' });
 				}
 			}).catch((err) => cb(err));
 		}
 	)
 );
+
+// used to serialize the user for the session
+passport.serializeUser(function(user, done) {
+	done(null, user.email);
+});
+
+// used to deserialize the user
+passport.deserializeUser(function(email, done) {
+	User.findOne({ email }, function(err, user) {
+		done(err, user);
+	});
+});
 
 // passport.use(
 // 	'jwt',
@@ -49,15 +61,3 @@ passport.use(
 // 		}
 // 	)
 // );
-
-// used to serialize the user for the session
-passport.serializeUser(function(user, done) {
-	done(null, user._id);
-});
-
-// used to deserialize the user
-passport.deserializeUser(function(id, done) {
-	User.findById(id, function(err, user) {
-		done(err, user);
-	});
-});

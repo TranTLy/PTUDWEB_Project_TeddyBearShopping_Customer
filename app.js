@@ -41,7 +41,7 @@ app.use('/users', usersRouter);
 app.use(function(req, res, next) {
 	// set locals, only providing error in development
 	res.locals.user = req.cookies.user;
-	// console.log('name', req.cookies.user);
+	console.log('name user : log in app.js', req.cookies.user);
 	next();
 });
 
