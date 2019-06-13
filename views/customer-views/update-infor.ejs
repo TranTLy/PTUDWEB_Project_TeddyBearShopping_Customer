@@ -18,12 +18,13 @@
     value=<%= name%> />
   <div class="label-input-signup">Ngày tháng năm sinh<span></span></div>
   <input
-    type="datetime-local"
+    type="date"
     class="form-control"
     name="sign-up"
     id="dob"
     aria-describedby="helpId"
-    value="23/01/2000"
+    data-date-format="DD MM YYYY"
+    value=<%= birthday%>
   />
 
   <div class="label-input-signup">Số điện thoại<span></span></div>
@@ -33,7 +34,7 @@
     name="sign-up"
     id="phone"
     aria-describedby="helpId"
-    value="0919 009 001"
+    value=<%= phoneNumber%>
   />
 
   <button id="btn-sign-up" type="submit" onclick="checkInfor()">
