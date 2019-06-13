@@ -37,20 +37,20 @@ router.get('/change-password', account_controller.change_password);
 router.get('/update-infor', account_controller.update_infor);
 
 //TODO
-//router.get('/signout', account_controller.signout);
+router.get('/signout', account_controller.signout);
 
-var passport = require('passport');
-require('../config/passport');
+// var passport = require('passport');
+// require('../config/passport');
 
-router.get('/signout', passport.authenticate('jwt', { session: false }), function(req, res) {
-	console.log('on signout');
-	//console.log('user form req: ', req.user);
+// router.get('/signout', passport.authenticate('jwt', { session: false }), function(req, res) {
+// 	console.log('on signout');
+// 	//console.log('user form req: ', req.user);
 
-	res.json({ message: 'Success! You can not see this without a token' });
-});
+// 	res.json({ message: 'Success! You can not see this without a token' });
+// });
 
-router.get('/secret', passport.authenticate('jwt', { session: false }), function(req, res) {
-	res.json({ message: 'Success! You can not see this without a token' });
-});
+// router.get('/secret', passport.authenticate('jwt', { session: false }), function(req, res) {
+// 	res.json({ message: 'Success! You can not see this without a token' });
+// });
 
 module.exports = router;

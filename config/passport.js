@@ -7,6 +7,7 @@ var Bcrypt = require('bcryptjs');
 const config = require('../config/database');
 
 passport.use(
+	'local',
 	new LocalStrategy(
 		{
 			usernameField: 'email',
@@ -29,6 +30,7 @@ passport.use(
 );
 
 passport.use(
+	'jwt',
 	new JwtStrategy(
 		{
 			jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),

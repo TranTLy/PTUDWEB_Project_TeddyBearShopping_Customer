@@ -85,21 +85,22 @@ exports.post_signup = async function(req, res) {
 // 		res.json({ message: 'Success! You can not see this without a token' });
 // 	};
 
-// exports.signout = (req, res) => {
-// 	// var token = getToken(req.headers);
-// 	// if (token) {
-// 	// 	res.json(req.user, token);
-// 	// }
-// 	// else{
+exports.signout = (req, res, next) => {
+	// var token = getToken(req.headers);
+	// if (token) {
+	// 	res.json(req.user, token);
+	// }
+	// else{
 
-// 	// }
-// 	console.log('on signout, req header', req.headers.authorization);
-// 	passport.authenticate('jwt', { session: false }, (err, user) => {
-// 		if (user) {
-// 			res.send(req.user);
-// 		}
-// 	});
-// };
+	// }
+	//console.log('on signout, req header', req.headers.authorization);
+	passport.authenticate('jwt', { session: false }, (err, user) => {
+		if (user) {
+			console.log('successfully!');
+			res.send(req.user);
+		}
+	});
+};
 
 getToken = function(headers) {
 	if (headers && headers.authorization) {
