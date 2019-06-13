@@ -35,15 +35,16 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
 
 app.use(function(req, res, next) {
 	// set locals, only providing error in development
-	res.locals.user = req.cookies.user;
+	res.locals.user = req.cookies.user || null;
 	console.log('name user : log in app.js', req.cookies.user);
 	next();
 });
+
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

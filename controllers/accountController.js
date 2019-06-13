@@ -16,8 +16,10 @@ exports.change_password = function(req, res) {
 	res.render('customer-views/change-password', { title: 'Đổi mật khẩu' });
 };
 exports.update_infor = function(req, res) {
-	console.log('user before go to update infor: ', req.cookies.user);
-	res.render('customer-views/update-infor', { title: 'Thay đổi thông tin', user: req.cookies.user });
+	// res.locals.user = req.cookies.user;
+	// console.log('3 req.user is: ', req.user);
+	// console.log('user before go to update infor: ', req.cookies.user);
+	res.render('customer-views/update-infor', { title: 'Thay đổi thông tin' });
 };
 
 exports.post_signin = async function(req, res) {
@@ -28,7 +30,6 @@ exports.post_signin = async function(req, res) {
 				user: user
 			});
 		}
-		console.log('user in signin: ', user);
 		req.login(user, (err) => {
 			if (err) {
 				res.send(err);
@@ -39,8 +40,10 @@ exports.post_signin = async function(req, res) {
 			});
 			res.cookie('token', token);
 			res.cookie('user', user);
+			res.locals.user = req.cookies.user;
+
 			// console.log('login successfully! is login: ', req.isAuthenticated());
-			res.redirect('/');
+			res.redirect('/update-infor');
 		});
 	})(req, res);
 };
@@ -105,25 +108,25 @@ exports.signout = (req, res, next) => {
 	req.logout();
 	res.clearCookie('user');
 	res.clearCookie('token');
-	res.redirect('/');
+	res.redirect('/about');
 	console.log('on redirect');
 };
 
 exports.isLogin = function(req, res, next) {
 	console.log('is authen 3: ', req.isAuthenticated());
 	// console.log('user in cookie: ', req.cookies.user);
-	if (req.cookies.user) {
-		return next();
-	} else {
-		return res.send({
-			message: 'Bạn cần đăng nhập để thực hiện chức năng này.'
-		});
-	}
-	// if (req.isAuthenticated()) {
+	// if (req.cookies.user) {
 	// 	return next();
 	// } else {
 	// 	return res.send({
 	// 		message: 'Bạn cần đăng nhập để thực hiện chức năng này.'
 	// 	});
 	// }
+	if (req.isAuthenticated()) {
+		return next();
+	} else {
+		return res.send({
+			message: 'Bạn cần đăng nhập để thực hiện chức năng này.'
+		});
+	}
 };

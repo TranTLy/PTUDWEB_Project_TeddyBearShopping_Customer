@@ -221,6 +221,17 @@ nav.navbar.navbar-expand-lg.navbar-light {
 	outline: none;
 	margin-bottom: 18px;
 }
+#loginedUserModal {
+	margin-top: 10vh;
+}
+#modal-user {
+	padding-top: 20px;
+}
+#modal-user * {
+	text-align: center;
+	margin: 10px auto;
+	width: 250px;
+}
 #modal-login {
 	padding-bottom: 20px;
 }
@@ -911,6 +922,12 @@ bottom:-86px}
 .icons ul li a,
 .cart-icons ul li {
 	color: #fff;
+}
+#name-current-user {
+	padding: 2px 10px;
+}
+#name-current-user:hover {
+	cursor: pointer;
 }
 .icons ul li a span,
 .cart-icons ul li span,

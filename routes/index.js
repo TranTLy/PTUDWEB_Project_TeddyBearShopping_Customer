@@ -37,6 +37,6 @@ router.get('/change-password', account_controller.change_password);
 router.get('/update-infor', account_controller.isLogin, account_controller.update_infor);
 
 //TODO
-router.get('/signout', account_controller.signout);
+router.post('/signout', account_controller.signout);
 
 module.exports = router;

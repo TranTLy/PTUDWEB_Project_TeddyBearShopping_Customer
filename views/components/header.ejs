@@ -90,9 +90,7 @@
             <div class="col-lg-4 col-md-3 right-side-cart">
               <div class="cart-icons">
                 <ul>
-                  <li>
-                    <span class="far fa-heart"></span>
-                  </li>
+                  <% if (!user){%>
                   <li>
                     <button
                       type="button"
@@ -102,6 +100,11 @@
                       <span class="far fa-user"></span>
                     </button>
                   </li>
+                  <%} else {%>
+                    <li>
+                        <span  id="name-current-user" data-toggle="modal"  data-target="#loginedUserModal">Xin chào, <%=user.name%></span>
+                    </li>
+                  <%}%>
                   <li class="toyscart toyscart2 cart cart box_1">
                     <form action="#" method="post" class="last">
                       <input type="hidden" name="cmd" value="_cart" />

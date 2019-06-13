@@ -14,14 +14,14 @@ passport.use(
 			passwordField: 'password'
 		},
 		async function(email, password, cb) {
-			console.log('authen, email:', email, ', password: ', password);
+			// console.log('authen, email:', email, ', password: ', password);
 			//this one is typically a DB call.
 			//Assume that the returned user object is pre-formatted and ready for storing in JWT
 			await User.findOne({ email }, (err, user) => {
 				if (!user || !Bcrypt.compareSync(password, user.password)) {
 					return cb(null, false, { message: 'Incorrect email or password.' });
 				} else {
-					console.log('Found user in authen passport: ', user);
+					// console.log('Found user in authen passport: ', user);
 					return cb(null, user, { message: 'Logged In Successfully' });
 				}
 			}).catch((err) => cb(err));
@@ -36,6 +36,7 @@ passport.serializeUser(function(user, done) {
 
 // used to deserialize the user
 passport.deserializeUser(function(email, done) {
+	// console.log('on deserialize user: ', user);
 	User.findOne({ email }, function(err, user) {
 		done(err, user);
 	});
