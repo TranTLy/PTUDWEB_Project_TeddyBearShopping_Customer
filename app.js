@@ -39,7 +39,7 @@ app.use(passport.session());
 app.use(function(req, res, next) {
 	// set locals, only providing error in development
 	res.locals.user = req.cookies.user || null;
-	console.log('name user : log in app.js', req.cookies.user);
+	//console.log('name user : log in app.js', req.cookies.user);
 	next();
 });
 
@@ -50,7 +50,12 @@ app.use('/users', usersRouter);
 app.use(function(req, res, next) {
 	next(createError(404));
 });
-
+app.use(function(req, res, next) {
+	// set locals, only providing error in development
+	res.locals.cartShop = req.session.cartShop || [];
+	console.log('cart in app.js', res.locals.cartShopping);
+	next();
+});
 // error handler
 app.use(function(err, req, res, next) {
 	// set locals, only providing error in development

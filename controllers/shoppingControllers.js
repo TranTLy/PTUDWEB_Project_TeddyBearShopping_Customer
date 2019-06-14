@@ -5,6 +5,9 @@ const Type = require('../model/type');
 const Product = require('../model/product');
 
 exports.checkout = function(req, res) {
+	res.locals.cartShop = req.session.cartShop;
+	// console.log('cart in checkout: ');
+	// req.session.destroy();
 	res.render('customer-views/checkout', { title: 'Giỏ hàng' });
 };
 //todo
@@ -48,7 +51,6 @@ exports.product_barbie = async function(req, res) {
 	let db = [];
 	if (type != null) {
 		db = await Product.find({ type: customType._id }, (err, result) => {
-			console.log('barbie: ', result);
 			return result;
 		});
 	}
@@ -110,7 +112,6 @@ exports.shop = async function(req, res) {
 		if (err) {
 			return next(err);
 		} else {
-			console.log('my type: ', type);
 			return type;
 		}
 	});
@@ -118,8 +119,6 @@ exports.shop = async function(req, res) {
 		if (err) {
 			return next(err);
 		} else {
-			//return products;
-			//console.log('my product from mongosee: ', db);
 			res.render('customer-views/shop', {
 				title: 'Cửa hàng',
 				products: db,
@@ -133,7 +132,6 @@ exports.single = async function(req, res) {
 	const singleProduct = await Product.findOne({ _id: ObjectId(req.params.id) }, (err, result) => {
 		return result;
 	});
-	console.log('single product: ', singleProduct);
 
 	const name = 'Gấu teddy';
 	res.render('customer-views/single', {
@@ -156,4 +154,55 @@ exports.detail_receipt = function(req, res) {
 };
 exports.history = function(req, res) {
 	res.render('customer-views/history', { title: 'Lịch sử mua hàng' });
+};
+
+exports.addToCart = async (req, res) => {
+	const id = req.query.id;
+	await Product.findById(id, (err, product) => {
+		if (!req.session.cartShop) {
+			req.session.cartShop = [];
+			// console.log('cart in session empty: ', req.session.cartShop);
+			req.session.cartShop.push({ ...product._doc, quantity: 1 });
+		} else {
+			const index = req.session.cartShop.findIndex((item) => item._id === id);
+
+			if (index == -1) {
+				//have not had in cart shop
+				req.session.cartShop.push({ ...product._doc, quantity: 1 });
+			} else {
+				req.session.cartShop[index].quantity++;
+			}
+			console.log('length cart after: ', req.session.cartShop.length);
+		}
+		res.send({ isSuccessful: true });
+	});
+
+	// });
+};
+
+exports.changeQuantity = (req, res) => {
+	const id = req.query.id;
+	const quantity = req.query.quantity;
+	console.log('id: ' + id, 'quan: ', quantity);
+
+	const index = req.session.cartShop.findIndex((item) => item._id === id);
+	if (index != -1) {
+		req.session.cartShop[index].quantity = quantity;
+		res.send({ isSuccessful: true });
+	} else {
+		res.send({ isSuccessful: false });
+	}
+};
+
+//delete 1 product from cartShop
+exports.deleteFromCart = (req, res) => {
+	const id = req.query.id;
+
+	const index = req.session.cartShop.findIndex((item) => item._id === id);
+	if (index != -1) {
+		req.session.cartShop = [ ...req.session.cartShop.filter((item) => item._id !== id) ];
+		res.send({ isSuccessful: true });
+	} else {
+		res.send({ isSuccessful: false });
+	}
 };
