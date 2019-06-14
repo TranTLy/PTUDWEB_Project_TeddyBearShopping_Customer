@@ -8,7 +8,8 @@ var ProductSchema = new Schema(
 			type: SchemaTypes.ObjectId
 		},
 		discount: {
-			type: SchemaTypes.Decimal128,
+			// type: SchemaTypes.Decimal128,
+			type: SchemaTypes.Number,
 			required: false,
 			default: 0
 		},

@@ -93,7 +93,8 @@
       <div class="left-ads-display col-lg-9">
         <div class="row">
           <% products.forEach(function(item){ %> <%-
-          include('../components/productItem', {product: item}); %> <% }); %>
+          include('../components/productItem', {product: item}); %> 
+          <% }); %>
         </div>
       </div>
     </div>
@@ -101,3 +102,22 @@
 </section>
 <!-- //show Now-->
 <% include ../components/footer%>
+
+<script>
+  addItem= (idItem) =>{
+    const id = idItem.id;
+        $.ajax({
+          url: "/addToCart?id=" + id,
+          type: "get",
+          contentType: "application/json; charset=utf-8",
+          dataType: "json"
+        })
+          .done(function(success) {
+            console.log("success", success);
+          })
+          .fail(function(err) {
+            console.log("fail", success);
+
+          });
+      }
+  </script>

@@ -6,9 +6,7 @@ body a {
 	-ms-transition: 0.5s all;
 }
 
-
 /*-- / --*/
-
 
 /*-- checkout --*/
 
@@ -39,17 +37,28 @@ table.timetable_sub {
 	font-size: 13px;
 	border-right: 1px solid #ded2d2;
 }
-
+#btn-cancel-product {
+	background-color: #ea1d5d;
+	color: #fff;
+	border-radius: 10px;
+}
+#btn-cancel-product:hover {
+	cursor: pointer;
+}
 .timetable_sub th,
 .timetable_sub td {
-    text-align: center;
-    padding: 7px;
-    font-size: 16px;
-    color: #868282;
+	text-align: center;
+	padding: 7px;
+	font-size: 16px;
+	color: #868282;
+}
+
+#img-product-checkout {
+	width: 280px;
 }
 
 .timetable_sub td {
-	border: 1px solid #CDCDCD;
+	border: 1px solid #cdcdcd;
 }
 
 td.invert-image a img {
@@ -65,18 +74,17 @@ td.invert-image a img {
 .close2,
 .close3 {
 	background: url('../images/close_1.jpg') no-repeat 0px 0px;
-    cursor: pointer;
-    width: 41px;
-    height: 39px;
-    position: absolute;
-    right: 6px;
-    top: -23px;
+	cursor: pointer;
+	width: 41px;
+	height: 39px;
+	position: absolute;
+	right: 6px;
+	top: -23px;
 	-webkit-transition: color 0.2s ease-in-out;
 	-moz-transition: color 0.2s ease-in-out;
 	-o-transition: color 0.2s ease-in-out;
 	transition: color 0.2s ease-in-out;
 }
-
 
 /*-- quantity-starts --*/
 
@@ -128,10 +136,10 @@ td.invert-image a img {
 	width: 40px;
 	height: 40px;
 	padding: 8px 0px;
-	color: #A9A9A9;
+	color: #a9a9a9;
 	line-height: 24px;
-	border: 1px solid #E5E5E5;
-	background-color: #E5E5E5;
+	border: 1px solid #e5e5e5;
+	background-color: #e5e5e5;
 	text-align: center;
 	display: inline-block;
 	margin-right: 3px;
@@ -139,13 +147,12 @@ td.invert-image a img {
 
 .quantity-select .entry.value-minus:hover,
 .quantity-select .entry.value-plus:hover {
-	background: #E5E5E5;
+	background: #e5e5e5;
 }
 
 .quantity-select .entry.value-minus {
 	margin-left: 0;
 }
-
 
 /*-- quantity-end --*/
 
@@ -158,13 +165,13 @@ td.invert-image a img {
 }
 
 .checkout-left-basket h4 {
-    padding: 1em;
-    background:#ffcb2d;
-    font-size: 1em;
-    color: #fff;
-    text-transform: uppercase;
-    text-align: center;
-    margin: 0 0 2em;
+	padding: 1em;
+	background: #ffcb2d;
+	font-size: 1em;
+	color: #fff;
+	text-transform: uppercase;
+	text-align: center;
+	margin: 0 0 2em;
 }
 
 .checkout-left {
@@ -197,8 +204,8 @@ td.invert-image a img {
 	color: #212121;
 	font-weight: 600;
 	padding: 1em 0;
-	border-top: 1px solid #DDD;
-	border-bottom: 1px solid #DDD;
+	border-top: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
 	margin: 2em 0 0;
 }
 
@@ -211,7 +218,7 @@ td.invert-image a img {
 }
 
 .checkout-right-basket a:hover {
-	background:#26bb48;
+	background: #26bb48;
 }
 
 .checkout-right-basket a span {
@@ -228,7 +235,7 @@ td.invert-image a img {
 }
 
 .information-wrapper input {
-	width: 100%!important;
+	width: 100% !important;
 }
 
 .check_box_one.cashon_delivery {
@@ -236,7 +243,6 @@ td.invert-image a img {
 	width: 100%;
 	margin-bottom: 10px;
 }
-
 
 /*-- checkbox --*/
 
@@ -259,7 +265,6 @@ input.checkbox {
 	vertical-align: text-bottom;
 }
 
-
 /*-- //checkout --*/
 
 .check_tab2 input[type="email"],
@@ -276,16 +281,13 @@ input.checkbox {
 	outline: none;
 }
 
-
 /*-- // --*/
 
 .pay_info {
 	padding: 3em 2em;
 }
 
-
 /*--/payment--*/
-
 
 /*-- Pay-page --*/
 
@@ -325,8 +327,8 @@ input.checkbox {
 }
 
 .pay_info input[type="submit"]:hover {
-    background: #080808;
-    border: 1px solid #080808;
+	background: #080808;
+	border: 1px solid #080808;
 }
 
 .agileinfo_main_grid_left_grid h3 {
@@ -389,7 +391,7 @@ img.pp-img {
 }
 
 .tab-grid p {
-	color: #8B8B8B;
+	color: #8b8b8b;
 	font-size: 0.95em;
 	line-height: 1.8em;
 	font-weight: 400;
@@ -415,7 +417,7 @@ a.btn.btn-primary {
 	font-size: 16px;
 	color: #696969;
 	padding: 0px 0 0 10px;
-    font-weight: 400;
+	font-weight: 400;
 }
 
 .radio_one:first-child {
@@ -441,12 +443,12 @@ a.btn.btn-primary {
 	width: 33%;
 	border: none;
 	background: none;
-	border: 1px solid #E6E4E4;
-	color: #D2D1D1;
+	border: 1px solid #e6e4e4;
+	color: #d2d1d1;
 	outline: none;
 	font-size: 16px;
 	margin-bottom: 0;
-	background:#fff;
+	background: #fff;
 	background-size: 4% !important;
 	-webkit-appearance: none;
 }
@@ -468,7 +470,7 @@ select.form-control.option-w3ls {
 	margin-left: 1em;
 }
 .swit-radio input[type="radio"] {
-    margin-right: 9px;
+	margin-right: 9px;
 }
 .check_box_one {
 	float: left;
@@ -511,54 +513,56 @@ button.submit.check_out {
 	margin-bottom: 2em;
 }
 /*-- //Pay-page --*/
-@media(max-width:1440px){
-.radio_one {
-    padding-left: 4px;
+@media (max-width: 1440px) {
+	.radio_one {
+		padding-left: 4px;
+	}
 }
+@media (max-width: 1280px) {
+	.pay_info input[type="email"],
+	.pay_info input[type="password"],
+	.creditly-wrapper .form-control {
+		padding: 12px 10px;
+	}
 }
-@media(max-width:1280px){
-.pay_info input[type="email"], .pay_info input[type="password"], .creditly-wrapper .form-control {
-    padding: 12px 10px;
+@media (max-width: 1050px) {
+	.swit-radio label {
+		font-size: 15px;
+	}
 }
+@media (max-width: 991px) {
+	.pay_info input[type="submit"] {
+		padding: 12px 42px 12px;
+		letter-spacing: 2px;
+		font-size: .9em;
+	}
+	.check_box_one {
+		float: left;
+		width: 50%;
+		margin-bottom: 10px;
+	}
+	.section_room_pay select {
+		width: 50%;
+	}
 }
-@media(max-width:1050px){
-.swit-radio label {
-    font-size: 15px;
+@media (max-width: 768px) {
+	.check_box_one {
+		width: 100%;
+	}
+	.section_room_pay select {
+		width: 75%;
+	}
 }
-}
-@media(max-width:991px){
-.pay_info input[type="submit"] {
-    padding: 12px 42px 12px;
-    letter-spacing: 2px;
-    font-size: .9em;
-}
-.check_box_one {
-    float: left;
-    width: 50%;
-    margin-bottom: 10px;
-}
-.section_room_pay select {
-    width: 50%;
-}
-}
-@media(max-width:768px){
-.check_box_one {
-    width: 100%;
-}
-.section_room_pay select {
-    width: 75%;
-}
-}
-@media(max-width:384px){
-.swit-radio label {
-    font-size: 13px;
-}
-.section_room_pay select {
-    width: 100%;
-}
-.pay_info input[type="submit"] {
-	font-size:.8em;
-	letter-spacing:1px;
-    padding: 12px 14px 12px;
-}
+@media (max-width: 384px) {
+	.swit-radio label {
+		font-size: 13px;
+	}
+	.section_room_pay select {
+		width: 100%;
+	}
+	.pay_info input[type="submit"] {
+		font-size: .8em;
+		letter-spacing: 1px;
+		padding: 12px 14px 12px;
+	}
 }

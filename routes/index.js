@@ -21,6 +21,10 @@ router.get('/product-car', shopping_controller.product_car);
 router.get('/product-bear', shopping_controller.product_bear);
 router.get('/product-other', shopping_controller.product_other);
 router.get('/shop', shopping_controller.shop);
+router.get('/addToCart', shopping_controller.addToCart);
+router.post('/changeQuantity', shopping_controller.changeQuantity);
+router.post('/deleteFromCart', shopping_controller.deleteFromCart);
+
 //TODO: add id
 router.get('/single/:id', shopping_controller.single);
 // router.get("/single", shopping_controller.single);
