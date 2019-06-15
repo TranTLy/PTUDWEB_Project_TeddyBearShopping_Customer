@@ -2,6 +2,7 @@
 // const { productsDb } = require("../models/products");
 var ObjectId = require('mongodb').ObjectID;
 const Type = require('../model/type');
+const Comment = require('../model/comment');
 const Product = require('../model/product');
 const Constants = require('../constants');
 const typeProducts = null;
@@ -17,6 +18,16 @@ getTypeProduct = async () => {
 		});
 	}
 	return typeProducts;
+};
+getComment = async (idProduct) => {
+	await Comment.find({ idProduct }, (err, result) => {
+		if (err) {
+			return [];
+		} else {
+			console.log('comment: ', result);
+			return result;
+		}
+	});
 };
 
 exports.checkout = function(req, res) {
@@ -99,6 +110,14 @@ exports.single = async function(req, res) {
 			return type;
 		}
 	});
+	const comments = await Comment.find({ idProduct: req.query.id }, (err, result) => {
+		if (err) {
+			return [];
+		} else {
+			return result;
+		}
+	});
+	console.log('comment: ', comments);
 	const singleProduct = await Product.findOne({ _id: ObjectId(req.query.id) }, (err, result) => {
 		return result;
 	});
@@ -121,13 +140,16 @@ exports.single = async function(req, res) {
 		.sort({ name: 1 });
 
 	const paging = getPaging(sumPage, currentPage, '/single?id=' + singleProduct._id + '&');
+
 	res.render('customer-views/single', {
 		title: 'Chi tiết sản phẩm',
 		typeProduct,
 		product: singleProduct,
 		products: relatedProduct,
 		paging,
-		currentPage
+		currentPage,
+		pagingComment: [],
+		comments
 	});
 };
 exports.single_post = function(req, res) {

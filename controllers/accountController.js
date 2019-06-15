@@ -1,4 +1,5 @@
 const User = require('../model/user');
+const Comment = require('../model/comment');
 var passport = require('passport');
 require('../config/passport');
 var Bcrypt = require('bcryptjs');
@@ -128,5 +129,21 @@ exports.isLogin = function(req, res, next) {
 		return res.send({
 			message: 'Bạn cần đăng nhập để thực hiện chức năng này.'
 		});
+	}
+};
+exports.post_comment = (req, res) => {
+	const idProduct = req.query.idProduct;
+	const content = req.query.content;
+	console.log(idProduct + ' - and ' + content);
+	if (!req.user) {
+		res.send({ isSuccess: false });
+	} else {
+		const comment = new Comment({
+			idProduct,
+			idUser: req.user._id,
+			content
+		});
+		const result = comment.save();
+		res.send({ isSuccess: true });
 	}
 };

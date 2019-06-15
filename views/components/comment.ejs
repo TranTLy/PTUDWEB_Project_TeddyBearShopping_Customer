@@ -1,0 +1,60 @@
+<link rel="stylesheet" type="text/css" href="../stylesheets/comment.css" />
+<div class="row" id= "comment-product">
+        <h3 class="commnent-product__header">Bình luận</h3>
+<div class="left-ads-display col-lg-12" id="">
+        <div class="row" id="pagination">
+          <%pagingComment.map((item, index)=>{
+            if (item.name === parseInt(currentPage)) {%>
+              <a class="pagination-item pagination__single pagination__single--active" href=<%=item.link%>>
+                  <span >
+                      <%=item.name%>
+                    </span>
+                    </a>
+          <%} else if (!item.isNumber){%>
+            <a class="pagination-item pagination__single--page" href=<%=item.link%>>
+                <span >
+                    <%=item.name%>
+                  </span>
+                  </a>
+              <%} else {%>
+                <a class="pagination-item pagination__single" href=<%=item.link%>>
+                    <span >
+                        <%=item.name%>
+                      </span>
+                      </a>
+                <%}})%>
+        </div>
+        <div class="row comment-input">
+                <input id="commentInput" name="comment" type="text" placeholder="Nhập bình luận của bạn tại đây">
+                <a  id="btn-comment" class="btn btn-primary" role="button" onclick="addComment()">Bình luận</a>
+             
+          
+        </div>
+        <div class="row">
+            <%=comments.length%>
+          <% comments.map((item)=> { %> <%-
+          include('../components/commentItem', {comment: item}); %> <% }); %>
+        </div>
+      </div>
+</div>
+
+<script>
+addComment= () =>{
+    const content = document.getElementById('commentInput').value;
+    const idProduct = '<%=product.id%>';
+    console.log("on comment: "+ content, "- ", idProduct);
+    $.ajax({
+        url: '/postComment?idProduct='+ idProduct+'&content='+ content,
+        type: "post",
+        contentType: "application/json; charset=utf-8",
+          dataType: "json"
+    })
+    .done(function(result) {
+            console.log("result in ajax: ", result);
+            location.reload();
+          })
+          .fail(function(err) {
+            console.log("fail", success);
+          });
+}
+</script>

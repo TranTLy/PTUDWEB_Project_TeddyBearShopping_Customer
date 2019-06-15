@@ -36,6 +36,7 @@ router.get('/history', shopping_controller.history);
 router.post('/signin', account_controller.post_signin);
 router.get('/signup', account_controller.signup);
 router.post('/signup', account_controller.post_signup);
+router.post('/postComment', account_controller.post_comment);
 // router.post('/signin', account_controller.signup);
 router.get('/forget-password', account_controller.forget_password);
 router.get('/change-password', account_controller.change_password);
