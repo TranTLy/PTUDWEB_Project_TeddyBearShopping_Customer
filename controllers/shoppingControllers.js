@@ -4,11 +4,23 @@ var ObjectId = require('mongodb').ObjectID;
 const Type = require('../model/type');
 const Product = require('../model/product');
 const Constants = require('../constants');
+const typeProducts = null;
+
+getTypeProduct = async () => {
+	if (!typeProducts) {
+		typeProducts = await Type.find({}, (err, type) => {
+			if (err) {
+				return next(err);
+			} else {
+				return type;
+			}
+		});
+	}
+	return typeProducts;
+};
 
 exports.checkout = function(req, res) {
 	res.locals.cartShop = req.session.cartShop;
-	// console.log('cart in checkout: ');
-	// req.session.destroy();
 	res.render('customer-views/checkout', { title: 'Giỏ hàng' });
 };
 //todo
@@ -20,92 +32,6 @@ exports.payment = function(req, res) {
 };
 exports.payment_post = function(req, res) {
 	res.render('customer-views/payment', { title: 'Thanh toán' });
-};
-
-exports.product_other = async function(req, res) {
-	const type = await Type.find({}, (err, result) => {
-		return result;
-	});
-	const customType = type.filter((item) => item.name == 'Khác')[0];
-
-	let db = [];
-	if (type != null) {
-		db = await Product.find({ type: customType._id }, (err, result) => {
-			return result;
-		});
-	}
-
-	res.render('customer-views/shop', {
-		title: 'Đồ chơi khác',
-		link: 'product-other',
-		products: db,
-		standOutProducts: db.filter((item, index) => item.isStandOut == true),
-		typeProduct: type
-	});
-};
-
-exports.product_barbie = async function(req, res) {
-	const type = await Type.find({}, (err, result) => {
-		return result;
-	});
-	const customType = type.filter((item) => item.name == 'Búp bê')[0];
-
-	let db = [];
-	if (type != null) {
-		db = await Product.find({ type: customType._id }, (err, result) => {
-			return result;
-		});
-	}
-
-	res.render('customer-views/shop', {
-		title: 'Búp bê barbie',
-		link: 'product-barbie',
-		products: db,
-		standOutProducts: db.filter((item, index) => item.isStandOut == true),
-		typeProduct: type
-	});
-};
-exports.product_car = async function(req, res) {
-	const type = await Type.find({}, (err, result) => {
-		return result;
-	});
-	const customType = type.filter((item) => item.name == 'Xe đồ chơi')[0];
-
-	let db = [];
-	if (type != null) {
-		db = await Product.find({ type: customType._id }, (err, result) => {
-			return result;
-		});
-	}
-
-	res.render('customer-views/shop', {
-		title: 'Xe đồ chơi',
-		link: 'product-car',
-		products: db,
-		standOutProducts: db.filter((item, index) => item.isStandOut == true),
-		typeProduct: type
-	});
-};
-exports.product_bear = async function(req, res) {
-	const type = await Type.find({}, (err, result) => {
-		return result;
-	});
-	const customType = type.filter((item) => item.name == 'Gấu bông')[0];
-
-	let db = [];
-	if (type != null) {
-		db = await Product.find({ type: customType._id }, (err, result) => {
-			return result;
-		});
-	}
-
-	res.render('customer-views/shop', {
-		title: 'Gấu bông',
-		link: 'product-bear',
-		products: db,
-		standOutProducts: db.filter((item, index) => item.isStandOut == true),
-		typeProduct: type
-	});
 };
 exports.shop = async function(req, res) {
 	//get type
@@ -133,14 +59,11 @@ exports.shop = async function(req, res) {
 	if (req.query.page) {
 		page = req.query.page;
 	}
-	if (page < 1) {
+	if (page < 1 || sumPage === 0) {
 		page = 1;
 	} else if (page > sumPage) {
 		page = sumPage;
 	}
-
-	// console.log('paging: ', paging);
-	// console.log('current page: ', page);
 	let paging;
 	let db;
 	if (typeId !== '') {
@@ -157,7 +80,6 @@ exports.shop = async function(req, res) {
 			.sort({ name: 1 });
 	}
 	if (db) {
-		// console.log('db Test length: ', db.length, 'database test: ', db);
 		res.render('customer-views/shop', {
 			title,
 			link: typeId !== '' ? 'shop?type=' + typeId : '',
@@ -168,51 +90,44 @@ exports.shop = async function(req, res) {
 			currentPage: page
 		});
 	}
-
-	// const db = await Product.find({}, function(err, db) {
-	// 	if (err) {
-	// 		return next(err);
-	// 	} else {
-	// 		res.render('customer-views/shop', {
-	// 			title: 'Cửa hàng',
-	// 			products: db,
-	// 			standOutProducts: db.filter((item, index) => item.isStandOut == true),
-	// 			typeProduct: type
-	// 		});
-	// 	}
-	// });
 };
 exports.single = async function(req, res) {
+	typeProduct = await Type.find({}, (err, type) => {
+		if (err) {
+			return next(err);
+		} else {
+			return type;
+		}
+	});
 	const singleProduct = await Product.findOne({ _id: ObjectId(req.query.id) }, (err, result) => {
 		return result;
 	});
-	const relatedProduct = await Product.find({ type: singleProduct.type }).limit();
-	const sumPage = Math.ceil(relatedProduct.length * 1.0 / Constants.LIMIT_RELATED_PRODUCT);
 
+	const sum = await getSumQuantityProduct(singleProduct.type);
+	const sumPage = Math.ceil(sum * 1.0 / Constants.LIMIT_RELATED_PRODUCT);
 	let currentPage = 1;
 	if (req.query.page) {
 		currentPage = req.query.page;
 	}
-	if (currentPage < 1) {
+	if (currentPage < 1 || sumPage === 0) {
 		currentPage = 1;
 	} else if (currentPage > sumPage) {
 		currentPage = sumPage;
 	}
+	console.log('sum product: ', sum, 'sum page: ', sumPage, 'current: ', currentPage);
+	const relatedProduct = await Product.find({ type: singleProduct.type })
+		.limit(Constants.LIMIT_RELATED_PRODUCT)
+		.skip((currentPage - 1) * Constants.LIMIT_RELATED_PRODUCT)
+		.sort({ name: 1 });
 
-	const relatedProduct = await Product.find({ type: singleProduct.type }, (err, result) => {
-		if (err) {
-			return [];
-		} else {
-			return result;
-		}
-	});
-	const paging = getPaging(relatedProduct.length, 1, '/single?id=' + singleProduct._id + '&');
+	const paging = getPaging(sumPage, currentPage, '/single?id=' + singleProduct._id + '&');
 	res.render('customer-views/single', {
 		title: 'Chi tiết sản phẩm',
+		typeProduct,
 		product: singleProduct,
 		products: relatedProduct,
 		paging,
-		currentPage: 1
+		currentPage
 	});
 };
 exports.single_post = function(req, res) {
