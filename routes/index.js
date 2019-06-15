@@ -26,9 +26,10 @@ router.post('/changeQuantity', shopping_controller.changeQuantity);
 router.post('/deleteFromCart', shopping_controller.deleteFromCart);
 
 //TODO: add id
-router.get('/single/:id', shopping_controller.single);
+router.get('/single', shopping_controller.single);
 // router.get("/single", shopping_controller.single);
 router.post('/single', shopping_controller.single_post);
+
 router.get('/detail-receipt', shopping_controller.detail_receipt);
 router.get('/history', shopping_controller.history);
 

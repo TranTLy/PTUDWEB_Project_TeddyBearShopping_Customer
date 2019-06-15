@@ -21,6 +21,7 @@ exports.payment = function(req, res) {
 exports.payment_post = function(req, res) {
 	res.render('customer-views/payment', { title: 'Thanh toán' });
 };
+
 exports.product_other = async function(req, res) {
 	const type = await Type.find({}, (err, result) => {
 		return result;
@@ -107,6 +108,7 @@ exports.product_bear = async function(req, res) {
 	});
 };
 exports.shop = async function(req, res) {
+	//get type
 	const type = await Type.find({}, (err, type) => {
 		if (err) {
 			return next(err);
@@ -115,7 +117,17 @@ exports.shop = async function(req, res) {
 		}
 	});
 
-	const sum = await getSumQuantityProduct();
+	let typeId = '';
+	var title = 'Cửa hàng';
+	if (req.query.type) {
+		typeId = req.query.type;
+		const temp = await Type.findById(typeId);
+		if (temp) {
+			title = temp.name;
+		}
+	}
+
+	const sum = await getSumQuantityProduct(typeId);
 	const sumPage = Math.ceil(sum * 1.0 / Constants.LIMIT_PRODUCT_PER_PAGE);
 	let page = 1;
 	if (req.query.page) {
@@ -126,19 +138,29 @@ exports.shop = async function(req, res) {
 	} else if (page > sumPage) {
 		page = sumPage;
 	}
-	let paging = getPaging(sumPage, page, '/shop');
 
-	console.log('paging: ', paging);
-	console.log('current page: ', page);
-	const db = await Product.find({})
-		.limit(Constants.LIMIT_PRODUCT_PER_PAGE)
-		.skip((page - 1) * Constants.LIMIT_PRODUCT_PER_PAGE)
-		.sort({ name: 1 });
+	// console.log('paging: ', paging);
+	// console.log('current page: ', page);
+	let paging;
+	let db;
+	if (typeId !== '') {
+		paging = getPaging(sumPage, page, '/shop?type=' + typeId + '&');
+		db = await Product.find({ type: typeId })
+			.limit(Constants.LIMIT_PRODUCT_PER_PAGE)
+			.skip((page - 1) * Constants.LIMIT_PRODUCT_PER_PAGE)
+			.sort({ name: 1 });
+	} else {
+		paging = getPaging(sumPage, page, '/shop?');
+		db = await Product.find({})
+			.limit(Constants.LIMIT_PRODUCT_PER_PAGE)
+			.skip((page - 1) * Constants.LIMIT_PRODUCT_PER_PAGE)
+			.sort({ name: 1 });
+	}
 	if (db) {
 		// console.log('db Test length: ', db.length, 'database test: ', db);
 		res.render('customer-views/shop', {
-			title: 'Cửa hàng',
-			link: '',
+			title,
+			link: typeId !== '' ? 'shop?type=' + typeId : '',
 			products: db,
 			standOutProducts: db.filter((item, index) => item.isStandOut == true),
 			typeProduct: type,
@@ -161,15 +183,36 @@ exports.shop = async function(req, res) {
 	// });
 };
 exports.single = async function(req, res) {
-	const singleProduct = await Product.findOne({ _id: ObjectId(req.params.id) }, (err, result) => {
+	const singleProduct = await Product.findOne({ _id: ObjectId(req.query.id) }, (err, result) => {
 		return result;
 	});
+	const relatedProduct = await Product.find({ type: singleProduct.type }).limit();
+	const sumPage = Math.ceil(relatedProduct.length * 1.0 / Constants.LIMIT_RELATED_PRODUCT);
 
-	const name = 'Gấu teddy';
+	let currentPage = 1;
+	if (req.query.page) {
+		currentPage = req.query.page;
+	}
+	if (currentPage < 1) {
+		currentPage = 1;
+	} else if (currentPage > sumPage) {
+		currentPage = sumPage;
+	}
+
+	const relatedProduct = await Product.find({ type: singleProduct.type }, (err, result) => {
+		if (err) {
+			return [];
+		} else {
+			return result;
+		}
+	});
+	const paging = getPaging(relatedProduct.length, 1, '/single?id=' + singleProduct._id + '&');
 	res.render('customer-views/single', {
 		title: 'Chi tiết sản phẩm',
-		nameProduct: 'abc',
-		product: singleProduct
+		product: singleProduct,
+		products: relatedProduct,
+		paging,
+		currentPage: 1
 	});
 };
 exports.single_post = function(req, res) {
@@ -239,18 +282,24 @@ exports.deleteFromCart = (req, res) => {
 	}
 };
 
-getSumQuantityProduct = async () => {
-	const sum = await Product.find({ isDeleted: false }).countDocuments();
+getSumQuantityProduct = async (typeId) => {
+	let sum;
+	if (typeId !== '') {
+		sum = await Product.find({ isDeleted: false, type: typeId }).countDocuments();
+	} else {
+		sum = await Product.find({ isDeleted: false }).countDocuments();
+	}
 	return sum;
 };
 
 getPaging = (sumPage, currentPage, link) => {
 	let paging = [];
-	if (sumPage <= Constants.LIMIT_PRODUCT_PER_PAGE_NUMBER_PAGE) {
-		for (let i = 0; i < sumPage; i++) {
+	if (sumPage <= Constants.LIMIT_PAGE_NUMBER) {
+		for (let i = 1; i <= sumPage; i++) {
 			paging.push({
-				name: i + 1,
-				link: link + '?page=' + i
+				name: i,
+				link: link + 'page=' + i,
+				isNumber: true
 			});
 		}
 	} else {
@@ -259,7 +308,7 @@ getPaging = (sumPage, currentPage, link) => {
 			for (let i = 1; i <= 3; i++) {
 				paging.push({
 					name: i,
-					link: link + '?page=' + i,
+					link: link + 'page=' + i,
 					isNumber: true
 				});
 			}
@@ -269,24 +318,24 @@ getPaging = (sumPage, currentPage, link) => {
 			// })
 			paging.push({
 				name: 'Trang tiếp',
-				link: link + '?page=' + (parseInt(currentPage) + 1),
+				link: link + 'page=' + (parseInt(currentPage) + 1),
 				isNumber: false
 			});
 			paging.push({
 				name: 'Trang cuối',
-				link: link + '?page=' + sumPage,
+				link: link + 'page=' + sumPage,
 				isNumber: false
 			});
 		} else if (currentPage >= sumPage - 2) {
 			//at last session
 			paging.push({
 				name: 'Trang đầu',
-				link: link + '?page=1',
+				link: link + 'page=1',
 				isNumber: false
 			});
 			paging.push({
 				name: 'Trang trước',
-				link: link + '?page=' + (currentPage - 1),
+				link: link + 'page=' + (currentPage - 1),
 				isNumber: false
 			});
 			// paging.push({
@@ -296,7 +345,7 @@ getPaging = (sumPage, currentPage, link) => {
 			for (let i = sumPage - 2; i <= sumPage; i++) {
 				paging.push({
 					name: i,
-					link: link + '?page=' + i,
+					link: link + 'page=' + i,
 					isNumber: true
 				});
 			}
@@ -304,39 +353,39 @@ getPaging = (sumPage, currentPage, link) => {
 			//other session
 			paging.push({
 				name: 'Trang đầu',
-				link: link + '?page=1',
+				link: link + 'page=1',
 				isNumber: false
 			});
 			paging.push({
 				name: 'Trang trước',
-				link: link + '?page=' + (currentPage - 1),
+				link: link + 'page=' + (currentPage - 1),
 				isNumber: false
 			});
 
 			paging.push({
 				name: currentPage - 1,
-				link: link + '?page=' + (currentPage - 1),
+				link: link + 'page=' + (currentPage - 1),
 				isNumber: true
 			});
 			paging.push({
 				name: parseInt(currentPage),
-				link: link + '?page=' + currentPage,
+				link: link + 'page=' + currentPage,
 				isNumber: true
 			});
 			paging.push({
 				name: parseInt(currentPage) + 1,
-				link: link + '?page=' + (parseInt(currentPage) + 1),
+				link: link + 'page=' + (parseInt(currentPage) + 1),
 				isNumber: true
 			});
 
 			paging.push({
 				name: 'Trang tiếp',
-				link: link + '?page=' + (parseInt(currentPage) + 1),
+				link: link + 'page=' + (parseInt(currentPage) + 1),
 				isNumber: false
 			});
 			paging.push({
 				name: 'Trang cuối',
-				link: link + '?page=' + sumPage,
+				link: link + 'page=' + sumPage,
 				isNumber: false
 			});
 		}

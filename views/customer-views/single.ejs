@@ -1,4 +1,6 @@
-<%include ../components/header-router-2%>
+<%include ../components/header%>
+<link rel="stylesheet" type="text/css" href="../stylesheets/pagination.css" />
+
 <!-- short -->
 <div class="using-border py-3">
   <div class="inner_breadcrumb  ml-4">
@@ -200,11 +202,14 @@
         </div>
         <!--//tabs-->
       </div>
+     
+        <% include ../components/relatedProduct.ejs%>
+    
     </div>
   </div>
 </section>
 
-<% include ../components/footer-router-2%>
+<% include ../components/footer%>
 <!-- price range (top products) -->
 <script src="../javascripts/jquery-ui.js"></script>
 <script>

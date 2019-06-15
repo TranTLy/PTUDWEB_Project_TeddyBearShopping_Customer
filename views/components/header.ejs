@@ -165,10 +165,14 @@
                   Sản phẩm
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <a class="nav-link" href="product-bear">Gấu bông</a>
+                  <% if (typeProduct){
+                    typeProduct.map((item)=>{%>
+                    <a class="nav-link" href="shop?type=<%=item.id%>"><%=item.name%></a>
+                  <%})}%>
+                  <!-- <a class="nav-link" href="product-bear">Gấu bông</a>
                   <a class="nav-link " href="product-barbie">Búp bê</a>
                   <a class="nav-link " href="product-car">Xe đồ chơi</a>
-                  <a class="nav-link " href="product-other">Khác</a>
+                  <a class="nav-link " href="product-other">Khác</a> -->
                 </div>
               </li>
               <li class="nav-item" id="nav-service">
