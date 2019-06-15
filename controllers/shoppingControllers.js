@@ -3,6 +3,7 @@
 var ObjectId = require('mongodb').ObjectID;
 const Type = require('../model/type');
 const Product = require('../model/product');
+const Constants = require('../constants');
 
 exports.checkout = function(req, res) {
 	res.locals.cartShop = req.session.cartShop;
@@ -33,7 +34,7 @@ exports.product_other = async function(req, res) {
 		});
 	}
 
-	res.render('customer-views/product', {
+	res.render('customer-views/shop', {
 		title: 'Đồ chơi khác',
 		link: 'product-other',
 		products: db,
@@ -55,7 +56,7 @@ exports.product_barbie = async function(req, res) {
 		});
 	}
 
-	res.render('customer-views/product', {
+	res.render('customer-views/shop', {
 		title: 'Búp bê barbie',
 		link: 'product-barbie',
 		products: db,
@@ -76,7 +77,7 @@ exports.product_car = async function(req, res) {
 		});
 	}
 
-	res.render('customer-views/product', {
+	res.render('customer-views/shop', {
 		title: 'Xe đồ chơi',
 		link: 'product-car',
 		products: db,
@@ -97,7 +98,7 @@ exports.product_bear = async function(req, res) {
 		});
 	}
 
-	res.render('customer-views/product', {
+	res.render('customer-views/shop', {
 		title: 'Gấu bông',
 		link: 'product-bear',
 		products: db,
@@ -106,8 +107,6 @@ exports.product_bear = async function(req, res) {
 	});
 };
 exports.shop = async function(req, res) {
-	//const db = await getProducts();
-	// const type = await getType();
 	const type = await Type.find({}, (err, type) => {
 		if (err) {
 			return next(err);
@@ -115,18 +114,51 @@ exports.shop = async function(req, res) {
 			return type;
 		}
 	});
-	const db = await Product.find({}, function(err, db) {
-		if (err) {
-			return next(err);
-		} else {
-			res.render('customer-views/shop', {
-				title: 'Cửa hàng',
-				products: db,
-				standOutProducts: db.filter((item, index) => item.isStandOut == true),
-				typeProduct: type
-			});
-		}
-	});
+
+	const sum = await getSumQuantityProduct();
+	const sumPage = Math.ceil(sum * 1.0 / Constants.LIMIT_PRODUCT_PER_PAGE);
+	let page = 1;
+	if (req.query.page) {
+		page = req.query.page;
+	}
+	if (page < 1) {
+		page = 1;
+	} else if (page > sumPage) {
+		page = sumPage;
+	}
+	let paging = getPaging(sumPage, page, '/shop');
+
+	console.log('paging: ', paging);
+	console.log('current page: ', page);
+	const db = await Product.find({})
+		.limit(Constants.LIMIT_PRODUCT_PER_PAGE)
+		.skip((page - 1) * Constants.LIMIT_PRODUCT_PER_PAGE)
+		.sort({ name: 1 });
+	if (db) {
+		// console.log('db Test length: ', db.length, 'database test: ', db);
+		res.render('customer-views/shop', {
+			title: 'Cửa hàng',
+			link: '',
+			products: db,
+			standOutProducts: db.filter((item, index) => item.isStandOut == true),
+			typeProduct: type,
+			paging,
+			currentPage: page
+		});
+	}
+
+	// const db = await Product.find({}, function(err, db) {
+	// 	if (err) {
+	// 		return next(err);
+	// 	} else {
+	// 		res.render('customer-views/shop', {
+	// 			title: 'Cửa hàng',
+	// 			products: db,
+	// 			standOutProducts: db.filter((item, index) => item.isStandOut == true),
+	// 			typeProduct: type
+	// 		});
+	// 	}
+	// });
 };
 exports.single = async function(req, res) {
 	const singleProduct = await Product.findOne({ _id: ObjectId(req.params.id) }, (err, result) => {
@@ -205,4 +237,109 @@ exports.deleteFromCart = (req, res) => {
 	} else {
 		res.send({ isSuccessful: false });
 	}
+};
+
+getSumQuantityProduct = async () => {
+	const sum = await Product.find({ isDeleted: false }).countDocuments();
+	return sum;
+};
+
+getPaging = (sumPage, currentPage, link) => {
+	let paging = [];
+	if (sumPage <= Constants.LIMIT_PRODUCT_PER_PAGE_NUMBER_PAGE) {
+		for (let i = 0; i < sumPage; i++) {
+			paging.push({
+				name: i + 1,
+				link: link + '?page=' + i
+			});
+		}
+	} else {
+		if (currentPage <= 2) {
+			//at first session
+			for (let i = 1; i <= 3; i++) {
+				paging.push({
+					name: i,
+					link: link + '?page=' + i,
+					isNumber: true
+				});
+			}
+			// paging.push({
+			// 	name: "...",
+			// 	link: ""
+			// })
+			paging.push({
+				name: 'Trang tiếp',
+				link: link + '?page=' + (parseInt(currentPage) + 1),
+				isNumber: false
+			});
+			paging.push({
+				name: 'Trang cuối',
+				link: link + '?page=' + sumPage,
+				isNumber: false
+			});
+		} else if (currentPage >= sumPage - 2) {
+			//at last session
+			paging.push({
+				name: 'Trang đầu',
+				link: link + '?page=1',
+				isNumber: false
+			});
+			paging.push({
+				name: 'Trang trước',
+				link: link + '?page=' + (currentPage - 1),
+				isNumber: false
+			});
+			// paging.push({
+			// 	name: "...",
+			// 	link: ""
+			// })
+			for (let i = sumPage - 2; i <= sumPage; i++) {
+				paging.push({
+					name: i,
+					link: link + '?page=' + i,
+					isNumber: true
+				});
+			}
+		} else {
+			//other session
+			paging.push({
+				name: 'Trang đầu',
+				link: link + '?page=1',
+				isNumber: false
+			});
+			paging.push({
+				name: 'Trang trước',
+				link: link + '?page=' + (currentPage - 1),
+				isNumber: false
+			});
+
+			paging.push({
+				name: currentPage - 1,
+				link: link + '?page=' + (currentPage - 1),
+				isNumber: true
+			});
+			paging.push({
+				name: parseInt(currentPage),
+				link: link + '?page=' + currentPage,
+				isNumber: true
+			});
+			paging.push({
+				name: parseInt(currentPage) + 1,
+				link: link + '?page=' + (parseInt(currentPage) + 1),
+				isNumber: true
+			});
+
+			paging.push({
+				name: 'Trang tiếp',
+				link: link + '?page=' + (parseInt(currentPage) + 1),
+				isNumber: false
+			});
+			paging.push({
+				name: 'Trang cuối',
+				link: link + '?page=' + sumPage,
+				isNumber: false
+			});
+		}
+	}
+	return paging;
 };

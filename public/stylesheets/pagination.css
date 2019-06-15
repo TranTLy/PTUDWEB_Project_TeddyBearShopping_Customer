@@ -1,0 +1,28 @@
+#pagination {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.pagination__single {
+	margin: 10px 20px;
+	padding: 4px;
+	border-radius: 50%;
+	width: 34px;
+	height: 34px;
+	text-align: center;
+	border: 2px solid #ea1d5d;
+	color: #000;
+}
+.pagination__single--active {
+	background-color: #ea1d5d;
+	color: #fff !important;
+}
+.pagination__single--page {
+	margin: 10px 10px;
+	color: #ea1d5d;
+	text-decoration: none;
+}
+.pagination-item:hover {
+	cursor: pointer;
+	color: #ffcb2d;
+}

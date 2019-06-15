@@ -13,7 +13,7 @@ changeQuantity = (id, index, mode) => {
 	})
 		.done((result) => {
 			console.log('result: ', result);
-			window.location.reload;
+			location.reload();
 		})
 		.fail(function(err) {
 			console.log('fail');
@@ -22,6 +22,11 @@ changeQuantity = (id, index, mode) => {
 
 onDeleteProduct = (id) => {
 	console.log('on delete product');
+	const idNameEjs = 'product-' + id;
+	const temp = document.getElementById(idNameEjs);
+	if (temp) {
+		temp.style.display = 'none';
+	}
 	$.ajax({
 		url: 'deleteFromCart?id=' + id,
 		type: 'post',
@@ -30,7 +35,7 @@ onDeleteProduct = (id) => {
 	})
 		.done((result) => {
 			console.log('result: ', result);
-			window.location.reload;
+			location.reload();
 		})
 		.fail(function(err) {
 			console.log('fail');

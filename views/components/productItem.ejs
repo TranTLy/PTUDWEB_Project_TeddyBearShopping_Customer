@@ -50,15 +50,15 @@
       </ul>
     </div>
     <div class="toys single-item hvr-outline-out">
-      <form action="#" method="get">
+      <!-- <form action="" method="get"> -->
         <input type="hidden" name="cmd" value="_cart" />
         <input type="hidden" name="add" value="1" />
         <input type="hidden" name="toys_item" value="toys(barbie)" />
         <input type="hidden" name="amount" value="575.000" />
-        <button type="submit" class="toys-cart ptoys-cart" onclick="addItem({id:'<%=product._id%>'})">
+        <button type="" class="toys-cart ptoys-cart" onclick="addItem({id:'<%=product._id%>'})">
           <i class="fas fa-cart-plus"></i>
         </button>
-      </form>
+      <!-- </form> -->
 
       
       <!-- <form action="/addToCart/<%=product._id%>" method="POST">
@@ -91,3 +91,4 @@
           });
         }
   </script>
+<% include ../components/cartShop%>

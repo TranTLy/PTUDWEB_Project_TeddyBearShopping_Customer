@@ -566,3 +566,7 @@ button.submit.check_out {
 		padding: 12px 14px 12px;
 	}
 }
+
+#product-item-session {
+	transition: display 1s ease-out;
+}

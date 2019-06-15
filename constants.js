@@ -1,0 +1,2 @@
+exports.LIMIT_PRODUCT_PER_PAGE = 6;
+exports.LIMIT_PAGE_NUMBER_PAGE = 5;
