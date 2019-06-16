@@ -78,13 +78,14 @@
               <h1><a class="navbar-brand" href="index">Toys-Shop</a></h1>
             </div>
             <div class="col-lg-5 col-md-6 search-right">
-              <form class="form-inline my-lg-0">
+              <form action="/search" method="post" class="form-inline my-lg-0">
                 <input
-                  class="form-control mr-sm-2"
+                  class="form-control mr-sm-2 keyNameSearch"
                   type="search"
                   placeholder="Tìm kiếm"
+                  name=search
                 />
-                <button class="btn" type="submit">Tìm kiếm</button>
+                <button class="btn btnSearch" type="submit" >Tìm kiếm</button>
               </form>
             </div>
             <div class="col-lg-4 col-md-3 right-side-cart">
@@ -165,14 +166,11 @@
                   Sản phẩm
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <% if (typeProduct){
-                    typeProduct.map((item)=>{%>
-                    <a class="nav-link" href="shop?type=<%=item.id%>"><%=item.name%></a>
-                  <%})}%>
-                  <!-- <a class="nav-link" href="product-bear">Gấu bông</a>
+                
+                  <a class="nav-link" href="product-bear">Gấu bông</a>
                   <a class="nav-link " href="product-barbie">Búp bê</a>
                   <a class="nav-link " href="product-car">Xe đồ chơi</a>
-                  <a class="nav-link " href="product-other">Khác</a> -->
+                  <a class="nav-link " href="product-other">Khác</a>
                 </div>
               </li>
               <li class="nav-item" id="nav-service">
@@ -192,3 +190,4 @@
     <!--//banner -->
   </body>
 </html>
+<script src="javascripts/search.js"></script>

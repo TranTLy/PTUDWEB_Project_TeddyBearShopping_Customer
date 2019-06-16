@@ -14,7 +14,7 @@ passport.use(
 			passwordField: 'password'
 		},
 		async function(email, password, cb) {
-			// console.log('authen, email:', email, ', password: ', password);
+			console.log('authen, email:', email, ', password: ', password);
 			//this one is typically a DB call.
 			//Assume that the returned user object is pre-formatted and ready for storing in JWT
 			await User.findOne({ email }, (err, user) => {

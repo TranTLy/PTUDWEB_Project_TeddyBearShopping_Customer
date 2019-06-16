@@ -24,7 +24,6 @@ getComment = async (idProduct) => {
 		if (err) {
 			return [];
 		} else {
-			console.log('comment: ', result);
 			return result;
 		}
 	});
@@ -45,6 +44,7 @@ exports.payment_post = function(req, res) {
 	res.render('customer-views/payment', { title: 'Thanh toán' });
 };
 exports.shop = async function(req, res) {
+	console.log('on shop controller');
 	//get type
 	const type = await Type.find({}, (err, type) => {
 		if (err) {
@@ -110,18 +110,14 @@ exports.single = async function(req, res) {
 			return type;
 		}
 	});
-	const comments = await Comment.find({ idProduct: req.query.id }, (err, result) => {
-		if (err) {
-			return [];
-		} else {
-			return result;
-		}
-	});
-	console.log('comment: ', comments);
 	const singleProduct = await Product.findOne({ _id: ObjectId(req.query.id) }, (err, result) => {
+		if (err) {
+			return next(err);
+		}
 		return result;
 	});
 
+	//paging related product
 	const sum = await getSumQuantityProduct(singleProduct.type);
 	const sumPage = Math.ceil(sum * 1.0 / Constants.LIMIT_RELATED_PRODUCT);
 	let currentPage = 1;
@@ -133,24 +129,54 @@ exports.single = async function(req, res) {
 	} else if (currentPage > sumPage) {
 		currentPage = sumPage;
 	}
+	const paging = getPaging(sumPage, currentPage, '/single?id=' + singleProduct._id + '&');
+
 	console.log('sum product: ', sum, 'sum page: ', sumPage, 'current: ', currentPage);
+	//--paging comment
+	const sumComment = await getSumComment(req.query.id);
+	const sumPageComment = Math.ceil(sumComment * 1.0 / Constants.LIMIT_COMMENT);
+	let currentPageComment = 1;
+	if (req.query.commentpage) {
+		currentPageComment = req.query.commentpage;
+	}
+	if (currentPageComment < 1 || sumPageComment === 0) {
+		currentPageComment = 1;
+	} else if (currentPageComment > sumPageComment) {
+		currentPageComment = sumPageComment;
+	}
+	console.log('Comment: sum: ', sumComment, 'sum page: ', sumPageComment, 'current: ', currentPageComment);
+	const pagingComment = getPaging(sumPageComment, currentPageComment, '/single?id=' + singleProduct._id + '&comment');
+	//--end paging comment
 	const relatedProduct = await Product.find({ type: singleProduct.type })
 		.limit(Constants.LIMIT_RELATED_PRODUCT)
 		.skip((currentPage - 1) * Constants.LIMIT_RELATED_PRODUCT)
 		.sort({ name: 1 });
 
-	const paging = getPaging(sumPage, currentPage, '/single?id=' + singleProduct._id + '&');
+	await Comment.find({ idProduct: req.query.id })
+		.populate('idUser')
+		.limit(Constants.LIMIT_COMMENT)
+		.skip((currentPageComment - 1) * Constants.LIMIT_COMMENT)
+		.sort({ time: -1 })
+		.exec((err, comments) => {
+			if (err) {
+				return [];
+			} else {
+				// console.log('comment in single: ', comments);
+				// return result;
 
-	res.render('customer-views/single', {
-		title: 'Chi tiết sản phẩm',
-		typeProduct,
-		product: singleProduct,
-		products: relatedProduct,
-		paging,
-		currentPage,
-		pagingComment: [],
-		comments
-	});
+				res.render('customer-views/single', {
+					title: 'Chi tiết sản phẩm',
+					typeProduct,
+					product: singleProduct,
+					products: relatedProduct,
+					paging,
+					currentPage,
+					currentPageComment,
+					pagingComment,
+					comments
+				});
+			}
+		});
 };
 exports.single_post = function(req, res) {
 	//post method when add a comment
@@ -229,6 +255,29 @@ getSumQuantityProduct = async (typeId) => {
 	return sum;
 };
 
+getSumComment = async (idProduct) => {
+	return await Comment.find({ idProduct }).countDocuments();
+};
+
+getSumSearchProduct = async (search) => {
+	// return await Product.find({ $text: { $search: key } }).countDocuments();
+
+	// await Product.find({}, (err, result) => {
+	// 	if (err) {
+	// 		return 0;
+	// 	} else {
+	// 		const count = 0;
+	// 		result.forEach((item) => item.name.includes(key) && count++);
+	// 		console.log('count: ', count);
+	// 		return count;
+	// 	}
+	// });
+
+	// const search = '/.*' + key + '.*/';
+	// const key = `/^` + search + `$/i`;
+	const key = new RegExp('^' + search.toLowerCase(), 'i');
+	return await Product.find({ name: key }).countDocuments();
+};
 getPaging = (sumPage, currentPage, link) => {
 	let paging = [];
 	if (sumPage <= Constants.LIMIT_PAGE_NUMBER) {
@@ -328,4 +377,111 @@ getPaging = (sumPage, currentPage, link) => {
 		}
 	}
 	return paging;
+};
+
+exports.post_comment = async (req, res) => {
+	const idProduct = req.query.idProduct;
+	const content = req.query.content;
+	console.log(idProduct + ' - and ' + content);
+	if (!req.user) {
+		res.send({ isSuccess: false });
+	} else {
+		const comment = new Comment({
+			idProduct,
+			idUser: req.user._id,
+			content
+		});
+		const result = comment.save();
+		//get comment
+		const newComment = await Comment.findOne({ idProduct, idUser: req.user._id })
+			.populate('idUser')
+			.exec((err, result) => {
+				if (result) {
+					console.log('new comment product: ', result);
+					res.send({ isSuccess: true, newComment: result });
+				} else {
+					console.log('new comment failed');
+					res.send({ isSuccess: true });
+				}
+			});
+	}
+};
+
+exports.pagingShop = async (req, res) => {
+	const typeId = req.query.type || '';
+	const page = req.query.page || 1;
+	console.log('type: ', typeId, '- page:', page);
+	let db;
+	if (typeId !== '') {
+		db = Product.find({ type: typeId })
+			.limit(Constants.LIMIT_PRODUCT_PER_PAGE)
+			.skip((page - 1) * Constants.LIMIT_PRODUCT_PER_PAGE)
+			.sort({ name: 1 });
+	} else {
+		db = await Product.find({})
+			.limit(Constants.LIMIT_PRODUCT_PER_PAGE)
+			.skip((page - 1) * Constants.LIMIT_PRODUCT_PER_PAGE)
+			.sort({ name: 1 });
+	}
+	if (db) {
+		res.send({
+			products: db,
+			currentPage: page
+		});
+	}
+};
+
+exports.search = async (req, res) => {
+	typeProduct = await Type.find({}, (err, type) => {
+		if (err) {
+			return next(err);
+		} else {
+			return type;
+		}
+	});
+	const search = req.body.search || '';
+	console.log('search: ', search);
+	const sum = await getSumSearchProduct(search);
+	const sumPage = Math.ceil(sum * 1.0 / Constants.LIMIT_PRODUCT_PER_PAGE);
+	let page = 1;
+	if (req.query.page) {
+		page = req.query.page;
+	}
+	if (page < 1 || sumPage === 0) {
+		page = 1;
+	} else if (page > sumPage) {
+		page = sumPage;
+	}
+	let paging = getPaging(sumPage, page, '/search?search=' + search + '&');
+	// let db = await Product.find({ $text: { $search: key } })
+	// 	.limit(Constants.LIMIT_PRODUCT_PER_PAGE)
+	// 	.skip((page - 1) * Constants.LIMIT_PRODUCT_PER_PAGE)
+	// 	.sort({ name: 1 });
+	// let dbTemp = await Product.find({})
+	// 	.limit(Constants.LIMIT_PRODUCT_PER_PAGE)
+	// 	.skip((page - 1) * Constants.LIMIT_PRODUCT_PER_PAGE)
+	// 	.sort({ name: 1 });
+	// let db = dbTemp.forEach((item) => item.name.includes(search) && item);
+
+	//const key = '/.*' + search + '.*/';
+
+	// Product.createIndex({ name: 'text' });
+	// let db = await Product.find({ $text: { $search: search } });
+	const key = new RegExp('^' + search.toLowerCase(), 'i');
+	await Product.find({ name: key }, (err, db) => {
+		console.log('sum: ', sum, 'db: ', db);
+		title = `Kết quả tìm kiếm cho '${search}'`;
+		console.log('title: ', title);
+		if (db) {
+			res.render('customer-views/shop', {
+				title,
+				link: '',
+				products: db,
+				standOutProducts: db.filter((item, index) => item.isStandOut == true),
+				typeProduct,
+				paging,
+				currentPage: page
+			});
+		}
+	});
 };

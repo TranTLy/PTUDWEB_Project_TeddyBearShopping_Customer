@@ -21,28 +21,26 @@ router.post('/payment', shopping_controller.payment_post);
 // router.get('/product-bear', shopping_controller.product_bear);
 // router.get('/product-other', shopping_controller.product_other);
 router.get('/shop', shopping_controller.shop);
+router.get('/paging/shop', shopping_controller.pagingShop);
 router.get('/addToCart', shopping_controller.addToCart);
 router.post('/changeQuantity', shopping_controller.changeQuantity);
 router.post('/deleteFromCart', shopping_controller.deleteFromCart);
+router.post('/search', shopping_controller.search);
 
 //TODO: add id
 router.get('/single', shopping_controller.single);
-// router.get("/single", shopping_controller.single);
 router.post('/single', shopping_controller.single_post);
-
 router.get('/detail-receipt', shopping_controller.detail_receipt);
 router.get('/history', shopping_controller.history);
-
 router.post('/signin', account_controller.post_signin);
 router.get('/signup', account_controller.signup);
+router.post('/postComment', shopping_controller.post_comment);
+
 router.post('/signup', account_controller.post_signup);
-router.post('/postComment', account_controller.post_comment);
-// router.post('/signin', account_controller.signup);
+router.post('/signout', account_controller.signout);
 router.get('/forget-password', account_controller.forget_password);
 router.get('/change-password', account_controller.change_password);
 router.get('/update-infor', account_controller.isLogin, account_controller.update_infor);
-
-//TODO
-router.post('/signout', account_controller.signout);
+router.post('/checkEmail', account_controller.checkEmail);
 
 module.exports = router;

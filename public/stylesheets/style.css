@@ -1723,3 +1723,10 @@ footer {
 	}
 }
 /*--//responsive--*/
+#message-login {
+	text-align: right;
+	height: 20px;
+}
+#check-email-message {
+	color: red;
+}
