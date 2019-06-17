@@ -5,15 +5,15 @@ exports.LIMIT_RELATED_PRODUCT = 3;
 exports.LIMIT_COMMENT = 4;
 exports.CONDITION_SORT_PRODUCT = [
 	{
-		name: 'tên',
+		name: 'name',
 		sort: 1
 	},
 	{
-		name: 'giá',
+		name: 'price',
 		sort: 1
 	},
 	{
-		name: 'ưu đãi',
+		name: 'discount',
 		sort: 1
 	}
 ];

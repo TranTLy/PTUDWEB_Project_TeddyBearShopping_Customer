@@ -31,51 +31,90 @@ getComment = async (idProduct) => {
 	});
 };
 
-exports.checkout = function(req, res) {
+exports.checkout = function (req, res) {
 	res.locals.cartShop = req.session.cartShop;
 	res.render('customer-views/checkout', { title: 'Giỏ hàng' });
 };
 //todo
-exports.checkout_post = function(req, res) {
+exports.checkout_post = function (req, res) {
 	res.render('customer-views/checkout', { title: 'Giỏ hàng' });
 };
-exports.payment = function(req, res) {
+exports.payment = function (req, res) {
 	res.render('customer-views/payment', { title: 'Thanh toán' });
 };
-exports.payment_post = function(req, res) {
+exports.payment_post = function (req, res) {
 	res.render('customer-views/payment', { title: 'Thanh toán' });
 };
 
 getConditionShowProduct = (conditionShow) => {
 	// console.log('on get sort: ', conditionShow);
-	let result = [ ...Constants.CONDITION_SORT_PRODUCT ];
-	switch (conditionShow) {
+	let result = [...Constants.CONDITION_SORT_PRODUCT];
+	console.log('result before: ', result);
+	// switch (parseInt(conditionShow)) {
+	// 	case Constants.NAME_PRODUCT_ASC:
+	// 		console.log('on get result 0');
+	// 		result[0].sort = 1;
+	// 		return result[0]
+	// 		break;
+	// 	case Constants.NAME_PRODUCT_DES:
+	// 		console.log('on get result 1');
+	// 		result[0].sort = -1;
+	// 		break;
+	// 	case Constants.PRICE_PRODUCT_ASC:
+	// 		console.log('on get result 2');
+	// 		result[1].sort = 1;
+	// 		break;
+	// 	case Constants.PRICE_PRODUCT_DES:
+	// 		console.log('on get result 3');
+	// 		result[1].sort = -1;
+	// 		console.log('result sort in 3: ', result);
+	// 		break;
+	// 	case Constants.DISCOUNT_PRODUCT_ASC:
+	// 		console.log('on get result 4');
+	// 		result[2].sort = 1;
+	// 		break;
+	// 	case Constants.DISCOUNT_PRODUCT_DES:
+	// 		console.log('on get result 5');
+	// 		result[2].sort = -1;
+	// 		break;
+	// 	default:
+	// 		// console.log('on default:');
+	// 		break;
+	// }
+	switch (parseInt(conditionShow)) {
 		case Constants.NAME_PRODUCT_ASC:
+			console.log('on get result 0');
 			result[0].sort = 1;
 			break;
 		case Constants.NAME_PRODUCT_DES:
+			console.log('on get result 1');
 			result[0].sort = -1;
 			break;
 		case Constants.PRICE_PRODUCT_ASC:
+			console.log('on get result 2');
 			result[1].sort = 1;
 			break;
-		case Constants.PRICE_PRODUCT_ASC:
+		case Constants.PRICE_PRODUCT_DES:
+			console.log('on get result 3');
 			result[1].sort = -1;
+			console.log('result sort in 3: ', result);
 			break;
 		case Constants.DISCOUNT_PRODUCT_ASC:
+			console.log('on get result 4');
 			result[2].sort = 1;
 			break;
 		case Constants.DISCOUNT_PRODUCT_DES:
+			console.log('on get result 5');
 			result[2].sort = -1;
 			break;
 		default:
 			// console.log('on default:');
 			break;
 	}
-	// console.log('result sort: ', result);
-	return result;
+	console.log('result sort: ', result[parseInt(conditionShow / 2)]);
+	return result[parseInt(conditionShow / 2)];
 };
-exports.shop = async function(req, res) {
+exports.shop = async function (req, res) {
 	console.log('on shop controller');
 	//get type
 	const type = await Type.find({}, (err, type) => {
@@ -113,8 +152,16 @@ exports.shop = async function(req, res) {
 	}
 	console.log('req.query.show', req.query.show);
 	const conditionShow = req.query.show || 0;
-	const conditionShowArray = getConditionShowProduct(parseInt(conditionShow));
-	console.log('condition show: ', conditionShow, ', conditionShowArray: ', conditionShowArray);
+	const conditionShowObject = { ...getConditionShowProduct(parseInt(conditionShow)) }
+	console.log("object: ", conditionShowObject);
+	const sortName = conditionShowObject.name;
+	const sortValue = conditionShowObject.sort;
+	const sortTest = {
+
+	}
+	sortTest[sortName] = sortValue;
+	console.log("sort test", sortTest);
+	console.log('condition show:', sortName, sortValue);
 
 	let paging;
 	let db;
@@ -123,28 +170,37 @@ exports.shop = async function(req, res) {
 		db = await Product.find({ type: typeId })
 			.limit(Constants.LIMIT_PRODUCT_PER_PAGE)
 			.skip((page - 1) * Constants.LIMIT_PRODUCT_PER_PAGE)
-			// .sort({
-			// 	name: conditionShowArray[0].sort,
-			// 	price: conditionShowArray[1].sort,
-			// 	discount: conditionShowArray[2].sort
-			// });
-			.sort({
-				discount: -1
-			});
+		// .sort({
+		// 	name: conditionShowArray[0].sort,
+		// 	price: conditionShowArray[1].sort,
+		// 	discount: conditionShowArray[2].sort
+		// });
+		// .sort({
+		// 	discount: -1
+		// });
 	} else {
 		paging = getPaging(sumPage, page, '/shop?show=' + conditionShow + '&');
 
 		db = await Product.find({})
+			.sort(
+				sortTest
+				// {
+				// 	price: 1
+				// }
+			)
 			.limit(Constants.LIMIT_PRODUCT_PER_PAGE)
 			.skip((page - 1) * Constants.LIMIT_PRODUCT_PER_PAGE)
-			// .sort({
-			// 	name: conditionShowArray[0].sort,
-			// 	price: conditionShowArray[1].sort,
-			// 	discount: conditionShowArray[2].sort
-			// });
-			.sort({
-				discount: conditionShowArray[2].sort
-			});
+		// .sort({
+		// 	name: parseInt(conditionShowArray[0].sort),
+		// 	price: parseInt(conditionShowArray[1].sort),
+		// 	discount: parseInt(conditionShowArray[2].sort)
+		// });
+
+		// .sort({
+		// 	name: conditionShowArray[0].sort,
+		// 	price: conditionShowArray[1].sort,
+		// 	discount: conditionShowArray[2].sort
+		// });
 	}
 	if (db) {
 		res.render('customer-views/shop', {
@@ -157,11 +213,12 @@ exports.shop = async function(req, res) {
 			currentPage: page,
 			origin,
 			producer,
-			sum
+			sum,
+			show: conditionShow
 		});
 	}
 };
-exports.single = async function(req, res) {
+exports.single = async function (req, res) {
 	typeProduct = await Type.find({}, (err, type) => {
 		if (err) {
 			return next(err);
@@ -237,7 +294,7 @@ exports.single = async function(req, res) {
 			}
 		});
 };
-exports.single_post = function(req, res) {
+exports.single_post = function (req, res) {
 	//post method when add a comment
 	//todo
 	const name = 'Gấu teddy';
@@ -246,10 +303,10 @@ exports.single_post = function(req, res) {
 		nameProduct: name
 	});
 };
-exports.detail_receipt = function(req, res) {
+exports.detail_receipt = function (req, res) {
 	res.render('customer-views/detail-receipt', { title: 'Chi tiết hóa đơn' });
 };
-exports.history = function(req, res) {
+exports.history = function (req, res) {
 	res.render('customer-views/history', { title: 'Lịch sử mua hàng' });
 };
 
@@ -297,7 +354,7 @@ exports.deleteFromCart = (req, res) => {
 
 	const index = req.session.cartShop.findIndex((item) => item._id === id);
 	if (index != -1) {
-		req.session.cartShop = [ ...req.session.cartShop.filter((item) => item._id !== id) ];
+		req.session.cartShop = [...req.session.cartShop.filter((item) => item._id !== id)];
 		res.send({ isSuccessful: true });
 	} else {
 		res.send({ isSuccessful: false });

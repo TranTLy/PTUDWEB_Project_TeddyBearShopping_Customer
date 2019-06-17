@@ -146,11 +146,14 @@
         <div class="change-order-list">
             Thay đổi cách hiển thị
             <select name="conditionShowProduct" id="conditionShowProduct" onchange="changeConditionShowProduct()">
-                <% conditionShowProduct.map((item, index) => {%>
+                <% conditionShowProduct.map((item, index) => {
+                  if (index === show){ %>
+                  <option selected value=<%= index%>><%= item.name%></option>
+                <%} else { %>
                   <option value=<%= index%>><%= item.name%></option>
-                <%})%>
+                <%}})%>
             </select>
-          </div>
+          </div>  
         <!-- change order product -->
 
   <div class="row" id="pagination">
@@ -190,7 +193,12 @@
 changeConditionShowProduct=()=>{
   const condition = document.getElementById("conditionShowProduct").value;
   console.log("condition: ", condition);
-  window.location.href = "/shop?show="+ condition;
+  if ('<%=link%>' != ''){
+    window.location.href = '<%=link%>'+ '&show='+ condition;
+  } else {
+    window.location.href = 'shop?show='+ condition;
+
+  }
 //   $.ajax({
 //                url: "shop?show="+ condition,
 //                method: "get",
