@@ -7,19 +7,26 @@ const Product = require('../model/product');
 const Origin = require('../model/origin.model');
 const Producer = require('../model/producer.model');
 const Constants = require('../constants');
-const typeProducts = null;
 
-getTypeProduct = async () => {
-	if (!typeProducts) {
-		typeProducts = await Type.find({}, (err, type) => {
+
+
+exports.getTypeProduct = async (req, res, next) => {
+	// console.log("req.typeProduct: ", req.cookies.typeProduct);
+	if (!req.cookies.typeProduct) {
+		await Type.find({}, (err, type) => {
 			if (err) {
 				return next(err);
-			} else {
-				return type;
+			} else if (type) {
+				res.cookie('typeProduct', type);
+				res.locals.typeProduct = req.cookies.typeProduct;
+				return next();
 			}
 		});
+	} else {
+		res.locals.typeProduct = req.cookies.typeProduct;
+		// console.log("on not set cookie type");
+		return next();
 	}
-	return typeProducts;
 };
 getComment = async (idProduct) => {
 	await Comment.find({ idProduct }, (err, result) => {
