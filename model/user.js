@@ -27,6 +27,10 @@ var UserSchema = new Schema(
     },
     reset_password_expires: {
       type: Date
+    },
+    isAuth: {
+      type: Boolean,
+      default: false
     }
   },
   { collection: "customers" }
