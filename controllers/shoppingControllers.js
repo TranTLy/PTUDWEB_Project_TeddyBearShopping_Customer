@@ -54,40 +54,8 @@ exports.payment_post = function (req, res) {
 };
 
 getConditionShowProduct = (conditionShow) => {
-	// console.log('on get sort: ', conditionShow);
 	let result = [...Constants.CONDITION_SORT_PRODUCT];
 	console.log('result before: ', result);
-	// switch (parseInt(conditionShow)) {
-	// 	case Constants.NAME_PRODUCT_ASC:
-	// 		console.log('on get result 0');
-	// 		result[0].sort = 1;
-	// 		return result[0]
-	// 		break;
-	// 	case Constants.NAME_PRODUCT_DES:
-	// 		console.log('on get result 1');
-	// 		result[0].sort = -1;
-	// 		break;
-	// 	case Constants.PRICE_PRODUCT_ASC:
-	// 		console.log('on get result 2');
-	// 		result[1].sort = 1;
-	// 		break;
-	// 	case Constants.PRICE_PRODUCT_DES:
-	// 		console.log('on get result 3');
-	// 		result[1].sort = -1;
-	// 		console.log('result sort in 3: ', result);
-	// 		break;
-	// 	case Constants.DISCOUNT_PRODUCT_ASC:
-	// 		console.log('on get result 4');
-	// 		result[2].sort = 1;
-	// 		break;
-	// 	case Constants.DISCOUNT_PRODUCT_DES:
-	// 		console.log('on get result 5');
-	// 		result[2].sort = -1;
-	// 		break;
-	// 	default:
-	// 		// console.log('on default:');
-	// 		break;
-	// }
 	switch (parseInt(conditionShow)) {
 		case Constants.NAME_PRODUCT_ASC:
 			console.log('on get result 0');
@@ -115,7 +83,6 @@ getConditionShowProduct = (conditionShow) => {
 			result[2].sort = -1;
 			break;
 		default:
-			// console.log('on default:');
 			break;
 	}
 	console.log('result sort: ', result[parseInt(conditionShow / 2)]);
@@ -157,57 +124,27 @@ exports.shop = async function (req, res) {
 	} else if (page > sumPage) {
 		page = sumPage;
 	}
-	console.log('req.query.show', req.query.show);
+	//console.log('req.query.show', req.query.show);
 	const conditionShow = req.query.show || 0;
 	const conditionShowObject = { ...getConditionShowProduct(parseInt(conditionShow)) }
-	console.log("object: ", conditionShowObject);
-	const sortName = conditionShowObject.name;
-	const sortValue = conditionShowObject.sort;
-	const sortTest = {
-
-	}
-	sortTest[sortName] = sortValue;
-	console.log("sort test", sortTest);
-	console.log('condition show:', sortName, sortValue);
+	const sortTest = {}
+	sortTest[conditionShowObject.name] = conditionShowObject.sort;
 
 	let paging;
 	let db;
 	if (typeId !== '') {
 		paging = getPaging(sumPage, page, '/shop?type=' + typeId + '&show=' + conditionShow + '&');
 		db = await Product.find({ type: typeId })
+			.sort(sortTest)
 			.limit(Constants.LIMIT_PRODUCT_PER_PAGE)
 			.skip((page - 1) * Constants.LIMIT_PRODUCT_PER_PAGE)
-		// .sort({
-		// 	name: conditionShowArray[0].sort,
-		// 	price: conditionShowArray[1].sort,
-		// 	discount: conditionShowArray[2].sort
-		// });
-		// .sort({
-		// 	discount: -1
-		// });
 	} else {
 		paging = getPaging(sumPage, page, '/shop?show=' + conditionShow + '&');
 
 		db = await Product.find({})
-			.sort(
-				sortTest
-				// {
-				// 	price: 1
-				// }
-			)
+			.sort(sortTest)
 			.limit(Constants.LIMIT_PRODUCT_PER_PAGE)
 			.skip((page - 1) * Constants.LIMIT_PRODUCT_PER_PAGE)
-		// .sort({
-		// 	name: parseInt(conditionShowArray[0].sort),
-		// 	price: parseInt(conditionShowArray[1].sort),
-		// 	discount: parseInt(conditionShowArray[2].sort)
-		// });
-
-		// .sort({
-		// 	name: conditionShowArray[0].sort,
-		// 	price: conditionShowArray[1].sort,
-		// 	discount: conditionShowArray[2].sort
-		// });
 	}
 	if (db) {
 		res.render('customer-views/shop', {
@@ -656,7 +593,16 @@ exports.searchAdvanced = async (req, res) => {
 		page = sumPage;
 	}
 
-	paging = getPaging(sumPage, page, '/searchAdvanced?');
+	//console.log('req.query.show', req.query.show);
+	const conditionShow = req.query.show || 0;
+	const conditionShowObject = { ...getConditionShowProduct(parseInt(conditionShow)) }
+	//console.log("object: ", conditionShowObject);
+	const sortName = conditionShowObject.name;
+	const sortValue = conditionShowObject.sort;
+	const sortTest = {}
+	sortTest[sortName] = sortValue;
+
+	paging = getPaging(sumPage, page, '/searchAdvanced?show=' + conditionShow + '&');
 	db = await Product.find({
 		type: typeSearch,
 		discount: { $gte: discountSearch },
@@ -664,11 +610,10 @@ exports.searchAdvanced = async (req, res) => {
 		producer: producerSearch,
 		isDeleted: 'false'
 	})
+		.sort(sortTest)
 		.limit(Constants.LIMIT_PRODUCT_PER_PAGE)
 		.skip((page - 1) * Constants.LIMIT_PRODUCT_PER_PAGE)
-		.sort({ name: 1 });
 
-	console.log('discount search: ', discountSearch);
 	if (db) {
 		res.render('customer-views/searchResult', {
 			title,
@@ -684,7 +629,8 @@ exports.searchAdvanced = async (req, res) => {
 			typeSearch: req.body.type || req.query.type || '',
 			originSearch: req.body.origin || req.query.origin || '',
 			producerSearch: req.body.producer || req.query.producer || '',
-			discountSearch: req.body.discount || req.query.discount
+			discountSearch: req.body.discount || req.query.discount,
+			show: conditionShow
 		});
 	}
 };
