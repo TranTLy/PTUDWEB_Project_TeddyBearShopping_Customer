@@ -45,6 +45,36 @@ exports.payment = function(req, res) {
 exports.payment_post = function(req, res) {
 	res.render('customer-views/payment', { title: 'Thanh toán' });
 };
+
+getConditionShowProduct = (conditionShow) => {
+	// console.log('on get sort: ', conditionShow);
+	let result = [ ...Constants.CONDITION_SORT_PRODUCT ];
+	switch (conditionShow) {
+		case Constants.NAME_PRODUCT_ASC:
+			result[0].sort = 1;
+			break;
+		case Constants.NAME_PRODUCT_DES:
+			result[0].sort = -1;
+			break;
+		case Constants.PRICE_PRODUCT_ASC:
+			result[1].sort = 1;
+			break;
+		case Constants.PRICE_PRODUCT_ASC:
+			result[1].sort = -1;
+			break;
+		case Constants.DISCOUNT_PRODUCT_ASC:
+			result[2].sort = 1;
+			break;
+		case Constants.DISCOUNT_PRODUCT_DES:
+			result[2].sort = -1;
+			break;
+		default:
+			// console.log('on default:');
+			break;
+	}
+	// console.log('result sort: ', result);
+	return result;
+};
 exports.shop = async function(req, res) {
 	console.log('on shop controller');
 	//get type
@@ -81,20 +111,40 @@ exports.shop = async function(req, res) {
 	} else if (page > sumPage) {
 		page = sumPage;
 	}
+	console.log('req.query.show', req.query.show);
+	const conditionShow = req.query.show || 0;
+	const conditionShowArray = getConditionShowProduct(parseInt(conditionShow));
+	console.log('condition show: ', conditionShow, ', conditionShowArray: ', conditionShowArray);
+
 	let paging;
 	let db;
 	if (typeId !== '') {
-		paging = getPaging(sumPage, page, '/shop?type=' + typeId + '&');
+		paging = getPaging(sumPage, page, '/shop?type=' + typeId + '&show=' + conditionShow + '&');
 		db = await Product.find({ type: typeId })
 			.limit(Constants.LIMIT_PRODUCT_PER_PAGE)
 			.skip((page - 1) * Constants.LIMIT_PRODUCT_PER_PAGE)
-			.sort({ name: 1 });
+			// .sort({
+			// 	name: conditionShowArray[0].sort,
+			// 	price: conditionShowArray[1].sort,
+			// 	discount: conditionShowArray[2].sort
+			// });
+			.sort({
+				discount: -1
+			});
 	} else {
-		paging = getPaging(sumPage, page, '/shop?');
+		paging = getPaging(sumPage, page, '/shop?show=' + conditionShow + '&');
+
 		db = await Product.find({})
 			.limit(Constants.LIMIT_PRODUCT_PER_PAGE)
 			.skip((page - 1) * Constants.LIMIT_PRODUCT_PER_PAGE)
-			.sort({ name: 1 });
+			// .sort({
+			// 	name: conditionShowArray[0].sort,
+			// 	price: conditionShowArray[1].sort,
+			// 	discount: conditionShowArray[2].sort
+			// });
+			.sort({
+				discount: conditionShowArray[2].sort
+			});
 	}
 	if (db) {
 		res.render('customer-views/shop', {
@@ -106,7 +156,8 @@ exports.shop = async function(req, res) {
 			paging,
 			currentPage: page,
 			origin,
-			producer
+			producer,
+			sum
 		});
 	}
 };
@@ -447,6 +498,11 @@ exports.search = async (req, res) => {
 			return type;
 		}
 	});
+	//get origin table
+	const origin = await Origin.find({});
+	//get producer table
+	const producer = await Producer.find({});
+
 	const search = req.body.search || '';
 	console.log('search: ', search);
 	const sum = await getSumSearchProduct(search);
@@ -461,20 +517,7 @@ exports.search = async (req, res) => {
 		page = sumPage;
 	}
 	let paging = getPaging(sumPage, page, '/search?search=' + search + '&');
-	// let db = await Product.find({ $text: { $search: key } })
-	// 	.limit(Constants.LIMIT_PRODUCT_PER_PAGE)
-	// 	.skip((page - 1) * Constants.LIMIT_PRODUCT_PER_PAGE)
-	// 	.sort({ name: 1 });
-	// let dbTemp = await Product.find({})
-	// 	.limit(Constants.LIMIT_PRODUCT_PER_PAGE)
-	// 	.skip((page - 1) * Constants.LIMIT_PRODUCT_PER_PAGE)
-	// 	.sort({ name: 1 });
-	// let db = dbTemp.forEach((item) => item.name.includes(search) && item);
 
-	//const key = '/.*' + search + '.*/';
-
-	// Product.createIndex({ name: 'text' });
-	// let db = await Product.find({ $text: { $search: search } });
 	const key = new RegExp('^' + search.toLowerCase(), 'i');
 	await Product.find({ name: key }, (err, db) => {
 		console.log('sum: ', sum, 'db: ', db);
@@ -488,7 +531,10 @@ exports.search = async (req, res) => {
 				standOutProducts: db.filter((item, index) => item.isStandOut == true),
 				typeProduct,
 				paging,
-				currentPage: page
+				currentPage: page,
+				origin,
+				producer,
+				sum
 			});
 		}
 	});

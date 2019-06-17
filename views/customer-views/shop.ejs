@@ -48,9 +48,11 @@
         </div>
 
         <form action="/searchAdvanced" method="post">
-          <div class="left-side">
-            <h3 class="agileits-sear-head">Tìm kiếm nâng cao</h3>
-            <input class ="" type="submit" value="Tìm kiếm" />
+          <div class="left-side search-advanced-wrap">
+              <div class="search-advanced-title">
+              <h3 class="agileits-sear-head">Tìm kiếm nâng cao</h3>
+              <input class ="btn btn-dark" type="submit" value="Tìm kiếm"/>
+              </div>
             <!-- type product -->
             <div class="search-advanced">
               <h4 class="search-subtitle">Loại sản phẩm</h4>
@@ -113,6 +115,44 @@
 <!-- //deals -->
 </div>
 <div class="left-ads-display col-lg-9">
+    <div class="sum-search-result">
+        <%if (sum  === 0) { %>
+          <span>Không có sản phẩm nào</span>
+        <%} else {%>
+          <span>Có <b><%= sum%></b> sản phẩm</span>    
+          <% } %>
+        </div>
+        <!-- change order product -->
+        <% conditionShowProduct = [
+        {
+          name: 'Theo tên tăng dần'
+        },
+        {
+          name: 'Theo tên giảm dần'
+        },
+        {
+          name: 'Theo giá tăng dần'
+        },
+        {
+          name: 'Theo giá giảm dần'
+        },
+        {
+          name: 'Theo ưu đãi tăng dần'
+        },
+        {
+          name: 'Theo ưu đãi giảm dần'
+        }
+      ]%>
+        <div class="change-order-list">
+            Thay đổi cách hiển thị
+            <select name="conditionShowProduct" id="conditionShowProduct" onchange="changeConditionShowProduct()">
+                <% conditionShowProduct.map((item, index) => {%>
+                  <option value=<%= index%>><%= item.name%></option>
+                <%})%>
+            </select>
+          </div>
+        <!-- change order product -->
+
   <div class="row" id="pagination">
     <%paging.map((item, index)=>{
             if (item.name === parseInt(currentPage)) {%>
@@ -145,3 +185,25 @@
 </section>
 <!-- //show Now-->
 <% include ../components/footer%>
+
+<script>
+changeConditionShowProduct=()=>{
+  const condition = document.getElementById("conditionShowProduct").value;
+  console.log("condition: ", condition);
+  window.location.href = "/shop?show="+ condition;
+//   $.ajax({
+//                url: "shop?show="+ condition,
+//                method: "get",
+//                contentType: "application/json; charset=utf-8"
+//             })
+//             .done(function(result) {
+//             console.log("check user ajax: ", result);
+//             if (result){
+//                 window.location.reload();
+//             }
+//           })
+//           .fail(function(err) {
+//             console.log("fail");
+//           });
+}
+</script>
