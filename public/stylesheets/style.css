@@ -159,7 +159,7 @@ nav.navbar.navbar-expand-lg.navbar-light {
 /*--//headder info-contact --*/
 .search-right input[type="search"] {
 	width: 85%;
-	color: #fff;
+	color: rgb(2, 2, 2);
 	background-color: #e4e4e4;
 	outline: none !important;
 	font-size: 14px;

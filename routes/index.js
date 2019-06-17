@@ -27,6 +27,7 @@ router.post('/changeQuantity', shopping_controller.changeQuantity);
 router.post('/deleteFromCart', shopping_controller.deleteFromCart);
 router.post('/search', shopping_controller.search);
 router.post('/searchAdvanced', shopping_controller.searchAdvanced);
+router.get('/searchAdvanced', shopping_controller.searchAdvanced);
 
 //TODO: add id
 router.get('/single', shopping_controller.single);

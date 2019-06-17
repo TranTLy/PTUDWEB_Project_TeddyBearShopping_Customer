@@ -1,0 +1,201 @@
+<%include ../components/header%>
+<script>
+  document.getElementById("nav-shop").classList.add("active"); //product nav-item
+</script>
+<link rel="stylesheet" type="text/css" href="stylesheets/pagination.css" />
+
+<!-- short -->
+<div class="using-border py-3">
+  <div class="inner_breadcrumb  ml-4">
+    <ul class="short_ls">
+      <li>
+        <a href="index.html">Trang chủ</a>
+        <span>/ /</span>
+      </li>
+      <%if (link!==''){%>
+      <li><a href="shop">Cửa hàng</a>
+        <span>/ /</span>
+      </li>
+      <li><a href=<%=link%>><%=title%></a></li>
+      <% } else {%>
+      <li><a href="shop">Cửa hàng</a></li>
+      <%}%>
+    </ul>
+  </div>
+</div>
+<!-- //short-->
+<!--show Now-->
+<!--show Now-->
+<section class="contact py-lg-4 py-md-3 py-sm-3 py-3">
+  <div class="container-fluid py-lg-5 py-md-4 py-sm-4 py-3">
+    <!-- <h3 class="title text-center mb-lg-5 mb-md-4 mb-sm-4 mb-3">
+      Cửa hàng Toys Shop
+    </h3> -->
+    <div class="row">
+      <div class="side-bar col-lg-3">
+        <div class="search-hotel">
+          <h3 class="agileits-sear-head">Tìm kiếm theo tên sản phẩm</h3>
+          <form action="/search" method="post">
+            <input
+              type="search"
+              placeholder="Tên sản phẩm"
+              name="search"
+              required=""
+              class="keyNameSearch"
+            />
+            <input class ="" type="submit" value=" " />
+          </form>
+        </div>
+
+        <form action="/searchAdvanced" method="post">
+          <div class="left-side search-advanced-wrap">
+            <div class="search-advanced-title">
+            <h3 class="agileits-sear-head">Tìm kiếm nâng cao</h3>
+            <input class ="btn btn-dark" type="submit" value="Tìm kiếm" />
+            </div>
+            <!-- type product -->
+            <div class="search-advanced">
+              <h4 class="search-subtitle">Loại sản phẩm</h4>
+              <select name="type" id="search-type">
+              <option value=''>Tất cả </option>
+                <% typeProduct.map((item, index)=> { 
+                    if (item._id == typeSearch){%>
+               <option selected value=<%=item._id%>> <%=item.name%> </option>
+                    <%} else {%>
+                    <option value=<%=item._id%>> <%=item.name%></option>
+             <%}})%>
+               </select>
+            </div> 
+            <!-- //type product -->
+            <!-- discount -->
+            <div class="search-advanced">
+                <h4 class="search-subtitle">Ưu đãi</h4>
+                <% discountArray = [{discount: 0, name: "Tất cả"}, {discount: 0.05, name: "Từ 5%"}, {discount: 0.1, name: "Từ 10%"}, {discount: 0.2, name: "Từ 20%"}]%>
+
+                <select name="discount" id="search-discount">
+                        <% discountArray.map((item, index)=> { 
+                            if (item.discount === parseFloat(discountSearch)){%>
+                                <option selected value=<%=item.discount%>> <%=item.name%></option>
+                            <%} else {%>
+                                <option value=<%=item.discount%>> <%=item.name%></option>
+                        <%}})%>
+                <!-- <option value=0.05>Từ 5%</option>
+                <option value=0.1>Từ 10%</option>
+                <option value=0.2>Từ 20%</option> -->
+                 </select>
+              </div> 
+            <!-- //discount -->
+                        <!-- origin -->
+                        <div class="search-advanced">
+                            <h4 class="search-subtitle">Xuất xứ</h4>
+                            <select name="origin" id="search-origin">
+                                <option value='' selected>Tất cả </option>
+                                <% origin.map((item, index)=> { 
+                                    if (item._id == originSearch){%>
+                               <option selected value=<%=item._id%>> <%=item.name%> </option>
+                                    <%} else {%>
+                                    <option value=<%=item._id%>> <%=item.name%></option>
+                             <%}})%>
+                             </select>
+                          </div> 
+                        <!-- //origin -->
+                <!-- producer -->
+                <div class="search-advanced">
+                    <h4 class="search-subtitle">Nhà sản xuất</h4>
+                    <select name="producer" id="search-producer">
+                        <option value='' selected>Tất cả </option>
+                        <% producer.map((item, index)=> { 
+                            if (item._id == producerSearch){%>
+                       <option selected value=<%=item._id%>> <%=item.name%> </option>
+                            <%} else {%>
+                            <option value=<%=item._id%>> <%=item.name%></option>
+                     <%}})%>
+                     </select>
+                  </div> 
+                <!-- //producer -->
+        </div>
+        </form>
+<!-- deals -->
+<div class="deal-leftmk left-side">
+  <h3 class="agileits-sear-head">Sản phẩm nổi bật</h3>
+  <% standOutProducts.forEach(function(item){ %> <%-
+          include('../components/standOutProduct', {product: item}); %> <% });
+          %>
+</div>
+<!-- //deals -->
+</div>
+<div class="left-ads-display col-lg-9">
+  <div class="sum-search-result">
+    <%if (sum  === 0) { %>
+      <span>Không có sản phẩm nào được tìm thấy</span>
+    <%} else {%>
+      <span>Có <b><%= sum%></b> sản phẩm được tìm thấy</span>    
+      <% } %>
+    </div>
+  <div class="row" id="pagination">
+    <%paging.map((item, index)=>{
+            if (item.name === parseInt(currentPage)) {%>
+    <a class="pagination-item pagination__single pagination__single--active" onclick= "onPagingSearchResult('<%=item.link%>')">
+      <span>
+        <%=item.name%>
+      </span>
+    </a>
+    <%} else if (!item.isNumber){%>
+    <a class="pagination-item pagination__single--page" onclick= "onPagingSearchResult('<%=item.link%>')">
+      <span>
+        <%=item.name%>
+      </span>
+    </a>
+    <%} else {%>
+    <a class="pagination-item pagination__single" onclick= "onPagingSearchResult('<%=item.link%>')">
+      <span>
+        <%=item.name%>
+      </span>
+    </a>
+    <%}})%>
+  </div>
+  <div class="row">
+    <% products.forEach(function(item){ %> <%-
+          include('../components/productItem', {product: item}); %> <% }); %>
+  </div>
+</div>
+</div>
+</div>
+</section>
+<!-- //show Now-->
+<% include ../components/footer%>
+
+<script>
+    onPagingSearchResult = (link) =>{
+        let temp = document.getElementById("search-type").value;
+        const type = temp != ''?  '&type='+  temp : '';
+
+        temp = document.getElementById("search-discount").value;
+        const discount = temp != ''?  '&discount='+  temp : '';
+       
+        temp = document.getElementById("search-origin").value;
+        const origin = temp != ''?  '&origin='+  temp : '';
+
+        temp = document.getElementById("search-producer").value;
+        const producer = temp != ''?  '&producer='+  temp : '';
+
+        link = link + type + discount + origin + producer;
+        console.log("link: ", link);
+        window.location.href = link;
+
+        // $.ajax({
+        //        url: link,
+        //        method: "post",
+        //        contentType: "application/json; charset=utf-8"
+        //     })
+        //     .done(function(result) {
+        //     console.log("check user ajax: ", result);
+        //     if (result){
+        //         window.location.reload();
+        //     }
+        //   })
+        //   .fail(function(err) {
+        //     console.log("fail");
+        //   });
+    }
+</script>

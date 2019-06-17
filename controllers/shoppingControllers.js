@@ -493,15 +493,88 @@ exports.search = async (req, res) => {
 		}
 	});
 };
+getSumSearchAdvanced = async (type, discount, origin, producer) => {
+	return await Product.find({
+		type,
+		discount: { $gte: discount },
+		origin,
+		producer,
+		isDeleted: 'false'
+	}).countDocuments();
+};
 
-exports.searchAdvanced = (req, res) => {
-	const type = req.body.type || '';
-	const discount = req.body.discount || '';
-	const origin = req.body.origin || '';
-	const producer = req.body.producer || '';
+exports.searchAdvanced = async (req, res) => {
+	const typeSearch = req.body.type || req.query.type || { $ne: null };
+	const discountSearch = req.body.discount || req.query.discount || 0;
+	const originSearch = req.body.origin || req.query.origin || { $ne: null };
+	const producerSearch = req.body.producer || req.query.producer || { $ne: null };
 
-	console.log('search: ', type, discount, 'origin: ', origin, 'producer:', producer);
-	res.send({
-		message: true
+	console.log(
+		'search: ',
+		typeSearch,
+		discountSearch,
+		'origin: ',
+		originSearch,
+		'producer:',
+		producerSearch,
+		'discount: ',
+		discountSearch
+	);
+	//get type
+	const typeProduct = await Type.find({}, (err, type) => {
+		if (err) {
+			return next(err);
+		} else {
+			return type;
+		}
 	});
+	//get origin table
+	const origin = await Origin.find({});
+	//get producer table
+	const producer = await Producer.find({});
+
+	var title = 'Kết quả tìm kiếm';
+	const sum = await getSumSearchAdvanced(typeSearch, discountSearch, originSearch, producerSearch);
+	const sumPage = Math.ceil(sum * 1.0 / Constants.LIMIT_PRODUCT_PER_PAGE);
+	let page = 1;
+	if (req.query.page) {
+		page = req.query.page;
+	}
+	if (page < 1 || sumPage === 0) {
+		page = 1;
+	} else if (page > sumPage) {
+		page = sumPage;
+	}
+
+	paging = getPaging(sumPage, page, '/searchAdvanced?');
+	db = await Product.find({
+		type: typeSearch,
+		discount: { $gte: discountSearch },
+		origin: originSearch,
+		producer: producerSearch,
+		isDeleted: 'false'
+	})
+		.limit(Constants.LIMIT_PRODUCT_PER_PAGE)
+		.skip((page - 1) * Constants.LIMIT_PRODUCT_PER_PAGE)
+		.sort({ name: 1 });
+
+	console.log('discount search: ', discountSearch);
+	if (db) {
+		res.render('customer-views/searchResult', {
+			title,
+			link: '',
+			products: db,
+			standOutProducts: db.filter((item, index) => item.isStandOut == true),
+			typeProduct: typeProduct,
+			paging,
+			currentPage: page,
+			sum,
+			origin,
+			producer,
+			typeSearch: req.body.type || req.query.type || '',
+			originSearch: req.body.origin || req.query.origin || '',
+			producerSearch: req.body.producer || req.query.producer || '',
+			discountSearch: req.body.discount || req.query.discount
+		});
+	}
 };
