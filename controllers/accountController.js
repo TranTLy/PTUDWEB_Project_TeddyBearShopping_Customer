@@ -3,6 +3,7 @@ const Comment = require("../model/comment");
 var passport = require("passport");
 require("../config/passport");
 var Bcrypt = require("bcryptjs");
+var bcrypt = require("bcrypt");
 var async = require("async");
 var config = require("../config/database");
 var nodemailer = require("nodemailer");
@@ -24,7 +25,10 @@ exports.forget_password = function(req, res) {
 };
 
 exports.reset_password = function(req, res) {
-  res.render("customer-views/reset-password", { title: "Thay đổi mật khẩu" });
+  res.render("customer-views/reset-password", {
+    title: "Thay đổi mật khẩu",
+    token: req.query.token || ""
+  });
 };
 
 exports.change_password = function(req, res) {
@@ -35,6 +39,13 @@ exports.update_infor = function(req, res) {
   // console.log('3 req.user is: ', req.user);
   // console.log('user before go to update infor: ', req.cookies.user);
   res.render("customer-views/update-infor", { title: "Thay đổi thông tin" });
+};
+
+exports.infor = function(req, res) {
+  res.render("customer-views/infor", {
+    title: "Thay đổi mật khẩu thành công",
+    message: "Thay đổi mật khẩu thành công, mời bạn OK để tiếp tục"
+  });
 };
 
 exports.post_signin = async function(req, res) {
@@ -118,12 +129,6 @@ exports.post_signup = async function(req, res) {
     });
   }
 };
-
-// (exports.signout = passport.authenticate('jwt', { session: false })),
-// 	function(req, res) {
-// 		console.log('user form req: ', req.user);
-// 		res.json({ message: 'Success! You can not see this without a token' });
-// 	};
 
 exports.signout = (req, res, next) => {
   console.log("on logout");
@@ -222,4 +227,47 @@ exports.post_forget_password = function(req, res) {
       return res.status(422).json({ message: err });
     }
   );
+};
+
+exports.post_reset_password = function(req, res, next) {
+  console.log("token", req.body.token);
+  User.findOne({
+    reset_password_token: req.body.token,
+    reset_password_expires: {
+      $gt: Date.now()
+    }
+  }).exec(function(err, user) {
+    if (!err && user) {
+      const objUser = {
+        password: bcrypt.hashSync(req.body.repassword, 10),
+        reset_password_token: undefined,
+        reset_password_expires: undefined
+      };
+      User.findByIdAndUpdate(user._id, objUser, (err, user) => {
+        if (err) {
+          return res.status(422).send({
+            message: err
+          });
+        } else {
+          req.login(user, err => {
+            if (err) {
+              res.send(err);
+            }
+            const token = jwt.sign({ user }, "secret");
+            res.cookie("token", token);
+            res.cookie("user", user);
+            res.render("customer-views/infor", {
+              title: "Thay đổi mật khẩu thành công",
+              message: "Thay đổi mật khẩu thành công, mời bạn OK để tiếp tục"
+            });
+          });
+        }
+      });
+    } else {
+      return res.status(400).send({
+        message:
+          "Mã thông báo đặt lại mật khẩu không hợp lệ hoặc đã hết hạn, mời bạn thử lại!."
+      });
+    }
+  });
 };
