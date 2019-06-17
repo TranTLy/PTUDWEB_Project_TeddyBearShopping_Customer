@@ -4,6 +4,8 @@ var ObjectId = require('mongodb').ObjectID;
 const Type = require('../model/type');
 const Comment = require('../model/comment');
 const Product = require('../model/product');
+const Origin = require('../model/origin.model');
+const Producer = require('../model/producer.model');
 const Constants = require('../constants');
 const typeProducts = null;
 
@@ -53,6 +55,10 @@ exports.shop = async function(req, res) {
 			return type;
 		}
 	});
+	//get origin table
+	const origin = await Origin.find({});
+	//get producer table
+	const producer = await Producer.find({});
 
 	let typeId = '';
 	var title = 'Cửa hàng';
@@ -98,7 +104,9 @@ exports.shop = async function(req, res) {
 			standOutProducts: db.filter((item, index) => item.isStandOut == true),
 			typeProduct: type,
 			paging,
-			currentPage: page
+			currentPage: page,
+			origin,
+			producer
 		});
 	}
 };
@@ -483,5 +491,17 @@ exports.search = async (req, res) => {
 				currentPage: page
 			});
 		}
+	});
+};
+
+exports.searchAdvanced = (req, res) => {
+	const type = req.body.type || '';
+	const discount = req.body.discount || '';
+	const origin = req.body.origin || '';
+	const producer = req.body.producer || '';
+
+	console.log('search: ', type, discount, 'origin: ', origin, 'producer:', producer);
+	res.send({
+		message: true
 	});
 };

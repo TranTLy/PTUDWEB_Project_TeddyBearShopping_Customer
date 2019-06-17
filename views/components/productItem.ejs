@@ -9,6 +9,7 @@
           </div>
         </div>
         <%if (product.isNew){%><span class="product-new-top">Mới</span><%}%>
+        <%if (product.discount > 0){%><span class="product-new-top">-<%=product.discount*100%>%</span><%}%>        
       </div>
       <div class="item-info-product">
         <div class="info-product-price">
@@ -18,7 +19,7 @@
                 <a href="single"><%=product.name%></a>
         </h4>
         <div class="grid-price mt-2">
-          <span class="money "><%=product.price%></span>
+          <span class="money "><%=(product.price/1000.0).toFixed(3)%>đ</span>
         </div>
       </div>
       <ul class="stars">
