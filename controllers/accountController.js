@@ -3,8 +3,16 @@ var passport = require('passport');
 require('../config/passport');
 var Bcrypt = require('bcryptjs');
 var config = require('../config/database');
-
+var nodemailer = require("nodemailer")
 var jwt = require('jsonwebtoken');
+
+var transporter = nodemailer.createTransport({
+	service: "Gmail",
+	auth: {
+	  user: "tranphunguyen111@gmail.com",
+	  pass: "nguyen5398"
+	}
+  });
 
 exports.signup = function(req, res) {
 	res.render('customer-views/signup', { title: 'Đăng ký' });
@@ -12,6 +20,11 @@ exports.signup = function(req, res) {
 exports.forget_password = function(req, res) {
 	res.render('customer-views/forget-password', { title: 'Quên mật khẩu' });
 };
+
+exports.reset_password = function(req, res) {
+	res.render('customer-views/reset-password', { title: 'Thay đổi mật khẩu' });
+};
+
 exports.change_password = function(req, res) {
 	res.render('customer-views/change-password', { title: 'Đổi mật khẩu' });
 };
@@ -130,3 +143,73 @@ exports.isLogin = function(req, res, next) {
 		});
 	}
 };
+
+exports.post_forget_password = function(req, res) {
+	async.waterfall(
+	  [
+		function(done) {
+		  User.findOne({
+			email: req.body.email
+		  }).exec(function(err, account) {
+			if (account) {
+			  done(err, account);
+			} else {
+			  done("Tài khoản không tìm thấy.");
+			}
+		  });
+		},
+		function(account, done) {
+		  // create the random token
+		  crypto.randomBytes(20, function(err, buffer) {
+			var token = buffer.toString("hex");
+			done(err, account, token);
+		  });
+		},
+		function(account, token, done) {
+		  User.findByIdAndUpdate(
+			{ _id: account._id },
+			{
+			  reset_password_token: token,
+			  reset_password_expires: Date.now() + 86400000
+			},
+			{
+			  upsert: true,
+			  new: true
+			}
+		  ).exec(function(err, new_account) {
+			done(err, token, new_account);
+		  });
+		},
+		function(token, account, done) {
+			console.log("headers",req.headers.host);
+		  const url =
+			"https://" + req.headers.host + "/reset-password?token=" + token;
+		  var mainOptions = {
+			from: "tranphunguyen111@gmail.com",
+			to: account.email,
+			subject: "Thay đổi mật khẩu",
+			html:
+			  "<div><h3>Xin chào " +
+			  account.name +
+			  "</h3><p> Nhấn vào link " +
+			  url +
+			  " để tạo lại mật khẩu</p>"
+		  };
+		  transporter.sendMail(mainOptions, function(err) {
+			if (!err) {
+			  console.log("main Otiopnsdfsdf", mainOptions.subject);
+			  return res.json({
+				message: "Mời bạn kiểm tra mail để tạo mật khẩu mới!!"
+			  });
+			} else {
+			  return done(err);
+			}
+		  });
+		}
+	  ],
+	  function(err) {
+		return res.status(422).json({ message: err });
+	  }
+	);
+  };
+  
