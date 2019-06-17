@@ -3,10 +3,11 @@ const Comment = require("../model/comment");
 var passport = require("passport");
 require("../config/passport");
 var Bcrypt = require("bcryptjs");
+var async = require("async");
 var config = require("../config/database");
 var nodemailer = require("nodemailer");
 var jwt = require("jsonwebtoken");
-
+var crypto = require("crypto");
 var transporter = nodemailer.createTransport({
   service: "Gmail",
   auth: {
@@ -143,7 +144,18 @@ exports.isLogin = function(req, res, next) {
   }
 };
 
+exports.checkEmail = async (req, res) => {
+  email = req.query.email || "";
+  result = await User.findOne({ email });
+  if (result) {
+    res.send({ success: true });
+  } else {
+    res.send({ success: false });
+  }
+};
+
 exports.post_forget_password = function(req, res) {
+  console.log("post forgot password", req.body.email);
   async.waterfall(
     [
       function(done) {
