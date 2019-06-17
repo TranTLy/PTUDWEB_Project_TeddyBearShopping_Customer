@@ -1,111 +1,78 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= title %></title>
-    <link rel="stylesheet" href="/stylesheets/style.css" />
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="keywords"
-      content="Toys Shop Responsive web template, Bootstrap Web Templates, Flat Web Templates, Android Compatible web template, 
-         Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyEricsson, Motorola web design"
-    />
-    <script>
-      addEventListener(
-        "load",
-        function() {
-          setTimeout(hideURLbar, 0);
-        },
-        false
-      );
 
-      function hideURLbar() {
-        window.scrollTo(0, 1);
-      }
-    </script>
-    <!--//meta tags ends here-->
-    <!--booststrap-->
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-      crossorigin="anonymous"
-    />
-    <!--//booststrap end-->
-    <!-- font-awesome icons -->
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
-      integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
-      crossorigin="anonymous"
-    />
-    <!-- //font-awesome icons -->
-    <link rel="stylesheet" type="text/css" href="stylesheets/jquery-ui1.css" />
-    <!--Shoping cart-->
-    <link rel="stylesheet" href="stylesheets/shop.css" type="text/css" />
-    <!--//Shoping cart-->
-    <!--stylesheets-->
-    <link
-      href="stylesheets/style.css"
-      rel="stylesheet"
-      type="text/css"
-      media="all"
-    />
-    <link
-      rel="stylesheet"
-      href="stylesheets/flexslider.css"
-      type="text/css"
-      media="screen"
-    />
-    <link
-      href="stylesheets/easy-responsive-tabs.css"
-      rel="stylesheet"
-      type="text/css"
-    />
-    <!--//stylesheets-->
-    <link
-      href="https://fonts.googleapis.com/css?family=Roboto+Condensed"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <!--headder-->
-    <div class="header-outs" id="home">
-      <div class="header-bar">
-        <div class="container-fluid">
-          <div class="hedder-up row">
-            <div class="col-lg-3 col-md-3 logo-head">
-              <h1><a class="navbar-brand" href="index">Toys-Shop</a></h1>
-            </div>
-            <div class="col-lg-5 col-md-6 search-right">
-              <form action="/search" method="post" class="form-inline my-lg-0">
-                <input
-                  class="form-control mr-sm-2 keyNameSearch"
-                  type="search"
-                  placeholder="Tìm kiếm"
-                  name=search
-                />
-                <button class="btn btnSearch" type="submit" >Tìm kiếm</button>
-              </form>
-            </div>
-            <div class="col-lg-4 col-md-3 right-side-cart">
-              <div class="cart-icons">
-                <ul>
-                  <% if (!user){%>
-                  <li>
-                    <button
-                      type="button"
-                      data-toggle="modal"
-                      data-target="#exampleModal"
-                    >
-                      <span class="far fa-user"></span>
-                    </button>
-                  </li>
-                  <%} else {%>
-                    <li>
-                        <span  id="name-current-user" data-toggle="modal"  data-target="#loginedUserModal">Xin chào, <%=user.name%></span>
-                    </li>
-                  <%}%>
+<head>
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/stylesheets/style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="keywords"
+    content="Toys Shop Responsive web template, Bootstrap Web Templates, Flat Web Templates, Android Compatible web template, 
+         Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyEricsson, Motorola web design" />
+  <script>
+    addEventListener(
+      "load",
+      function () {
+        setTimeout(hideURLbar, 0);
+      },
+      false
+    );
+
+    function hideURLbar() {
+      window.scrollTo(0, 1);
+    }
+  </script>
+  <!--//meta tags ends here-->
+  <!--booststrap-->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+  <!--//booststrap end-->
+  <!-- font-awesome icons -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+    integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous" />
+  <!-- //font-awesome icons -->
+  <link rel="stylesheet" type="text/css" href="stylesheets/jquery-ui1.css" />
+  <!--Shoping cart-->
+  <link rel="stylesheet" href="stylesheets/shop.css" type="text/css" />
+  <!--//Shoping cart-->
+  <!--stylesheets-->
+  <link href="stylesheets/style.css" rel="stylesheet" type="text/css" media="all" />
+  <link rel="stylesheet" href="stylesheets/flexslider.css" type="text/css" media="screen" />
+  <link href="stylesheets/easy-responsive-tabs.css" rel="stylesheet" type="text/css" />
+  <!--//stylesheets-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet" />
+</head>
+
+<body>
+  <!--headder-->
+  <div class="header-outs" id="home">
+    <div class="header-bar">
+      <div class="container-fluid">
+        <div class="hedder-up row">
+          <div class="col-lg-3 col-md-3 logo-head">
+            <h1><a class="navbar-brand" href="index">Toys-Shop</a></h1>
+          </div>
+          <div class="col-lg-5 col-md-6 search-right">
+            <form action="/search" method="post" class="form-inline my-lg-0">
+              <input class="form-control mr-sm-2 keyNameSearch" type="search" placeholder="Tìm kiếm" name=search />
+              <button class="btn btnSearch" type="submit">Tìm kiếm</button>
+            </form>
+          </div>
+          <div class="col-lg-4 col-md-3 right-side-cart">
+            <div class="cart-icons">
+              <ul>
+                <% if (!user){%>
+                <li>
+                  <button type="button" data-toggle="modal" data-target="#exampleModal">
+                    <span class="far fa-user"></span>
+                  </button>
+                </li>
+                <%} else {%>
+                <li>
+                  <span id="name-current-user" data-toggle="modal" data-target="#loginedUserModal">Xin chào,
+                    <%=user.name%></span>
+                </li>
+                <%}%>
                   <li class="toyscart toyscart2 cart cart box_1">
                     <form action="#" method="post" class="last">
                       <input type="hidden" name="cmd" value="_cart" />
@@ -166,28 +133,28 @@
                   Sản phẩm
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                
-                  <a class="nav-link" href="product-bear">Gấu bông</a>
-                  <a class="nav-link " href="product-barbie">Búp bê</a>
-                  <a class="nav-link " href="product-car">Xe đồ chơi</a>
-                  <a class="nav-link " href="product-other">Khác</a>
-                </div>
-              </li>
-              <li class="nav-item" id="nav-service">
-                <a href="service" class="nav-link">Dịch vụ</a>
-              </li>
-              <li class="nav-item" id="nav-contact">
-                <a href="contact" class="nav-link">Liên hệ</a>
-              </li>
+                <%if (typeProduct){
+                  typeProduct.map(item => {%>
+                <a class="nav-link" href="shop?id=<%=item._id%>"><%=item.name%></a>
+                <%})}%>
+            </div>
+            </li>
+            <li class="nav-item" id="nav-service">
+              <a href="service" class="nav-link">Dịch vụ</a>
+            </li>
+            <li class="nav-item" id="nav-contact">
+              <a href="contact" class="nav-link">Liên hệ</a>
+            </li>
             </ul>
           </div>
-        </nav>
+          </nav>
+        </div>
       </div>
-    </div>
-    <!--//headder-->
-    <!-- banner -->
-    <div class="inner_page-banner one-img"></div>
-    <!--//banner -->
-  </body>
+      <!--//headder-->
+      <!-- banner -->
+      <div class="inner_page-banner one-img"></div>
+      <!--//banner -->
+</body>
+
 </html>
 <script src="javascripts/search.js"></script>

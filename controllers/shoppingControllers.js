@@ -7,19 +7,26 @@ const Product = require('../model/product');
 const Origin = require('../model/origin.model');
 const Producer = require('../model/producer.model');
 const Constants = require('../constants');
-const typeProducts = null;
 
-getTypeProduct = async () => {
-	if (!typeProducts) {
-		typeProducts = await Type.find({}, (err, type) => {
+
+
+exports.getTypeProduct = async (req, res, next) => {
+	// console.log("req.typeProduct: ", req.cookies.typeProduct);
+	if (!req.cookies.typeProduct) {
+		await Type.find({}, (err, type) => {
 			if (err) {
 				return next(err);
-			} else {
-				return type;
+			} else if (type) {
+				res.cookie('typeProduct', type);
+				res.locals.typeProduct = req.cookies.typeProduct;
+				return next();
 			}
 		});
+	} else {
+		res.locals.typeProduct = req.cookies.typeProduct;
+		// console.log("on not set cookie type");
+		return next();
 	}
-	return typeProducts;
 };
 getComment = async (idProduct) => {
 	await Comment.find({ idProduct }, (err, result) => {
@@ -31,21 +38,90 @@ getComment = async (idProduct) => {
 	});
 };
 
-exports.checkout = function(req, res) {
+exports.checkout = function (req, res) {
 	res.locals.cartShop = req.session.cartShop;
 	res.render('customer-views/checkout', { title: 'Giỏ hàng' });
 };
 //todo
-exports.checkout_post = function(req, res) {
+exports.checkout_post = function (req, res) {
 	res.render('customer-views/checkout', { title: 'Giỏ hàng' });
 };
-exports.payment = function(req, res) {
+exports.payment = function (req, res) {
 	res.render('customer-views/payment', { title: 'Thanh toán' });
 };
-exports.payment_post = function(req, res) {
+exports.payment_post = function (req, res) {
 	res.render('customer-views/payment', { title: 'Thanh toán' });
 };
-exports.shop = async function(req, res) {
+
+getConditionShowProduct = (conditionShow) => {
+	// console.log('on get sort: ', conditionShow);
+	let result = [...Constants.CONDITION_SORT_PRODUCT];
+	console.log('result before: ', result);
+	// switch (parseInt(conditionShow)) {
+	// 	case Constants.NAME_PRODUCT_ASC:
+	// 		console.log('on get result 0');
+	// 		result[0].sort = 1;
+	// 		return result[0]
+	// 		break;
+	// 	case Constants.NAME_PRODUCT_DES:
+	// 		console.log('on get result 1');
+	// 		result[0].sort = -1;
+	// 		break;
+	// 	case Constants.PRICE_PRODUCT_ASC:
+	// 		console.log('on get result 2');
+	// 		result[1].sort = 1;
+	// 		break;
+	// 	case Constants.PRICE_PRODUCT_DES:
+	// 		console.log('on get result 3');
+	// 		result[1].sort = -1;
+	// 		console.log('result sort in 3: ', result);
+	// 		break;
+	// 	case Constants.DISCOUNT_PRODUCT_ASC:
+	// 		console.log('on get result 4');
+	// 		result[2].sort = 1;
+	// 		break;
+	// 	case Constants.DISCOUNT_PRODUCT_DES:
+	// 		console.log('on get result 5');
+	// 		result[2].sort = -1;
+	// 		break;
+	// 	default:
+	// 		// console.log('on default:');
+	// 		break;
+	// }
+	switch (parseInt(conditionShow)) {
+		case Constants.NAME_PRODUCT_ASC:
+			console.log('on get result 0');
+			result[0].sort = 1;
+			break;
+		case Constants.NAME_PRODUCT_DES:
+			console.log('on get result 1');
+			result[0].sort = -1;
+			break;
+		case Constants.PRICE_PRODUCT_ASC:
+			console.log('on get result 2');
+			result[1].sort = 1;
+			break;
+		case Constants.PRICE_PRODUCT_DES:
+			console.log('on get result 3');
+			result[1].sort = -1;
+			console.log('result sort in 3: ', result);
+			break;
+		case Constants.DISCOUNT_PRODUCT_ASC:
+			console.log('on get result 4');
+			result[2].sort = 1;
+			break;
+		case Constants.DISCOUNT_PRODUCT_DES:
+			console.log('on get result 5');
+			result[2].sort = -1;
+			break;
+		default:
+			// console.log('on default:');
+			break;
+	}
+	console.log('result sort: ', result[parseInt(conditionShow / 2)]);
+	return result[parseInt(conditionShow / 2)];
+};
+exports.shop = async function (req, res) {
 	console.log('on shop controller');
 	//get type
 	const type = await Type.find({}, (err, type) => {
@@ -81,20 +157,57 @@ exports.shop = async function(req, res) {
 	} else if (page > sumPage) {
 		page = sumPage;
 	}
+	console.log('req.query.show', req.query.show);
+	const conditionShow = req.query.show || 0;
+	const conditionShowObject = { ...getConditionShowProduct(parseInt(conditionShow)) }
+	console.log("object: ", conditionShowObject);
+	const sortName = conditionShowObject.name;
+	const sortValue = conditionShowObject.sort;
+	const sortTest = {
+
+	}
+	sortTest[sortName] = sortValue;
+	console.log("sort test", sortTest);
+	console.log('condition show:', sortName, sortValue);
+
 	let paging;
 	let db;
 	if (typeId !== '') {
-		paging = getPaging(sumPage, page, '/shop?type=' + typeId + '&');
+		paging = getPaging(sumPage, page, '/shop?type=' + typeId + '&show=' + conditionShow + '&');
 		db = await Product.find({ type: typeId })
 			.limit(Constants.LIMIT_PRODUCT_PER_PAGE)
 			.skip((page - 1) * Constants.LIMIT_PRODUCT_PER_PAGE)
-			.sort({ name: 1 });
+		// .sort({
+		// 	name: conditionShowArray[0].sort,
+		// 	price: conditionShowArray[1].sort,
+		// 	discount: conditionShowArray[2].sort
+		// });
+		// .sort({
+		// 	discount: -1
+		// });
 	} else {
-		paging = getPaging(sumPage, page, '/shop?');
+		paging = getPaging(sumPage, page, '/shop?show=' + conditionShow + '&');
+
 		db = await Product.find({})
+			.sort(
+				sortTest
+				// {
+				// 	price: 1
+				// }
+			)
 			.limit(Constants.LIMIT_PRODUCT_PER_PAGE)
 			.skip((page - 1) * Constants.LIMIT_PRODUCT_PER_PAGE)
-			.sort({ name: 1 });
+		// .sort({
+		// 	name: parseInt(conditionShowArray[0].sort),
+		// 	price: parseInt(conditionShowArray[1].sort),
+		// 	discount: parseInt(conditionShowArray[2].sort)
+		// });
+
+		// .sort({
+		// 	name: conditionShowArray[0].sort,
+		// 	price: conditionShowArray[1].sort,
+		// 	discount: conditionShowArray[2].sort
+		// });
 	}
 	if (db) {
 		res.render('customer-views/shop', {
@@ -106,11 +219,13 @@ exports.shop = async function(req, res) {
 			paging,
 			currentPage: page,
 			origin,
-			producer
+			producer,
+			sum,
+			show: conditionShow
 		});
 	}
 };
-exports.single = async function(req, res) {
+exports.single = async function (req, res) {
 	typeProduct = await Type.find({}, (err, type) => {
 		if (err) {
 			return next(err);
@@ -186,7 +301,7 @@ exports.single = async function(req, res) {
 			}
 		});
 };
-exports.single_post = function(req, res) {
+exports.single_post = function (req, res) {
 	//post method when add a comment
 	//todo
 	const name = 'Gấu teddy';
@@ -195,10 +310,10 @@ exports.single_post = function(req, res) {
 		nameProduct: name
 	});
 };
-exports.detail_receipt = function(req, res) {
+exports.detail_receipt = function (req, res) {
 	res.render('customer-views/detail-receipt', { title: 'Chi tiết hóa đơn' });
 };
-exports.history = function(req, res) {
+exports.history = function (req, res) {
 	res.render('customer-views/history', { title: 'Lịch sử mua hàng' });
 };
 
@@ -246,7 +361,7 @@ exports.deleteFromCart = (req, res) => {
 
 	const index = req.session.cartShop.findIndex((item) => item._id === id);
 	if (index != -1) {
-		req.session.cartShop = [ ...req.session.cartShop.filter((item) => item._id !== id) ];
+		req.session.cartShop = [...req.session.cartShop.filter((item) => item._id !== id)];
 		res.send({ isSuccessful: true });
 	} else {
 		res.send({ isSuccessful: false });
@@ -447,6 +562,11 @@ exports.search = async (req, res) => {
 			return type;
 		}
 	});
+	//get origin table
+	const origin = await Origin.find({});
+	//get producer table
+	const producer = await Producer.find({});
+
 	const search = req.body.search || '';
 	console.log('search: ', search);
 	const sum = await getSumSearchProduct(search);
@@ -461,20 +581,7 @@ exports.search = async (req, res) => {
 		page = sumPage;
 	}
 	let paging = getPaging(sumPage, page, '/search?search=' + search + '&');
-	// let db = await Product.find({ $text: { $search: key } })
-	// 	.limit(Constants.LIMIT_PRODUCT_PER_PAGE)
-	// 	.skip((page - 1) * Constants.LIMIT_PRODUCT_PER_PAGE)
-	// 	.sort({ name: 1 });
-	// let dbTemp = await Product.find({})
-	// 	.limit(Constants.LIMIT_PRODUCT_PER_PAGE)
-	// 	.skip((page - 1) * Constants.LIMIT_PRODUCT_PER_PAGE)
-	// 	.sort({ name: 1 });
-	// let db = dbTemp.forEach((item) => item.name.includes(search) && item);
 
-	//const key = '/.*' + search + '.*/';
-
-	// Product.createIndex({ name: 'text' });
-	// let db = await Product.find({ $text: { $search: search } });
 	const key = new RegExp('^' + search.toLowerCase(), 'i');
 	await Product.find({ name: key }, (err, db) => {
 		console.log('sum: ', sum, 'db: ', db);
@@ -488,20 +595,96 @@ exports.search = async (req, res) => {
 				standOutProducts: db.filter((item, index) => item.isStandOut == true),
 				typeProduct,
 				paging,
-				currentPage: page
+				currentPage: page,
+				origin,
+				producer,
+				sum
 			});
 		}
 	});
 };
+getSumSearchAdvanced = async (type, discount, origin, producer) => {
+	return await Product.find({
+		type,
+		discount: { $gte: discount },
+		origin,
+		producer,
+		isDeleted: 'false'
+	}).countDocuments();
+};
 
-exports.searchAdvanced = (req, res) => {
-	const type = req.body.type || '';
-	const discount = req.body.discount || '';
-	const origin = req.body.origin || '';
-	const producer = req.body.producer || '';
+exports.searchAdvanced = async (req, res) => {
+	const typeSearch = req.body.type || req.query.type || { $ne: null };
+	const discountSearch = req.body.discount || req.query.discount || 0;
+	const originSearch = req.body.origin || req.query.origin || { $ne: null };
+	const producerSearch = req.body.producer || req.query.producer || { $ne: null };
 
-	console.log('search: ', type, discount, 'origin: ', origin, 'producer:', producer);
-	res.send({
-		message: true
+	console.log(
+		'search: ',
+		typeSearch,
+		discountSearch,
+		'origin: ',
+		originSearch,
+		'producer:',
+		producerSearch,
+		'discount: ',
+		discountSearch
+	);
+	//get type
+	const typeProduct = await Type.find({}, (err, type) => {
+		if (err) {
+			return next(err);
+		} else {
+			return type;
+		}
 	});
+	//get origin table
+	const origin = await Origin.find({});
+	//get producer table
+	const producer = await Producer.find({});
+
+	var title = 'Kết quả tìm kiếm';
+	const sum = await getSumSearchAdvanced(typeSearch, discountSearch, originSearch, producerSearch);
+	const sumPage = Math.ceil(sum * 1.0 / Constants.LIMIT_PRODUCT_PER_PAGE);
+	let page = 1;
+	if (req.query.page) {
+		page = req.query.page;
+	}
+	if (page < 1 || sumPage === 0) {
+		page = 1;
+	} else if (page > sumPage) {
+		page = sumPage;
+	}
+
+	paging = getPaging(sumPage, page, '/searchAdvanced?');
+	db = await Product.find({
+		type: typeSearch,
+		discount: { $gte: discountSearch },
+		origin: originSearch,
+		producer: producerSearch,
+		isDeleted: 'false'
+	})
+		.limit(Constants.LIMIT_PRODUCT_PER_PAGE)
+		.skip((page - 1) * Constants.LIMIT_PRODUCT_PER_PAGE)
+		.sort({ name: 1 });
+
+	console.log('discount search: ', discountSearch);
+	if (db) {
+		res.render('customer-views/searchResult', {
+			title,
+			link: '',
+			products: db,
+			standOutProducts: db.filter((item, index) => item.isStandOut == true),
+			typeProduct: typeProduct,
+			paging,
+			currentPage: page,
+			sum,
+			origin,
+			producer,
+			typeSearch: req.body.type || req.query.type || '',
+			originSearch: req.body.origin || req.query.origin || '',
+			producerSearch: req.body.producer || req.query.producer || '',
+			discountSearch: req.body.discount || req.query.discount
+		});
+	}
 };

@@ -158,15 +158,15 @@ nav.navbar.navbar-expand-lg.navbar-light {
 }
 /*--//headder info-contact --*/
 .search-right input[type="search"] {
-  width: 85%;
-  color: #fff;
-  background-color: #e4e4e4;
-  outline: none !important;
-  font-size: 14px;
-  margin-right: 0px !important;
-  border-radius: 0px;
-  border-top-left-radius: 25px;
-  border-bottom-left-radius: 25px;
+	width: 85%;
+	color: rgb(2, 2, 2);
+	background-color: #e4e4e4;
+	outline: none !important;
+	font-size: 14px;
+	margin-right: 0px !important;
+	border-radius: 0px;
+	border-top-left-radius: 25px;
+	border-bottom-left-radius: 25px;
 }
 .search-right button {
   background: #000;
