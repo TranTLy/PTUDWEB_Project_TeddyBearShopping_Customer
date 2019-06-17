@@ -85,6 +85,10 @@ router.get(
   account_controller.isLogin,
   account_controller.update_infor
 );
+router.post(
+  "/update-infor",
+  account_controller.post_update_infor
+);
 router.get(
   "/change-password/checkpass",
   account_controller.isLogin,

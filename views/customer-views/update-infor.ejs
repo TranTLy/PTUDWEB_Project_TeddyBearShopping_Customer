@@ -1,34 +1,36 @@
 <%include ../components/header%>
 <link rel="stylesheet" href="stylesheets/signup.css" />
 <link rel="stylesheet" href="stylesheets/forgetpassword.css" />
-<div class="form-group from-signup">
+<form class="form-group from-signup" method="POST" action="update-infor">
   <label id="lable-sign-up" for="sign-up">Thay đổi thông tin cá nhân</label>
   <br />
   <a href="/change-password" id="link-change-password">Thay đổi mật khẩu?</a>
   <br />
-  <div class="label-input-signup ">Ảnh đại diện</div><br>
-      <button type="button"
-      id="btnChooseFile"
-        class="btn subscrib-btnn"
-        onclick="document.getElementById('filesToUpload').click();"
-      >Chọn ảnh</button>
-      <img src="<%if (user!= null) { %>
-        <%=user.image %> 
-           <%}%>""  id="avatar" width="100px" height="100px">
+  <div style="display: flex; flex-direction: column; text-align: center; align-items: center; width: 100% ">
+  <img src="<% if (user!= null) { %>
+    <%= user.avatar %> 
+       <%}%>"  id="avatar" style="border-radius: 50%" width="120px" height="120px" >
+       <button type="button"
+       id="btnChooseFile"
+         class="btn "
+         onclick="document.getElementById('filesToUpload').click();" style="margin-top: 10px"
+       >Chọn ảnh</button>
       <input
-        name="filesToUpload[]"
+        name="avatar"
         id="filesToUpload"
         type="file"
-        onchange="Uploadfile()"
+        onchange="Upfile()"
         style="display: none"
         accept=".png, .jpg, .jpeg, .gif"
       />
+    </div>
+    
       <br>
   <div class="label-input-signup ">Họ và tên<span>*</span></div>
   <input
     type="text"
     class="form-control required"
-    name="sign-up"
+    name="name"
     id="nameUser"
     aria-describedby="helpId"
     required
@@ -40,7 +42,7 @@
   <input
     type="date"
     class="form-control"
-    name="sign-up"
+    name="birthday"
     id="dob"
     aria-describedby="helpId"
     data-date-format="DD MM YYYY"
@@ -53,7 +55,7 @@
   <input
     type="text"
     class="form-control"
-    name="sign-up"
+    name="phoneNumber"
     id="phone"
     aria-describedby="helpId"
     value= <%if (user!= null) { %>
@@ -79,7 +81,10 @@
       return true;
     };
     const checkInfor = () => {
+      alert("ấcdjalsjdlasjd");
+      console.log("checl");
       checkEmpty();
+      Uploadfile();
     };
     function Uploadfile() {
     const input = document.getElementById("filesToUpload");
@@ -106,12 +111,108 @@
       settings.data = formData;
       $.ajax(settings)
         .done(
-          res => (avatar.src = JSON.parse(res).data.link)
+          res => {
+            (input.value = JSON.parse(res).data.link)}
         )
         .fail(err => console.log("err", err));
     }
+    console.log("input value", input.value);
+    }
+    function Upfile() {
+    const input = document.getElementById("filesToUpload");
+   const avatar = document.getElementById("avatar");
+
+    for (let x = 0; x < input.files.length; x++) {
+      var reader = new FileReader();
+        reader.onload = function (e) {
+    // var img = document.createElement("img");
+    //             img.src = e.target.result;
+
+    //             var canvas = document.createElement("canvas");
+    //             var ctx = canvas.getContext("2d");
+    //             ctx.drawImage(img, 0, 0);
+
+    //             var MAX_WIDTH = 200;
+    //             var MAX_HEIGHT = 200;
+    //             var width = img.width;
+    //             var height = img.height;
+
+    //             if (width > height) {
+    //                 if (width > MAX_WIDTH) {
+    //                     height *= MAX_WIDTH / width;
+    //                     width = MAX_WIDTH;
+    //                 }
+    //             } else {
+    //                 if (height > MAX_HEIGHT) {
+    //                     width *= MAX_HEIGHT / height;
+    //                     height = MAX_HEIGHT;
+    //                 }
+    //             }
+    //             canvas.width = width;
+    //             canvas.height = height;
+    //             var ctx = canvas.getContext("2d");
+    //             ctx.drawImage(img, 0, 0, width, height);
+    //             console.log("ctx",ctx);
+    //             dataurl = canvas.toDataURL(input.files[x].type);
+    //             console.log("type", input.files[x].type);
+    //            console.log("dataa",dataurl);
+                // document.getElementById('avatar').src = dataurl;
+            $('#avatar').attr('src', e.target.result);
+        }
+        reader.readAsDataURL(input.files[x]);
   }
+  // if (window.File && window.FileReader && window.FileList && window.Blob) {
+  //       var filesToUploads = document.getElementById('filesToUpload').files;
+  //       var file = filesToUploads[0];
+  //       console.log("file",file);
+  //       if (file) {
+
+  //           var reader = new FileReader();
+  //           // Set the image once loaded into file reader
+  //           reader.onload = function(e) {
+
+  //               var img = document.createElement("img");
+  //               img.src = e.target.result;
+
+  //               var canvas = document.createElement("canvas");
+  //               var ctx = canvas.getContext("2d");
+  //               ctx.drawImage(img, 0, 0);
+
+  //               var MAX_WIDTH = 200;
+  //               var MAX_HEIGHT = 200;
+  //               var width = img.width;
+  //               var height = img.height;
+
+  //               if (width > height) {
+  //                   if (width > MAX_WIDTH) {
+  //                       height *= MAX_WIDTH / width;
+  //                       width = MAX_WIDTH;
+  //                   }
+  //               } else {
+  //                   if (height > MAX_HEIGHT) {
+  //                       width *= MAX_HEIGHT / height;
+  //                       height = MAX_HEIGHT;
+  //                   }
+  //               }
+  //               canvas.width = width;
+  //               canvas.height = height;
+  //               var ctx = canvas.getContext("2d");
+  //               ctx.drawImage(img, 0, 0, width, height);
+
+  //               dataurl = canvas.toDataURL(file.type);
+  //               console.log("type", file.type);
+  //              console.log("dataa",dataurl);
+  //               document.getElementById('avatar').src = dataurl;
+  //           }
+  //           reader.readAsDataURL(file);
+
+  //       }
+
+  //   } else {
+  //       alert('The File APIs are not fully supported in this browser.');
+  //   }
+    }
   </script>
-</div>
+</form>
 
 <% include ../components/footer%>

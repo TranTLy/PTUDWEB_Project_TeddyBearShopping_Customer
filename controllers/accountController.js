@@ -289,7 +289,8 @@ exports.post_reset_password = function(req, res, next) {
             res.cookie("user", user);
             res.render("customer-views/infor", {
               title: "Thay đổi mật khẩu thành công",
-              message: "Thay đổi mật khẩu thành công, mời bạn OK để tiếp tục"
+              message: "Thay đổi mật khẩu thành công, mời bạn OK để tiếp tục",
+              link: "/"
             });
           });
         }
@@ -361,4 +362,32 @@ exports.post_authenticate = function(req, res) {
       return done(err);
     }
   });
+};
+
+exports.post_update_infor = function(req, res) {
+  console.log("link", req.body.avatar);
+  User.updateOne(
+    { _id: req.cookies.user._id },
+    {
+      name: req.body.name,
+      avatar: req.body.avatar,
+      birthday: req.body.birthday,
+      phoneNumber: req.body.phoneNumber
+    },
+    (err, result) => {
+      if (err)
+        res.send({
+          message: "Thay đổi thông tin thất bại, bạn vui lòng thử!!"
+        });
+      else {
+        res.cookie("user", result);
+        res.render("customer-views/infor", {
+          title: "Thay đổi thông tin cá nhân",
+          message:
+            "Thay đổi thông tin cá nhân thành công, mời bạn OK để tiếp tục",
+          link: "/update-infor"
+        });
+      }
+    }
+  );
 };
