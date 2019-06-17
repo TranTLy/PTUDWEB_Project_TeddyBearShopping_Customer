@@ -1,0 +1,18 @@
+<%
+formatMoney = (money) => {
+	const DISTANCE = 3;
+	const stringMoney = money + '';
+	let temp = '';
+	for (let i = stringMoney.length - 1; i >= 0; i = i - DISTANCE) {
+		temp += stringMoney.substring(i - DISTANCE + 1, i);
+		if (i - DISTANCE > 0) {
+        temp = '.' + temp;
+        } else {
+        temp = '.' + temp;
+            temp = stringMoney.substring(0, i-DISTANCE);
+            break;
+        }
+	}
+	temp += 'đ';
+    return temp;
+%>

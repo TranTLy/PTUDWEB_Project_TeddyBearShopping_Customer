@@ -1,0 +1,5 @@
+exports.LIMIT_PRODUCT_PER_PAGE = 3;
+exports.LIMIT_PAGE_NUMBER_PAGE = 5;
+exports.LIMIT_PAGE_NUMBER = 5;
+exports.LIMIT_RELATED_PRODUCT = 3;
+exports.LIMIT_COMMENT = 4;

@@ -1,4 +1,5 @@
 const User = require('../model/user');
+const Comment = require('../model/comment');
 var passport = require('passport');
 require('../config/passport');
 var Bcrypt = require('bcryptjs');
@@ -25,26 +26,27 @@ exports.update_infor = function(req, res) {
 exports.post_signin = async function(req, res) {
 	passport.authenticate('local', { session: false }, (err, user, info) => {
 		if (err || !user) {
-			return res.status(400).json({
+			console.log('login failed');
+			res.send({
 				message: 'Something is not right',
-				user: user
+				success: false
+			});
+		} else {
+			req.login(user, (err) => {
+				if (err) {
+					res.send({ success: false });
+				}
+				// generate a signed son web token with the contents of user object and return it in the response
+				var token = jwt.sign({ user }, config.secret, {
+					expiresIn: 86400 // 1 day
+				});
+				res.cookie('token', token);
+				res.cookie('user', user);
+				res.locals.user = req.cookies.user;
+				console.log('login success');
+				res.send({ success: true });
 			});
 		}
-		req.login(user, (err) => {
-			if (err) {
-				res.send(err);
-			}
-			// generate a signed son web token with the contents of user object and return it in the response
-			var token = jwt.sign({ user }, config.secret, {
-				expiresIn: 86400 // 1 day
-			});
-			res.cookie('token', token);
-			res.cookie('user', user);
-			res.locals.user = req.cookies.user;
-
-			// console.log('login successfully! is login: ', req.isAuthenticated());
-			res.redirect('/update-infor');
-		});
 	})(req, res);
 };
 
@@ -108,25 +110,26 @@ exports.signout = (req, res, next) => {
 	req.logout();
 	res.clearCookie('user');
 	res.clearCookie('token');
-	res.redirect('/about');
-	console.log('on redirect');
+	res.send({ success: true });
 };
 
 exports.isLogin = function(req, res, next) {
 	console.log('is authen 3: ', req.isAuthenticated());
-	// console.log('user in cookie: ', req.cookies.user);
-	// if (req.cookies.user) {
-	// 	return next();
-	// } else {
-	// 	return res.send({
-	// 		message: 'Bạn cần đăng nhập để thực hiện chức năng này.'
-	// 	});
-	// }
 	if (req.isAuthenticated()) {
 		return next();
 	} else {
 		return res.send({
 			message: 'Bạn cần đăng nhập để thực hiện chức năng này.'
 		});
+	}
+};
+
+exports.checkEmail = async (req, res) => {
+	email = req.query.email || '';
+	result = await User.findOne({ email });
+	if (result) {
+		res.send({ success: true });
+	} else {
+		res.send({ success: false });
 	}
 };

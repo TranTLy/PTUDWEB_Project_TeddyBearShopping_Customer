@@ -1,0 +1,13 @@
+<div class="commnet-item">
+    <div class="comment-item__user">
+        <img src=<%=comment.idUser.avatar || "https://pbs.twimg.com/profile_images/819955513718779905/DY4UfMVj_400x400.jpg"%> alt="">
+        <div class="comment-item__user-name-time">
+            <div class="name"><%=comment.idUser.name%></div>
+            <%date = new Date(comment.time)%>
+            <!-- <div class="time"><%=date.getDate()%>/<%=date.getMonth()+1%>/<%=date.getFullYear()%><br/>date: <%=date.toLocaleString()%><br/></div> -->
+            <div class="time"><%=date.toLocaleString()%><br/></div>
+
+        </div>
+    </div>
+    <div class="comment-item__content"><%=comment.content%></div>
+</div>

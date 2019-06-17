@@ -15,7 +15,7 @@
   </div>
 </div>
 
-<%if  (!cartShop) {%>
+<%if  (!cartShop || cartShop.length===0) {%>
 <section class="checkout py-lg-4 py-md-3 py-sm-3 py-3">
   <div class="container py-lg-5 py-md-4 py-sm-4 py-3">
     <div class="shop_inner_inf">
@@ -49,12 +49,13 @@
                 <th>Số lượng</th>
                 <th>Tên hàng</th>
                 <th>Giá</th>
+                <th>Thành tiền</th>                
                 <th>Xóa</th>
               </tr>
             </thead>
             <tbody>
               <%cartShop.map((item, index)=>{%>
-                <tr class="rem1" id="product-<%=item._id%>">
+                <tr class="rem1 product-item-session" id="product-<%=item._id%>">
                     <td class="invert"><%=index%></td>
                     <td class="invert-image" id="img-product-checkout">
                       <a href="/single/<%=item._id%>"
@@ -71,7 +72,8 @@
                       </div>
                     </td>
                     <td class="invert"><%=item.name%></td>
-                    <td class="invert"><%=item.price%></td>
+                    <td class="invert"><%=(item.price/1000.0).toFixed(3)%></td>
+                    <td class="invert"><%=(item.price * item.quantity/1000.0).toFixed(3)%></td>
                     <td class="invert">
                       <div class="rem" onclick= "onDeleteProduct('<%=item._id%>')">
                         <div class="" id= "btn-cancel-product" >Hủy</div>
@@ -86,10 +88,15 @@
           <div class="col-md-4 checkout-left-basket">
             <h4>Hóa đơn</h4>
             <ul>
-              <li>Tên hàng 1 <i>-</i> <span>$675.000 </span></li>
-              <li>Tên hàng 2 <i>-</i> <span>$325.000 </span></li>
-              <li>Phí dịch vụ <i>-</i> <span>50.000</span></li>
-              <li>Tổng cộng <i>-</i> <span>1.050.000</span></li>
+            <%
+            var sum = 0;
+            cartShop.map((item, index)=>{ 
+              const money = (item.price*item.quantity);
+              sum +=money;
+              %>
+              <li><%=item.name%> <i>-</i> <span><%=(money/1000.0).toFixed(3)%> </span><li>
+           <% })%> 
+              <li><b> Tổng cộng <i>-</i> <span><%=(sum/1000.0).toFixed(3)%></span> </b></li>
             </ul>
           </div>
           <div class="col-md-8 address_form">
@@ -173,5 +180,4 @@
 </section>
 <%}%>
 <% include ../components/footer%>
-<script src='javascripts/checkout.js'></script>
-
+<script src = "javascripts/checkout.js"></script>
