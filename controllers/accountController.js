@@ -9,6 +9,7 @@ var config = require("../config/database");
 var nodemailer = require("nodemailer");
 var jwt = require("jsonwebtoken");
 var crypto = require("crypto");
+var jwtDecode = require("jwt-decode");
 var transporter = nodemailer.createTransport({
   service: "Gmail",
   auth: {
@@ -42,10 +43,29 @@ exports.update_infor = function(req, res) {
 };
 
 exports.infor = function(req, res) {
-  res.render("customer-views/infor", {
-    title: "Thay đổi mật khẩu thành công",
-    message: "Thay đổi mật khẩu thành công, mời bạn OK để tiếp tục"
-  });
+  if (req.query.token) {
+    const token = req.query.token;
+    const jwtdecode = jwtDecode(token);
+    const user = new User(jwtdecode.userAu);
+    console.log("token decode", user);
+    user.isAuth = true;
+    res.cookie("user", user);
+    User.update({ _id: user._id }, { isAuth: true }, (err, result) => {
+      if (err) res.send({ message: "Xác thực không thành công" });
+      else
+        res.render("customer-views/infor", {
+          title: "Xác thực tài khoản",
+          message: "Xác thực tài khoản thành công, mời bạn OK để tiếp tục",
+          link: "/checkout"
+        });
+    });
+  } else {
+    res.render("customer-views/infor", {
+      title: "Thay đổi mật khẩu",
+      message: "Thay đổi mật khẩu thành công, mời bạn OK để tiếp tục",
+      link: "/index"
+    });
+  }
 };
 
 exports.post_signin = async function(req, res) {
@@ -149,6 +169,17 @@ exports.isLogin = function(req, res, next) {
   }
 };
 
+exports.isAuthenUser = (req, res, next) => {
+  console.log("autueh");
+  if (req.cookies.user.isAuth) {
+    next();
+  } else {
+    res.render("customer-views/authentication", {
+      title: "Xác thực tài khoản",
+      message: "Mòi bạn nhấn ok để xác thực tài khoản"
+    });
+  }
+};
 exports.checkEmail = async (req, res) => {
   email = req.query.email || "";
   result = await User.findOne({ email });
@@ -268,6 +299,66 @@ exports.post_reset_password = function(req, res, next) {
         message:
           "Mã thông báo đặt lại mật khẩu không hợp lệ hoặc đã hết hạn, mời bạn thử lại!."
       });
+    }
+  });
+};
+
+exports.checkpassword = function(req, res) {
+  const pass = req.query.pass;
+  const match = bcrypt.compareSync(pass, req.cookies.user.password);
+  if (match) res.send({ check: true });
+  else res.send({ check: false });
+};
+
+exports.post_change_password = function(req, res) {
+  const user = req.cookies.user;
+  console.log("pass", user.password);
+  password = bcrypt.hashSync(req.body.newpassword, 10);
+  res.cookie("user", user);
+  console.log("pass hash", user.password);
+  const userUpdate = { password: password };
+  User.findByIdAndUpdate(user._id, userUpdate, (err, user) => {
+    if (err)
+      return res.send({
+        message: err + "Đã có lỗi xảy ra trong quá trình thay đổi mật khẩu"
+      });
+    else {
+      req.login(user, err => {
+        if (err) {
+          res.send(err);
+        }
+        res.cookie("user", user);
+        res.render("customer-views/infor", {
+          title: "Thay đổi mật khẩu thành công",
+          message: "Thay đổi mật khẩu thành công, mời bạn OK để tiếp tục"
+        });
+      });
+    }
+  });
+};
+
+exports.post_authenticate = function(req, res) {
+  const userAu = req.cookies.user;
+  const token = jwt.sign({ userAu }, "secret", { expiresIn: 1440 });
+  const url = "https://" + req.headers.host + "/infor?token=" + token;
+  var mainOptions = {
+    from: "tranphunguyen111@gmail.com",
+    to: userAu.email,
+    subject: "Xác thực tài khoản",
+    html:
+      "<div><h3>Xin chào " +
+      userAu.name +
+      "</h3><p> Nhấn vào link " +
+      url +
+      " để xác thực tài khoản</p>"
+  };
+  transporter.sendMail(mainOptions, function(err) {
+    if (!err) {
+      return res.json({
+        message: "Mời bạn kiểm tra mail để xác thực tài khoản!!"
+      });
+    } else {
+      return done(err);
     }
   });
 };

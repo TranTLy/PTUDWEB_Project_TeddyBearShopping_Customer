@@ -6,7 +6,24 @@
   <br />
   <a href="/change-password" id="link-change-password">Thay đổi mật khẩu?</a>
   <br />
-
+  <div class="label-input-signup ">Ảnh đại diện</div><br>
+      <button type="button"
+      id="btnChooseFile"
+        class="btn subscrib-btnn"
+        onclick="document.getElementById('filesToUpload').click();"
+      >Chọn ảnh</button>
+      <img src="<%if (user!= null) { %>
+        <%=user.image %> 
+           <%}%>""  id="avatar" width="100px" height="100px">
+      <input
+        name="filesToUpload[]"
+        id="filesToUpload"
+        type="file"
+        onchange="Uploadfile()"
+        style="display: none"
+        accept=".png, .jpg, .jpeg, .gif"
+      />
+      <br>
   <div class="label-input-signup ">Họ và tên<span>*</span></div>
   <input
     type="text"
@@ -64,6 +81,36 @@
     const checkInfor = () => {
       checkEmpty();
     };
+    function Uploadfile() {
+    const input = document.getElementById("filesToUpload");
+   const avatar = document.getElementById("avatar");
+
+    const apiUrl = "https://api.imgur.com/3/image";
+    const token = "4262f0ea0613e5e6565050b4c5b7775c78d3722d";
+    let settings = {
+      async: false,
+      crossDomain: true,
+      processData: false,
+      contentType: false,
+      type: "POST",
+      url: apiUrl,
+      headers: {
+        Authorization: "Bearer " + token,
+        Accept: "application/json"
+      },
+      mimeType: "multipart/form-data"
+    };
+    let formData = new FormData();
+    for (let x = 0; x < input.files.length; x++) {
+      formData.append("image",  input.files[x]);
+      settings.data = formData;
+      $.ajax(settings)
+        .done(
+          res => (avatar.src = JSON.parse(res).data.link)
+        )
+        .fail(err => console.log("err", err));
+    }
+  }
   </script>
 </div>
 

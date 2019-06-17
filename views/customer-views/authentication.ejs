@@ -4,8 +4,8 @@
 >
   <label><%=message %></label>
   <%}%>
-  <div style="text-align: center; margin-bottom: 10px">
-    <button class="btn subscrib-btnn" onclick="window.location.href = '<%=link %>'">
+  <form style="text-align: center; margin-bottom: 10px" method="POST" action="authenticate">
+    <button type="submit" class="btn subscrib-btnn" >
       OK
     </button>
   </div>
