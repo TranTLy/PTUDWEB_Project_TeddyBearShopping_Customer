@@ -40,13 +40,14 @@ router.get('/history', shopping_controller.getTypeProduct, shopping_controller.h
 
 
 router.post('/signin', account_controller.post_signin);
-router.get('/signup', account_controller.signup);
+router.get('/signup', shopping_controller.getTypeProduct, account_controller.signup);
 router.post('/postComment', shopping_controller.post_comment);
 
 router.post('/signup', account_controller.post_signup);
 router.post('/signout', account_controller.signout);
 router.get(
     "/forget-password",
+    shopping_controller.getTypeProduct,
     account_controller.isLogin,
     account_controller.forget_password
 );
@@ -57,6 +58,7 @@ router.post(
 );
 router.get(
     "/change-password",
+    shopping_controller.getTypeProduct,
     account_controller.isLogin,
     account_controller.change_password
 );
@@ -69,6 +71,7 @@ router.post(
 
 router.get(
     "/reset-password",
+    shopping_controller.getTypeProduct,
     account_controller.isLogin,
     account_controller.reset_password
 );
@@ -78,9 +81,10 @@ router.post(
     account_controller.post_reset_password
 );
 
-router.get("/infor", account_controller.infor);
+router.get("/infor", shopping_controller.getTypeProduct, account_controller.infor);
 router.get(
     "/update-infor",
+    shopping_controller.getTypeProduct,
     account_controller.isLogin,
     account_controller.update_infor
 );
@@ -88,6 +92,7 @@ router.get(
 router.post("/authenticate", account_controller.post_authenticate);
 router.get(
     "/update-infor",
+    shopping_controller.getTypeProduct,
     account_controller.isLogin,
     account_controller.update_infor
 );
@@ -97,6 +102,7 @@ router.post(
 );
 router.get(
     "/change-password/checkpass",
+    shopping_controller.getTypeProduct,
     account_controller.isLogin,
     account_controller.checkpassword
 );

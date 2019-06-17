@@ -60,61 +60,58 @@
               <option value=''>Tất cả </option>
                 <% typeProduct.map((item, index)=> { 
                     if (item._id == typeSearch){%>
-               <option selected value=<%=item._id%>> <%=item.name%> </option>
-                    <%} else {%>
-                    <option value=<%=item._id%>> <%=item.name%></option>
-             <%}})%>
-               </select>
-            </div> 
-            <!-- //type product -->
-            <!-- discount -->
-            <div class="search-advanced">
-                <h4 class="search-subtitle">Ưu đãi</h4>
-                <% discountArray = [{discount: 0, name: "Tất cả"}, {discount: 0.05, name: "Từ 5%"}, {discount: 0.1, name: "Từ 10%"}, {discount: 0.2, name: "Từ 20%"}]%>
+      <option selected value=<%=item._id%>> <%=item.name%> </option>
+      <%} else {%>
+      <option value=<%=item._id%>> <%=item.name%></option>
+      <%}})%>
+      </select>
+  </div>
+  <!-- //type product -->
+  <!-- discount -->
+  <div class="search-advanced">
+    <h4 class="search-subtitle">Ưu đãi</h4>
+    <% discountArray = [{discount: 0, name: "Tất cả"}, {discount: 0.05, name: "Từ 5%"}, {discount: 0.1, name: "Từ 10%"}, {discount: 0.2, name: "Từ 20%"}]%>
 
-                <select name="discount" id="search-discount">
-                        <% discountArray.map((item, index)=> { 
+    <select name="discount" id="search-discount">
+      <% discountArray.map((item, index)=> { 
                             if (item.discount === parseFloat(discountSearch)){%>
-                                <option selected value=<%=item.discount%>> <%=item.name%></option>
-                            <%} else {%>
-                                <option value=<%=item.discount%>> <%=item.name%></option>
-                        <%}})%>
-                <!-- <option value=0.05>Từ 5%</option>
-                <option value=0.1>Từ 10%</option>
-                <option value=0.2>Từ 20%</option> -->
-                 </select>
-              </div> 
-            <!-- //discount -->
-                        <!-- origin -->
-                        <div class="search-advanced">
-                            <h4 class="search-subtitle">Xuất xứ</h4>
-                            <select name="origin" id="search-origin">
-                                <option value='' selected>Tất cả </option>
-                                <% origin.map((item, index)=> { 
+      <option selected value=<%=item.discount%>> <%=item.name%></option>
+      <%} else {%>
+      <option value=<%=item.discount%>> <%=item.name%></option>
+      <%}})%>
+    </select>
+  </div>
+  <!-- //discount -->
+  <!-- origin -->
+  <div class="search-advanced">
+    <h4 class="search-subtitle">Xuất xứ</h4>
+    <select name="origin" id="search-origin">
+      <option value='' selected>Tất cả </option>
+      <% origin.map((item, index)=> { 
                                     if (item._id == originSearch){%>
-                               <option selected value=<%=item._id%>> <%=item.name%> </option>
-                                    <%} else {%>
-                                    <option value=<%=item._id%>> <%=item.name%></option>
-                             <%}})%>
-                             </select>
-                          </div> 
-                        <!-- //origin -->
-                <!-- producer -->
-                <div class="search-advanced">
-                    <h4 class="search-subtitle">Nhà sản xuất</h4>
-                    <select name="producer" id="search-producer">
-                        <option value='' selected>Tất cả </option>
-                        <% producer.map((item, index)=> { 
+      <option selected value=<%=item._id%>> <%=item.name%> </option>
+      <%} else {%>
+      <option value=<%=item._id%>> <%=item.name%></option>
+      <%}})%>
+    </select>
+  </div>
+  <!-- //origin -->
+  <!-- producer -->
+  <div class="search-advanced">
+    <h4 class="search-subtitle">Nhà sản xuất</h4>
+    <select name="producer" id="search-producer">
+      <option value='' selected>Tất cả </option>
+      <% producer.map((item, index)=> { 
                             if (item._id == producerSearch){%>
-                       <option selected value=<%=item._id%>> <%=item.name%> </option>
-                            <%} else {%>
-                            <option value=<%=item._id%>> <%=item.name%></option>
-                     <%}})%>
-                     </select>
-                  </div> 
-                <!-- //producer -->
-        </div>
-        </form>
+      <option selected value=<%=item._id%>> <%=item.name%> </option>
+      <%} else {%>
+      <option value=<%=item._id%>> <%=item.name%></option>
+      <%}})%>
+    </select>
+  </div>
+  <!-- //producer -->
+</div>
+</form>
 <!-- deals -->
 <div class="deal-leftmk left-side">
   <h3 class="agileits-sear-head">Sản phẩm nổi bật</h3>
@@ -127,27 +124,62 @@
 <div class="left-ads-display col-lg-9">
   <div class="sum-search-result">
     <%if (sum  === 0) { %>
-      <span>Không có sản phẩm nào được tìm thấy</span>
+    <span>Không có sản phẩm nào được tìm thấy</span>
     <%} else {%>
-      <span>Có <b><%= sum%></b> sản phẩm được tìm thấy</span>    
-      <% } %>
-    </div>
+    <span>Có <b><%= sum%></b> sản phẩm được tìm thấy</span>
+    <% } %>
+  </div>
+
+  <!-- change order product -->
+  <% conditionShowProduct = [
+   {
+     name: 'Theo tên tăng dần'
+   },
+   {
+     name: 'Theo tên giảm dần'
+   },
+   {
+     name: 'Theo giá tăng dần'
+   },
+   {
+     name: 'Theo giá giảm dần'
+   },
+   {
+     name: 'Theo ưu đãi tăng dần'
+   },
+   {
+     name: 'Theo ưu đãi giảm dần'
+   }
+ ]%>
+  <div class="change-order-list">
+    Thay đổi cách hiển thị
+    <select name="conditionShowProduct" id="conditionShowProduct" onchange="changeConditionShowProductSearch()">
+      <% conditionShowProduct.map((item, index) => {
+             if (index === show){ %>
+      <option selected value=<%= index%>><%= item.name%></option>
+      <%} else { %>
+      <option value=<%= index%>><%= item.name%></option>
+      <%}})%>
+    </select>
+  </div>
+  <!-- change order product -->
   <div class="row" id="pagination">
     <%paging.map((item, index)=>{
             if (item.name === parseInt(currentPage)) {%>
-    <a class="pagination-item pagination__single pagination__single--active" onclick= "onPagingSearchResult('<%=item.link%>')">
+    <a class="pagination-item pagination__single pagination__single--active"
+      onclick="onPagingSearchResult('<%=item.link%>')">
       <span>
         <%=item.name%>
       </span>
     </a>
     <%} else if (!item.isNumber){%>
-    <a class="pagination-item pagination__single--page" onclick= "onPagingSearchResult('<%=item.link%>')">
+    <a class="pagination-item pagination__single--page" onclick="onPagingSearchResult('<%=item.link%>')">
       <span>
         <%=item.name%>
       </span>
     </a>
     <%} else {%>
-    <a class="pagination-item pagination__single" onclick= "onPagingSearchResult('<%=item.link%>')">
+    <a class="pagination-item pagination__single" onclick="onPagingSearchResult('<%=item.link%>')">
       <span>
         <%=item.name%>
       </span>
@@ -166,37 +198,43 @@
 <% include ../components/footer%>
 
 <script>
-  
-    onPagingSearchResult = (link) =>{
-        let temp = document.getElementById("search-type").value;
-        const type = temp != ''?  '&type='+  temp : '';
 
-        temp = document.getElementById("search-discount").value;
-        const discount = temp != ''?  '&discount='+  temp : '';
-       
-        temp = document.getElementById("search-origin").value;
-        const origin = temp != ''?  '&origin='+  temp : '';
+  onPagingSearchResult = (link) => {
+    let temp = document.getElementById("search-type").value;
+    const type = temp != '' ? '&type=' + temp : '';
 
-        temp = document.getElementById("search-producer").value;
-        const producer = temp != ''?  '&producer='+  temp : '';
+    temp = document.getElementById("search-discount").value;
+    const discount = temp != '' ? '&discount=' + temp : '';
 
-        link = link + type + discount + origin + producer;
-        console.log("link: ", link);
-        window.location.href = link;
+    temp = document.getElementById("search-origin").value;
+    const origin = temp != '' ? '&origin=' + temp : '';
 
-        // $.ajax({
-        //        url: link,
-        //        method: "post",
-        //        contentType: "application/json; charset=utf-8"
-        //     })
-        //     .done(function(result) {
-        //     console.log("check user ajax: ", result);
-        //     if (result){
-        //         window.location.reload();
-        //     }
-        //   })
-        //   .fail(function(err) {
-        //     console.log("fail");
-        //   });
-    }
+    temp = document.getElementById("search-producer").value;
+    const producer = temp != '' ? '&producer=' + temp : '';
+
+    link = link + type + discount + origin + producer;
+    console.log("link: ", link);
+    window.location.href = link;
+  }
+
+  changeConditionShowProductSearch = () => {
+    let temp = document.getElementById("search-type").value;
+    const type = temp != '' ? '&type=' + temp : '';
+
+    temp = document.getElementById("search-discount").value;
+    const discount = temp != '' ? '&discount=' + temp : '';
+
+    temp = document.getElementById("search-origin").value;
+    const origin = temp != '' ? '&origin=' + temp : '';
+
+    temp = document.getElementById("search-producer").value;
+    const producer = temp != '' ? '&producer=' + temp : '';
+
+    const show = document.getElementById("conditionShowProduct").value;
+    link = '/searchAdvanced?show=' + show + '&';
+    link = link + type + discount + origin + producer;
+    console.log("link: ", link);
+    window.location.href = link;
+
+  }
 </script>
