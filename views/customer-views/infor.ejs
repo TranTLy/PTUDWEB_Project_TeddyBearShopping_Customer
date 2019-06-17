@@ -1,0 +1,14 @@
+<%include ../components/header%> <% if(message) {%>
+<div
+  style="text-align: center; display: flex; flex-direction: column; justify-content: center; margin-top: 20px"
+>
+  <label><%=message %></label>
+  <%}%>
+  <div style="text-align: center; margin-bottom: 10px">
+    <button class="btn subscrib-btnn" onclick="window.location.href = '<%=link %>'">
+      OK
+    </button>
+  </div>
+</div>
+<!--//Customers Review -->
+<% include ../components/footer%>

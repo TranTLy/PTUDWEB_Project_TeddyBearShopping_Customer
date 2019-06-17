@@ -1,4 +1,4 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
 var shopping_controller = require('../controllers/shoppingControllers');
 var account_controller = require('../controllers/accountController');
@@ -14,7 +14,7 @@ router.get('/404', shopping_controller.getTypeProduct, information_controller.no
 router.get('/checkout', shopping_controller.getTypeProduct, shopping_controller.checkout);
 router.post('/checkout', shopping_controller.checkout_post);
 router.get('/payment', shopping_controller.getTypeProduct, shopping_controller.payment);
-router.post('/payment', shopping_controller.payment_post);
+router.post('/payment', account_controller.isLogin, account_controller.isAuthenUser, shopping_controller.payment_post);
 // router.get("/product", shopping_controller.product);
 // router.get('/product-barbie', shopping_controller.product_barbie);
 // router.get('/product-car', shopping_controller.product_car);
@@ -37,15 +37,71 @@ router.get('/history', shopping_controller.getTypeProduct, shopping_controller.h
 
 
 
+
+
 router.post('/signin', account_controller.post_signin);
 router.get('/signup', account_controller.signup);
 router.post('/postComment', shopping_controller.post_comment);
 
 router.post('/signup', account_controller.post_signup);
 router.post('/signout', account_controller.signout);
-router.get('/forget-password', account_controller.forget_password);
-router.get('/change-password', account_controller.change_password);
-router.get('/update-infor', account_controller.isLogin, account_controller.update_infor);
-router.post('/checkEmail', account_controller.checkEmail);
+router.get(
+    "/forget-password",
+    account_controller.isLogin,
+    account_controller.forget_password
+);
+router.post(
+    "/forget-password",
+    account_controller.isLogin,
+    account_controller.post_forget_password
+);
+router.get(
+    "/change-password",
+    account_controller.isLogin,
+    account_controller.change_password
+);
+
+router.post(
+    "/change-password",
+    account_controller.isLogin,
+    account_controller.post_change_password
+);
+
+router.get(
+    "/reset-password",
+    account_controller.isLogin,
+    account_controller.reset_password
+);
+router.post(
+    "/reset-password",
+    account_controller.isLogin,
+    account_controller.post_reset_password
+);
+
+router.get("/infor", account_controller.infor);
+router.get(
+    "/update-infor",
+    account_controller.isLogin,
+    account_controller.update_infor
+);
+
+router.post("/authenticate", account_controller.post_authenticate);
+router.get(
+    "/update-infor",
+    account_controller.isLogin,
+    account_controller.update_infor
+);
+router.post(
+    "/update-infor",
+    account_controller.post_update_infor
+);
+router.get(
+    "/change-password/checkpass",
+    account_controller.isLogin,
+    account_controller.checkpassword
+);
+
+
+router.post("/checkEmail", account_controller.checkEmail);
 
 module.exports = router;
