@@ -5,10 +5,11 @@
         <img src=<%=product.imgs%> class="img-thumbnail img-fluid" alt="" />
         <div class="men-cart-pro">
           <div class="inner-men-cart-pro">
-            <a href="single/<%=product._id%>" class="link-product-add-cart">Xem</a>
+            <a href="single?id=<%=product._id%>" class="link-product-add-cart">Xem</a>
           </div>
         </div>
         <%if (product.isNew){%><span class="product-new-top">Mới</span><%}%>
+        <%if (product.discount > 0){%><span class="product-new-top">-<%=product.discount*100%>%</span><%}%>        
       </div>
       <div class="item-info-product">
         <div class="info-product-price">
@@ -18,7 +19,7 @@
                 <a href="single"><%=product.name%></a>
         </h4>
         <div class="grid-price mt-2">
-          <span class="money "><%=product.price%></span>
+          <span class="money "><%=(product.price/1000.0).toFixed(3)%>đ</span>
         </div>
       </div>
       <ul class="stars">
@@ -50,15 +51,15 @@
       </ul>
     </div>
     <div class="toys single-item hvr-outline-out">
-      <form action="#" method="get">
+      <!-- <form action="" method="get"> -->
         <input type="hidden" name="cmd" value="_cart" />
         <input type="hidden" name="add" value="1" />
         <input type="hidden" name="toys_item" value="toys(barbie)" />
         <input type="hidden" name="amount" value="575.000" />
-        <button type="submit" class="toys-cart ptoys-cart" onclick="addItem({id:'<%=product._id%>'})">
+        <button type="" class="toys-cart ptoys-cart" onclick="addItem({id:'<%=product._id%>'})">
           <i class="fas fa-cart-plus"></i>
         </button>
-      </form>
+      <!-- </form> -->
 
       
       <!-- <form action="/addToCart/<%=product._id%>" method="POST">

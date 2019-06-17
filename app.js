@@ -10,6 +10,7 @@ const session = require('express-session');
 require('./config/passport');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+const TypeProduct = require('./model/type');
 
 mongoose.connect(config.database, { useCreateIndex: true, useNewUrlParser: true }, (err, res) => {
 	if (!err) {
@@ -50,10 +51,16 @@ app.use('/users', usersRouter);
 app.use(function(req, res, next) {
 	next(createError(404));
 });
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
 	// set locals, only providing error in development
 	res.locals.cartShop = req.session.cartShop || [];
 	console.log('cart in app.js', res.locals.cartShopping);
+	next();
+});
+app.use(async (req, res, next) => {
+	// set locals, only providing error in development
+	res.locals.typeProduct = await TypeProduct.find({});
+	console.log('typeProduct from app.js: ', res.locals.typeProduct);
 	next();
 });
 // error handler

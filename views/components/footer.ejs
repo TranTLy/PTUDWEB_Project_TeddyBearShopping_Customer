@@ -80,11 +80,13 @@
                         <form action="/signin" method="post">
                            <div class="fields-grid">
                               <div class="styled-input">
-                                 <input type="text" placeholder="Email đăng nhập" name="email" required="">
+                                 <div id=""><i id="check-email-message"></i></div>
+                                 <input id="email-user" onkeyup="checkEmail()" type="text" placeholder="Email đăng nhập" name="email" required="">
                               </div>
                               <div class="styled-input">
-                                 <input type="password" placeholder="Mật khẩu" name="password" required="">
+                                 <input id="password-user" type="password" placeholder="Mật khẩu" name="password" required="">
                               </div>
+                              <button type="" class="btn subscrib-btnn" onclick="signin()">Đăng nhập ajax</button>
                               <button type="submit" class="btn subscrib-btnn">Đăng nhập</button>
                            </div>
                         </form>
@@ -110,11 +112,9 @@
                   <a name="" id="" class="btn btn-primary" href="/history" role="button">Lịch sử mua hàng</a>
                   <a name="" id="" class="btn btn-primary" href="/update-infor" role="button">Chỉnh sửa thông tin cá nhân</a>
                   <a name="" id="" class="btn btn-primary" href="/change-password" role="button">Đổi mật khẩu</a>
-                  <form action="/signout" method="POST">
-                  <button type="submit" class="btn btn-primary">Đăng xuất</button>
-                     
+                  <form action="" method="">
+                     <button type="submit" class="btn btn-primary" onclick="signout()">Đăng xuất</button>
                      </form>
-
                </div>
             </div>
          </div>
@@ -123,7 +123,7 @@
          <script src='javascripts/jquery-2.2.3.min.js'></script>
          <!--//js working-->
          <!-- cart-js -->	
-         <script src="javascripts/minicart.js"></script>
+         <!-- <script src="javascripts/minicart.js"></script>
          <script>
             toys.render();
             
@@ -136,7 +136,7 @@
                     for (i = 0, len = items.length; i < len; i++) {}
                 }
             });
-         </script>
+         </script> -->
          <!--// cart-js -->
          <!--quantity-->
          <script>
@@ -216,5 +216,67 @@
          <!--bootstrap working-->
          <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
          <!-- //bootstrap working-->
+         <script>
+         checkEmail = ()=>{
+            const email = document.getElementById("email-user").value;
+            console.log("email: ", email);
+            $.ajax({
+               url: '/checkEmail?email='+ email,
+               method: "post",
+               contentType: "application/json; charset=utf-8",
+          dataType: "json"
+            })
+            .done(function(result) {
+            console.log("check email ajax", result);
+            if (!result.success){
+               document.getElementById("check-email-message").innerHTML = "*Email chưa chính xác";
+            } else{
+               document.getElementById("check-email-message").innerHTML = "";
+            }
+          })
+          .fail(function(err) {
+            console.log("fail", success);
+          });
+         }
+         
+         signin = () =>{
+            const email = document.getElementById("email-user").value;
+            const password = document.getElementById("password-user").value;
+            console.log("email: ", email + "- ", password);
+            $.ajax({
+               url: '/signin?email='+email+'&password='+password,
+               method: "post",
+               contentType: "application/json; charset=utf-8"
+            })
+            .done(function(result) {
+            console.log("check user ajax: ", result);
+            if (result.success){
+               window.location.reload();
+            } else{
+               document.getElementById("check-email-message").innerHTML = `Đăng nhập không thành công.<br/> Vui lòng thử lại`;
+               window.location.reload();
+            }
+          })
+          .fail(function(err) {
+            console.log("fail", success);
+          });
+         }
+
+         signout = () =>{
+            $.ajax({
+               url: '/signout',
+               method: "post",
+               contentType: "application/json; charset=utf-8"
+            })
+            .done(function(result) {
+            if (result.success){
+               window.location.reload();
+            }
+          })
+          .fail(function(err) {
+            console.log("fail", success);
+          });
+         }
+         </script>
       </body>
    </html>

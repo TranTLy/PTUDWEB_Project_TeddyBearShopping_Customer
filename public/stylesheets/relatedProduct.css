@@ -1,0 +1,12 @@
+#related-product {
+	margin-top: 50px;
+}
+
+.related-product__header {
+	text-transform: capitalize;
+	font-size: 23px;
+	color: #ea1d5d;
+	margin: 0;
+	letter-spacing: 1px;
+	font-weight: 600;
+}
