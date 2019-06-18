@@ -34,7 +34,7 @@ exports.checkout = function (req, res) {
 	res.render('customer-views/checkout', { title: 'Giỏ hàng' });
 };
 //todo
-exports.checkout_post = function (req, res) {
+exports.checkout_post = function (_req, res) {
 	res.render('customer-views/checkout', { title: 'Giỏ hàng' });
 };
 exports.payment = function (req, res) {
@@ -43,24 +43,25 @@ exports.payment = function (req, res) {
 exports.payment_post = async function (req, res) {
 	console.log("on payment post:");
 	const address = req.body.address || '';
-	console.log("cart shop in res.locals: ", req.session.cartShop);
+	// console.log("cart shop in res.locals: ", req.session.cartShop);
 	res.locals.cartShop = req.session.cartShop;
 	if (address === '') {
 		return res.render('customer-views/checkout', { title: 'Giỏ hàng' });
 	}
 	else {
 		// const sum = req.query.sum || 0;
-		const cart = req.session.cartShop;
-		//console.log("cart in: ", cart);
+		const cart = [...req.session.cartShop];
+		console.log("cart in: ", cart);
 		let products = [];
 		let sum = 0;
-		cart.map((item) => {
+		await cart.map((item) => {
 			products.push({
 				id_product: item._id,
 				amount: item.quantity
 			});
 			sum = sum + item.price * (1 - item.discount) * item.quantity;
 		})
+
 		console.log("products: ", products);
 
 		console.log("save bill");
@@ -70,7 +71,7 @@ exports.payment_post = async function (req, res) {
 			total: sum,
 			products: products
 		});
-		await bill.save((err, result, row) => {
+		bill.save((err, result, row) => {
 			// console.log("result save bill: ", result);
 			if (result) {
 				console.log("bill: ", result);
@@ -86,6 +87,8 @@ exports.payment_post = async function (req, res) {
 			// req.session.destroy();
 
 		});
+
+
 	}
 };
 
@@ -294,17 +297,11 @@ exports.single_post = function (req, res) {
 };
 exports.detail_receipt = async function (req, res) {
 	const id = req.query.id;
-	await Bill.findById(id).populate("products")
+	await Bill.findById(id).populate("products.id_product").sort({ date: 1 })
 		.exec((err, result) => {
 			console.log("detail-bill:", result);
-			res.render('customer-views/detail-receipt', { title: 'Chi tiết hóa đơn', result });
-
+			res.render('customer-views/detail-receipt', { title: 'Chi tiết hóa đơn', bill: result });
 		});
-
-
-	// > {
-	// 	res.render('customer-views/detail-receipt', { title: 'Chi tiết hóa đơn', bill });
-	// })
 };
 
 exports.addToCart = async (req, res) => {
@@ -591,7 +588,8 @@ exports.search = async (req, res) => {
 				currentPage: page,
 				origin,
 				producer,
-				sum
+				sum,
+				show=0
 			});
 		}
 	});

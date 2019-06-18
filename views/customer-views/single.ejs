@@ -28,12 +28,7 @@
               <ul class="slides">
                 <li data-thumb="../../images/f2.jpg">
                   <div class="thumb-image">
-                    <img
-                      src="<%=product.imgs%>"
-                      data-imagezoom="true"
-                      class="img-fluid"
-                      alt=" "
-                    />
+                    <img src="<%=product.imgs%>" data-imagezoom="true" class="img-fluid" alt=" " />
                   </div>
                 </li>
               </ul>
@@ -47,58 +42,20 @@
             <span class="item_price"><%=(product.price*(1- product.discount)/1000.0).toFixed(3)%>đ</span>
             <del><%=(product.price/1000.0).toFixed(3)%>đ</del>
           </p>
-          <div class="rating1">
-            <ul class="stars">
-              <li>
-                <a href="#"><i class="fa fa-star" aria-hidden="true"></i></a>
-              </li>
-              <li>
-                <a href="#"><i class="fa fa-star" aria-hidden="true"></i></a>
-              </li>
-              <li>
-                <a href="#"><i class="fa fa-star" aria-hidden="true"></i></a>
-              </li>
-              <li>
-                <a href="#"
-                  ><i class="fa fa-star-half-o" aria-hidden="true"></i
-                ></a>
-              </li>
-              <li>
-                <a href="#"><i class="fa fa-star-o" aria-hidden="true"></i></a>
-              </li>
-            </ul>
-          </div>
-          <div class="description">
-            <h5>
-              Kiểm tra lựa chọn giao hàng, thanh toán, chi phí
-            </h5>
-            <form action="#" method="post">
-              <input
-                class="form-control"
-                type="text"
-                name="Email"
-                placeholder="Please enter..."
-                required=""
-              />
-              <input type="submit" value="Kiểm tra" />
-            </form>
-          </div>
+
           <div class="occasional">
-            <h5>Màu sắc :  <%=product.color%></h5>
-           
-            <div class="clearfix"></div>
+            <h5><b> Màu sắc: </b> <%=product.color%></h5>
+            <h5><b> Mô tả: </b> <%=product.decription%></h5>
+
           </div>
           <div class="occasion-cart">
             <div class="toys single-item singlepage">
-              <form action="#" method="post">
-                <input type="hidden" name="cmd" value="_cart" />
-                <input type="hidden" name="add" value="1" />
-                <input type="hidden" name="toys_item" value="Farenheit" />
-                <input type="hidden" name="amount" value="575.00" />
-                <button type="submit" class="toys-cart ptoys-cart add">
-                  Thêm <i class="fas fa-cart-plus"></i>
-                </button>
-              </form>
+
+              <button type="" class="toys-cart ptoys-cart add"
+                onclick="addItem({id:'<%=product._id%>', name: '<%=product.name%>'})">
+                Thêm <i class="fas fa-cart-plus"></i>
+              </button>
+
             </div>
           </div>
           <ul class="footer-social text-left mt-lg-4 mt-3">
@@ -119,42 +76,25 @@
               </a>
             </li>
             <li class="">
-              <a href="#">
+              <a href="">
                 <span class="fab fa-linkedin-in"></span>
               </a>
             </li>
             <li class="mx-1">
-              <a href="#">
+              <a href="">
                 <span class="fas fa-rss"></span>
               </a>
             </li>
           </ul>
         </div>
         <div class="clearfix"></div>
-        <!--/tabs-->
-        <div class="responsive_tabs">
-          <div id="horizontalTab">
-            <ul class="resp-tabs-list">
-              <li>Mô tả</li>
-            </ul>
-            <div class="resp-tabs-container">
-                <!--/tab_one-->
-                <div class="tab1">
-                   <div class="single_page">
-                      <h6><%=product.decription%></h6>
-                   </div>
-                </div>
-                <!--//tab_one-->
-             </div>
-          </div>
-        </div>
-        <!--//tabs-->
       </div>
-     
-      
+
+
       <% include ../components/comment.ejs%>
       <% include ../components/relatedProduct.ejs%>
-    
+      <% include ../components/cart-shop%>
+
     </div>
   </div>
 </section>
@@ -164,21 +104,21 @@
 <script src="../javascripts/jquery-ui.js"></script>
 <script>
   //<![CDATA[
-  $(window).load(function() {
+  $(window).load(function () {
     $("#slider-range").slider({
       range: true,
       min: 0,
       max: 9000,
       values: [50, 6000],
-      slide: function(event, ui) {
+      slide: function (event, ui) {
         $("#amount").val("$" + ui.values[0] + " - $" + ui.values[1]);
       }
     });
     $("#amount").val(
       "$" +
-        $("#slider-range").slider("values", 0) +
-        " - $" +
-        $("#slider-range").slider("values", 1)
+      $("#slider-range").slider("values", 0) +
+      " - $" +
+      $("#slider-range").slider("values", 1)
     );
   }); //]]>
 </script>
@@ -189,13 +129,13 @@
 <!-- script for responsive tabs -->
 <script src="../javascripts/easy-responsive-tabs.js"></script>
 <script>
-  $(document).ready(function() {
+  $(document).ready(function () {
     $("#horizontalTab").easyResponsiveTabs({
       type: "default", //Types: default, vertical, accordion
       width: "auto", //auto or any width like 600px
       fit: true, // 100% fit in a container
       closed: "accordion", // Start closed if in accordion view
-      activate: function(event) {
+      activate: function (event) {
         // Callback function if tab is switched
         var $tab = $(this);
         var $info = $("#tabInfo");
@@ -215,7 +155,7 @@
 <script src="../javascripts/jquery.flexslider.js"></script>
 <script>
   // Can also be used with $(document).ready()
-  $(window).load(function() {
+  $(window).load(function () {
     $(".flexslider1").flexslider({
       animation: "slide",
       controlNav: "thumbnails"
@@ -223,3 +163,28 @@
   });
 </script>
 <!-- //FlexSlider-->
+
+<script>
+  addItem = (item) => {
+    const id = item.id;
+    const name = item.name;
+    // console.log("iditem: ", idItem, "- id: ", id);
+    $.ajax({
+      url: "/addToCart?id=" + id,
+      type: "get",
+      contentType: "application/json; charset=utf-8",
+      dataType: "json"
+    })
+      .done(function (success) {
+        console.log("success", success);
+        const cart = document.getElementById("cart-shop-message");
+        cart.style.width = "400px";
+        cart.style.display = "block";
+        cart.innerHTML = `Đã thêm <span>${name}</span> vào giỏ hàng`;
+      })
+      .fail(function (err) {
+        console.log("fail");
+
+      });
+  }
+</script>

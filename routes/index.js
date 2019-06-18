@@ -32,7 +32,7 @@ router.get('/searchAdvanced', shopping_controller.getTypeProduct, shopping_contr
 //TODO: add id
 router.get('/single', shopping_controller.getTypeProduct, shopping_controller.single);
 router.post('/single', shopping_controller.single_post);
-router.get('/detail-receipt', shopping_controller.getTypeProduct, shopping_controller.detail_receipt);
+router.get('/detail-receipt', shopping_controller.getTypeProduct, account_controller.isLogin, shopping_controller.detail_receipt);
 router.get('/history', shopping_controller.getTypeProduct, account_controller.isLogin, shopping_controller.history);
 
 router.post('/signin', account_controller.post_signin);

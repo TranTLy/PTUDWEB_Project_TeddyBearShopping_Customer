@@ -143,8 +143,9 @@
           name: 'Theo ưu đãi giảm dần'
         }
       ]%>
+  <% if (products.length > 1){ %>
   <div class="change-order-list">
-    Thay đổi cách hiển thị
+    Thay đổi cách hiển thị:
     <select name="conditionShowProduct" id="conditionShowProduct" onchange="changeConditionShowProduct()">
       <% conditionShowProduct.map((item, index) => {
                   if (index === show){ %>
@@ -154,34 +155,35 @@
       <%}})%>
     </select>
   </div>
+  <%}%>
   <!-- change order product -->
 
   <div class="row" id="pagination">
     <%paging.map((item, index)=>{
             if (item.name === parseInt(currentPage)) {%>
-    <a class="pagination-item pagination__single pagination__single--active" href=<%=item.link%>>
-      <span>
-        <%=item.name%>
-      </span>
-    </a>
-    <%} else if (!item.isNumber){%>
-    <a class="pagination-item pagination__single--page" href=<%=item.link%>>
-      <span>
-        <%=item.name%>
-      </span>
-    </a>
-    <%} else {%>
-    <a class="pagination-item pagination__single" href=<%=item.link%>>
-      <span>
-        <%=item.name%>
-      </span>
-    </a>
-    <%}})%>
-  </div>
-  <div class="row">
-    <% products.forEach(function(item){ %> <%-
+  <a class="pagination-item pagination__single pagination__single--active" href=<%=item.link%>>
+    <span>
+      <%=item.name%>
+    </span>
+  </a>
+  <%} else if (!item.isNumber){%>
+  <a class="pagination-item pagination__single--page" href=<%=item.link%>>
+    <span>
+      <%=item.name%>
+    </span>
+  </a>
+  <%} else {%>
+  <a class="pagination-item pagination__single" href=<%=item.link%>>
+    <span>
+      <%=item.name%>
+    </span>
+  </a>
+  <%}})%>
+</div>
+<div class="row">
+  <% products.forEach(function(item){ %> <%-
           include('../components/productItem', {product: item}); %> <% }); %>
-  </div>
+</div>
 </div>
 </div>
 </div>

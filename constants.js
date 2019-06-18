@@ -2,7 +2,7 @@ exports.LIMIT_PRODUCT_PER_PAGE = 6;
 exports.LIMIT_PAGE_NUMBER_PAGE = 5;
 exports.LIMIT_PAGE_NUMBER = 5;
 exports.LIMIT_RELATED_PRODUCT = 3;
-exports.LIMIT_COMMENT = 4;
+exports.LIMIT_COMMENT = 3;
 exports.CONDITION_SORT_PRODUCT = [
 	{
 		name: 'name',
