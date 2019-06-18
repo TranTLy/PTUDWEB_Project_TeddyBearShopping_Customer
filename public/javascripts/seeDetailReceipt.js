@@ -1,5 +1,5 @@
 const seeDetail = id => {
   //todo: id receipt
   console.log("detail");
-  document.location = "detail-receipt";
+  document.location = "detail-receipt?id=" + id;
 };

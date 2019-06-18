@@ -22,3 +22,14 @@
 #table-history-receipt tbody tr td a {
   color: #26bb48;
 }
+
+.empty-history{
+  margin: 30px;
+  color: #968f8f;
+}
+
+.sum-bill{
+  color: #968f8f;
+  text-align: right;
+  margin-bottom: 20px;
+}

@@ -1,20 +1,31 @@
 <%include ../components/header%>
-<h4 id= "message"><%if (title == "Đăng ký thất bại"){%>
+<h4 id="message"><%if (title == "Đăng ký thất bại"){%>
   <%= message%>
-<%}%></h4>
+  <%}%></h4>
 <link rel="stylesheet" href="stylesheets/signup.css" />
 <div class="form-group from-signup">
   <label id="lable-sign-up" for="sign-up">Đăng ký</label>
-  <div class="login-others">
+  <!-- <div class="login-others">
     <button id="login-fb">
       <i class="fab fa-facebook-f"></i>Đăng nhập bằng facebook
     </button>
     <button id="login-gmail">
       <i class="fab fa-google"></i> Đăng nhập bằng gmail
     </button>
-  </div>
+  </div> -->
 
   <form action="/signup" method="POST">
+    
+  <div class="label-input-signup ">Email đăng nhập<span>*</span></div>
+  <input
+    type="email"
+    class="form-control required"
+    name="email"
+    id="email"
+    aria-describedby="helpId"
+    required
+  />
+  <small></small>
   <div class="label-input-signup">Họ và tên<span>*</span></div>
   <input
     type="text"
@@ -24,6 +35,11 @@
     aria-describedby="helpId"
     required
   />
+  <div class="label-input-signup ">Giới tính</div>
+  <div id= "gender-select">
+        <input type="checkbox" name="gender" value="Nữ" checked>Nữ</input>
+        <input type="checkbox" name="gender" value="Nam">Nam</input>
+    </div>
   <div class="label-input-signup">Ngày tháng năm sinh<span></span></div>
   <input
     type="date"
@@ -35,16 +51,6 @@
     value="2000-07-22"
   />
 
-  <div class="label-input-signup ">Email đăng nhập<span>*</span></div>
-  <input
-    type="email"
-    class="form-control required"
-    name="email"
-    id="email"
-    aria-describedby="helpId"
-    required
-  />
-  <small></small>
 
   <div class="label-input-signup">Số điện thoại<span></span></div>
   <input
@@ -140,7 +146,7 @@
         console.log("success");
         return true;
       }
-      else{
+      else {
         return false;
       }
     };

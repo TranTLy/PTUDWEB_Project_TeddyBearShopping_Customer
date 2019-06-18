@@ -15,7 +15,7 @@ changeQuantity = (id, index, mode) => {
 			console.log('result: ', result);
 			location.reload();
 		})
-		.fail(function(err) {
+		.fail(function (err) {
 			console.log('fail');
 		});
 };
@@ -37,7 +37,45 @@ onDeleteProduct = (id) => {
 			console.log('result: ', result);
 			location.reload();
 		})
-		.fail(function(err) {
+		.fail(function (err) {
 			console.log('fail');
 		});
 };
+
+checkAddress = () => {
+	const address = document.getElementById("address").value;
+	const message = document.getElementById("message-address");
+	if (address === '') {
+		message.innerHTML = "Bạn cần nhập địa chỉ giao hàng";
+	} else if (address.length < 10) {
+		message.innerHTML = "Địa chỉ giao hàng cần cụ thể hơn";
+	} else {
+		message.innerHTML = "";
+	}
+}
+
+onPayment = (sum) => {
+	console.log("onpayment btn");
+	const address = document.getElementById("address").value;
+	const message = document.getElementById("message-address");
+	if (address === '') {
+		message.innerHTML = "Bạn cần nhập địa chỉ giao hàng";
+	} else if (address.length < 10) {
+		message.innerHTML = "Địa chỉ giao hàng cần cụ thể hơn";
+	} else {
+		message.innerHTML = "";
+		$.ajax({
+			url: 'payment?address=' + address + '&sum=' + sum,
+			type: 'post',
+			contentType: 'application/json; charset=utf-8',
+			dataType: 'json'
+		})
+			.done((result) => {
+				console.log('result: ', result);
+				location.reload();
+			})
+			.fail(function (err) {
+				console.log('fail', err);
+			});
+	}
+}

@@ -59,52 +59,52 @@
               <select name="type">
               <option value=''>Tất cả </option>
                 <% typeProduct.map((item, index)=> {%>
-               <option value=<%=item._id%>>
-             <%=item.name%>
-               </option>
-             <%})%>
-               </select>
-            </div> 
-            <!-- //type product -->
-            <!-- discount -->
-            <div class="search-advanced">
-                <h4 class="search-subtitle">Ưu đãi</h4>
-                <select name="discount">
-                <option value='0'>Tất cả </option>
-                <option value='5'>Từ 5%</option>
-                <option value='10'>Từ 10%</option>
-                <option value='20'>Từ 20%</option>
-                 </select>
-              </div> 
-            <!-- //discount -->
-                        <!-- origin -->
-                        <div class="search-advanced">
-                            <h4 class="search-subtitle">Xuất xứ</h4>
-                            <select name="origin">
-                                <option value=''>Tất cả </option>
-                                <% origin.map((item, index)=> {%>
-                                  <option value=<%=item._id%>>
-                                <%=item.name%>
-                                  </option>
-                                <%})%>
-                             </select>
-                          </div> 
-                        <!-- //origin -->
-                <!-- producer -->
-                <div class="search-advanced">
-                    <h4 class="search-subtitle">Nhà sản xuất</h4>
-                    <select name="producer">
-                        <option value=''>Tất cả </option>
-                        <% producer.map((item, index)=> {%>
-                          <option value=<%=item._id%>>
-                        <%=item.name%>
-                          </option>
-                        <%})%>
-                     </select>
-                  </div> 
-                <!-- //producer -->
-        </div>
-        </form>
+      <option value=<%=item._id%>>
+        <%=item.name%>
+      </option>
+      <%})%>
+      </select>
+  </div>
+  <!-- //type product -->
+  <!-- discount -->
+  <div class="search-advanced">
+    <h4 class="search-subtitle">Ưu đãi</h4>
+    <select name="discount">
+      <option value='0'>Tất cả </option>
+      <option value='5'>Từ 5%</option>
+      <option value='10'>Từ 10%</option>
+      <option value='20'>Từ 20%</option>
+    </select>
+  </div>
+  <!-- //discount -->
+  <!-- origin -->
+  <div class="search-advanced">
+    <h4 class="search-subtitle">Xuất xứ</h4>
+    <select name="origin">
+      <option value=''>Tất cả </option>
+      <% origin.map((item, index)=> {%>
+      <option value=<%=item._id%>>
+        <%=item.name%>
+      </option>
+      <%})%>
+    </select>
+  </div>
+  <!-- //origin -->
+  <!-- producer -->
+  <div class="search-advanced">
+    <h4 class="search-subtitle">Nhà sản xuất</h4>
+    <select name="producer">
+      <option value=''>Tất cả </option>
+      <% producer.map((item, index)=> {%>
+      <option value=<%=item._id%>>
+        <%=item.name%>
+      </option>
+      <%})%>
+    </select>
+  </div>
+  <!-- //producer -->
+</div>
+</form>
 <!-- deals -->
 <div class="deal-leftmk left-side">
   <h3 class="agileits-sear-head">Sản phẩm nổi bật</h3>
@@ -115,15 +115,15 @@
 <!-- //deals -->
 </div>
 <div class="left-ads-display col-lg-9">
-    <div class="sum-search-result">
-        <%if (sum  === 0) { %>
-          <span>Không có sản phẩm nào</span>
-        <%} else {%>
-          <span>Có <b><%= sum%></b> sản phẩm</span>    
-          <% } %>
-        </div>
-        <!-- change order product -->
-        <% conditionShowProduct = [
+  <div class="sum-search-result">
+    <%if (sum  === 0) { %>
+    <span>Không có sản phẩm nào</span>
+    <%} else {%>
+    <span>Có <b><%= sum%></b> sản phẩm</span>
+    <% } %>
+  </div>
+  <!-- change order product -->
+  <% conditionShowProduct = [
         {
           name: 'Theo tên tăng dần'
         },
@@ -143,75 +143,65 @@
           name: 'Theo ưu đãi giảm dần'
         }
       ]%>
-        <div class="change-order-list">
-            Thay đổi cách hiển thị
-            <select name="conditionShowProduct" id="conditionShowProduct" onchange="changeConditionShowProduct()">
-                <% conditionShowProduct.map((item, index) => {
+  <% if (products.length > 1){ %>
+  <div class="change-order-list">
+    Thay đổi cách hiển thị:
+    <select name="conditionShowProduct" id="conditionShowProduct" onchange="changeConditionShowProduct()">
+      <% conditionShowProduct.map((item, index) => {
                   if (index === show){ %>
-                  <option selected value=<%= index%>><%= item.name%></option>
-                <%} else { %>
-                  <option value=<%= index%>><%= item.name%></option>
-                <%}})%>
-            </select>
-          </div>  
-        <!-- change order product -->
+      <option selected value=<%= index%>><%= item.name%></option>
+      <%} else { %>
+      <option value=<%= index%>><%= item.name%></option>
+      <%}})%>
+    </select>
+  </div>
+  <%}%>
+  <!-- change order product -->
 
   <div class="row" id="pagination">
     <%paging.map((item, index)=>{
             if (item.name === parseInt(currentPage)) {%>
-    <a class="pagination-item pagination__single pagination__single--active" href=<%=item.link%>>
-      <span>
-        <%=item.name%>
-      </span>
-    </a>
-    <%} else if (!item.isNumber){%>
-    <a class="pagination-item pagination__single--page" href=<%=item.link%>>
-      <span>
-        <%=item.name%>
-      </span>
-    </a>
-    <%} else {%>
-    <a class="pagination-item pagination__single" href=<%=item.link%>>
-      <span>
-        <%=item.name%>
-      </span>
-    </a>
-    <%}})%>
-  </div>
-  <div class="row">
-    <% products.forEach(function(item){ %> <%-
+  <a class="pagination-item pagination__single pagination__single--active" href=<%=item.link%>>
+    <span>
+      <%=item.name%>
+    </span>
+  </a>
+  <%} else if (!item.isNumber){%>
+  <a class="pagination-item pagination__single--page" href=<%=item.link%>>
+    <span>
+      <%=item.name%>
+    </span>
+  </a>
+  <%} else {%>
+  <a class="pagination-item pagination__single" href=<%=item.link%>>
+    <span>
+      <%=item.name%>
+    </span>
+  </a>
+  <%}})%>
+</div>
+<div class="row">
+  <% products.forEach(function(item){ %> <%-
           include('../components/productItem', {product: item}); %> <% }); %>
-  </div>
+</div>
 </div>
 </div>
 </div>
 </section>
 <!-- //show Now-->
 <% include ../components/footer%>
+<% include ../components/cart-shop%>
+
 
 <script>
-changeConditionShowProduct=()=>{
-  const condition = document.getElementById("conditionShowProduct").value;
-  console.log("condition: ", condition);
-  if ('<%=link%>' != ''){
-    window.location.href = '<%=link%>'+ '&show='+ condition;
-  } else {
-    window.location.href = 'shop?show='+ condition;
+  changeConditionShowProduct = () => {
+    const condition = document.getElementById("conditionShowProduct").value;
+    console.log("condition: ", condition);
+    if ('<%=link%>' != '') {
+      window.location.href = '<%=link%>' + '&show=' + condition;
+    } else {
+      window.location.href = 'shop?show=' + condition;
 
+    }
   }
-//   $.ajax({
-//                url: "shop?show="+ condition,
-//                method: "get",
-//                contentType: "application/json; charset=utf-8"
-//             })
-//             .done(function(result) {
-//             console.log("check user ajax: ", result);
-//             if (result){
-//                 window.location.reload();
-//             }
-//           })
-//           .fail(function(err) {
-//             console.log("fail");
-//           });
-}
 </script>

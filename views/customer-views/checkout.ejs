@@ -22,7 +22,7 @@
         <h3>Giỏ hàng</h3>
         <div class="checkout-right">
           <h4><i>Giỏ hàng của bạn trống</i></span></h4>
-      </div>
+        </div>
       </div>
     </div>
   </div>
@@ -48,137 +48,71 @@
                 <th>Số lượng</th>
                 <th>Tên hàng</th>
                 <th>Giá</th>
-                <th>Thành tiền</th>                
+                <th>Ưu đãi</th>
+                <th>Thành tiền</th>
                 <th>Xóa</th>
               </tr>
             </thead>
             <tbody>
               <%cartShop.map((item, index)=>{%>
-                <tr class="rem1 product-item-session" id="product-<%=item._id%>">
-                    <td class="invert"><%=index%></td>
-                    <td class="invert-image" id="img-product-checkout">
-                      <a href="/single/<%=item._id%>"
-                        ><img src="<%=item.imgs%>" alt=" " class="img-responsive"
-                      /></a>
-                    </td>
-                    <td class="invert">
-                      <div class="quantity">
-                        <div class="quantity-select">
-                          <div class="entry value-minus" onclick= "changeQuantity('<%=item._id%>', <%=index%>, -1)">&nbsp;</div>
-                          <div class="entry value quantityProduct" id= ""><%=item.quantity%></div>
-                          <div class="entry value-plus" onclick= "changeQuantity('<%=item._id%>', <%=index%>, +1)">&nbsp;</div>
-                        </div>
+              <tr class="rem1 product-item-session" id="product-<%=item._id%>">
+                <td class="invert"><%=index +1%></td>
+                <td class="invert-image" id="img-product-checkout">
+                  <a href="/single/<%=item._id%>"><img src="<%=item.imgs%>" alt=" " class="img-responsive" /></a>
+                </td>
+                <td class="invert">
+                  <div class="quantity">
+                    <div class="quantity-select">
+                      <div class="entry value-minus" onclick="changeQuantity('<%=item._id%>', <%=index%>, -1)">&nbsp;
                       </div>
-                    </td>
-                    <td class="invert"><%=item.name%></td>
-                    <td class="invert"><%=(item.price/1000.0).toFixed(3)%></td>
-                    <td class="invert"><%=(item.price * item.quantity/1000.0).toFixed(3)%></td>
-                    <td class="invert">
-                      <div class="rem" onclick= "onDeleteProduct('<%=item._id%>')">
-                        <div class="" id= "btn-cancel-product" >Hủy</div>
+                      <div class="entry value quantityProduct" id=""><%=item.quantity%></div>
+                      <div class="entry value-plus" onclick="changeQuantity('<%=item._id%>', <%=index%>, +1)">&nbsp;
                       </div>
-                    </td>
-                  </tr>
+                    </div>
+                  </div>
+                </td>
+                <td class="invert"><%=item.name%></td>
+                <td class="invert"><%=(item.price/1000.0).toFixed(3)%></td>
+                <td class="invert"><%=item.discount*100%>%</td>
+                <td class="invert"><%=(item.price*(1-item.discount) * item.quantity/1000.0).toFixed(3)%>đ</td>
+                <td class="invert">
+                  <div class="rem" onclick="onDeleteProduct('<%=item._id%>')">
+                    <div class="" id="btn-cancel-product">Hủy</div>
+                  </div>
+                </td>
+              </tr>
               <%})%>
             </tbody>
           </table>
         </div>
-        <div class="checkout-left">
-          <div class="col-md-4 checkout-left-basket">
-            <h4>Hóa đơn</h4>
-            <ul>
-            <%
-            var sum = 0;
-            cartShop.map((item, index)=>{ 
-              const money = (item.price*item.quantity);
-              sum +=money;
-              %>
-              <li><%=item.name%> <i>-</i> <span><%=(money/1000.0).toFixed(3)%> </span><li>
-           <% })%> 
-              <li><b> Tổng cộng <i>-</i> <span><%=(sum/1000.0).toFixed(3)%></span> </b></li>
-            </ul>
-          </div>
-          <div class="col-md-8 address_form">
-            <h4>Thông tin giao hàng chi tiết</h4>
-            <form
-              action="payment"
-              method="post"
-              class="creditly-card-form agileinfo_form"
-            >
-              <section class="creditly-wrapper wrapper">
-                <div class="information-wrapper">
-                  <div class="first-row form-group">
-                    <div class="controls">
-                      <label class="control-label">Họ và tên: </label>
-                      <input
-                        class="billing-address-name form-control"
-                        type="text"
-                        name="name"
-                        placeholder="Full name"
-                      />
-                    </div>
-                    <div class="card_number_grids">
-                      <div class="card_number_grid_left">
-                        <div class="controls">
-                          <label class="control-label">Điện thoại:</label>
-                          <input
-                            class="form-control"
-                            type="text"
-                            placeholder="Mobile number"
-                          />
-                        </div>
-                      </div>
-                      <div class="card_number_grid_right">
-                        <div class="controls">
-                          <label class="control-label"
-                            >Số nhà, đường, phường/ khu phố:
-                          </label>
-                          <input
-                            class="form-control"
-                            type="text"
-                            placeholder="Landmark"
-                          />
-                        </div>
-                      </div>
-                      <div class="clear"></div>
-                    </div>
-                    <div class="controls">
-                      <label class="control-label">Thị trấn/ thành phố</label>
-                      <input
-                        class="form-control"
-                        type="text"
-                        placeholder="Town/City"
-                      />
-                    </div>
-                    <div class="controls">
-                      <label class="control-label">Loại địa chỉ: </label>
-                      <select class="form-control option-w3ls">
-                        <option>Cơ quan</option>
-                        <option>Nhà riêng</option>
-                        <option>Thương mại</option>
-                      </select>
-                    </div>
-                  </div>
-                  <button class="submit check_out">
-                    Giao hàng đến địa chỉ này
-                  </button>
-                </div>
-              </section>
-              <!-- <div class="checkout-right-basket">
-                  <a href="payment">Thanh toán</a>
-                </div> -->
-                <button type="submit" class="btn subscrib-btnn">Thanh toán</button>
-            </form>
-            
-          </div>
-          <div class="clearfix"></div>
-          <div class="clearfix"></div>
+
+      </div>
+      <div class="checkout-left  sum-cart-shop-wrap">
+        <div class="col-6 checkout-left-basket sum-cart-shop">
+          <% 
+              let sum = 0;
+              cartShop.map(item => {
+                sum += item.price * item.quantity *(1- item.discount);
+              })%>
+          <h4>Tổng cộng: <span><%= (sum/1000.0).toFixed(3)%>đ</span></h4>
         </div>
       </div>
+
+
+      <form action="/payment-post" method="post" class="creditly-card-form agileinfo_form">
+        <div class="col-6 controls">
+          <label class="control-label">Nhập địa chỉ giao hàng <span>*</span></label>
+          <div id="message-address"></div>
+          <input name="address" id="address" class="form-control" type="text"
+            placeholder="Ghi rõ địa chỉ (số nhà, đường, quận, huyện ..)" onkeyup="checkAddress()" />
+        </div>
+        <button id="btn-pay" type="submit" class="btn subscrib-btnn">Xác nhận đặt hàng</button>
+      </form>
     </div>
-    <!-- //top products -->
+  </div>
+  <!-- //top products -->
   </div>
 </section>
 <%}%>
 <% include ../components/footer%>
-<script src = "javascripts/checkout.js"></script>
+<script src="javascripts/checkout.js"></script>

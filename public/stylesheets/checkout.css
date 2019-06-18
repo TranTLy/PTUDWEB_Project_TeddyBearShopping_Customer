@@ -166,9 +166,8 @@ td.invert-image a img {
 
 .checkout-left-basket h4 {
 	padding: 1em;
-	background: #ffcb2d;
+	font-weight: bold;
 	font-size: 1em;
-	color: #fff;
 	text-transform: uppercase;
 	text-align: center;
 	margin: 0 0 2em;
@@ -569,4 +568,15 @@ button.submit.check_out {
 
 #product-item-session {
 	transition: display 1s ease-out;
+}
+
+.control-label span{
+	color: red;
+}
+#message-address{
+	color: red;
+	height: 30px;
+	margin-left: 20px;
+	font-size: 0.9em;
+	/* padding-bottom: 5px; */
 }

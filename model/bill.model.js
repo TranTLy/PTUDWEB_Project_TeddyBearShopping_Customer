@@ -13,10 +13,10 @@ var BillSchema = new Schema(
             ref: 'User'
         },
         city: String,
-        status: String,
+        status: { type: String, default: "Chưa giao" },
         discount: Number,
         total: Number,
-        product: [{
+        products: [{
             id_product:
             {
                 type: SchemaTypes.ObjectId,

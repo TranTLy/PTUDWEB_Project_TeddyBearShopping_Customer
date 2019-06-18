@@ -54,7 +54,7 @@
           </div>
           <div class="col-lg-5 col-md-6 search-right">
             <form action="/search" method="post" class="form-inline my-lg-0">
-              <input class="form-control mr-sm-2 keyNameSearch" type="search" placeholder="Tìm kiếm" name=search />
+              <input class="form-control mr-sm-2 keyNameSearch" type="search" placeholder="Tìm kiếm" name="search" />
               <button class="btn btnSearch" type="submit">Tìm kiếm</button>
             </form>
           </div>
@@ -74,7 +74,16 @@
                 </li>
                 <%}%>
                   <li class="toyscart toyscart2 cart cart box_1">
-                    <form action="#" method="post" class="last">
+                    <a href="/checkout">
+                      <button
+                      class="top_toys_cart"
+                      type="submit"
+                      name="submit"
+                      value=""
+                    >
+                      <span class="fas fa-cart-arrow-down"></span>
+                    </a>
+                    <!-- <form action="#" method="post" class="last">
                       <input type="hidden" name="cmd" value="_cart" />
                       <input type="hidden" name="display" value="1" />
                       <button
@@ -85,7 +94,7 @@
                       >
                         <span class="fas fa-cart-arrow-down"></span>
                       </button>
-                    </form>
+                    </form> -->
                   </li>
                 </ul>
               </div>

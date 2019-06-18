@@ -1,0 +1,14 @@
+<link rel="stylesheet" type="text/css" href="stylesheets/cart-shop.css" />
+<div id="cart-shop">
+    <div id="cart-shop-message" onmouseover="clearMessageCartShop()">
+    </div>
+</div>
+<script>
+    clearMessageCartShop = () => {
+        const message = document.getElementById("cart-shop-message");
+        // message.style.width = '0px';
+        message.innerHTML = "";
+        message.style.display = "none";
+
+    }
+</script>

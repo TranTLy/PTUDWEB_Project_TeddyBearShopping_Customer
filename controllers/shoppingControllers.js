@@ -6,8 +6,8 @@ const Comment = require('../model/comment');
 const Product = require('../model/product');
 const Origin = require('../model/origin.model');
 const Producer = require('../model/producer.model');
+const Bill = require('../model/bill.model');
 const Constants = require('../constants');
-
 
 
 exports.getTypeProduct = async (req, res, next) => {
@@ -24,18 +24,9 @@ exports.getTypeProduct = async (req, res, next) => {
 		});
 	} else {
 		res.locals.typeProduct = req.cookies.typeProduct;
-		// console.log("on not set cookie type");
+		console.log("on not set cookie type");
 		return next();
 	}
-};
-getComment = async (idProduct) => {
-	await Comment.find({ idProduct }, (err, result) => {
-		if (err) {
-			return [];
-		} else {
-			return result;
-		}
-	});
 };
 
 exports.checkout = function (req, res) {
@@ -43,14 +34,62 @@ exports.checkout = function (req, res) {
 	res.render('customer-views/checkout', { title: 'Giỏ hàng' });
 };
 //todo
-exports.checkout_post = function (req, res) {
+exports.checkout_post = function (_req, res) {
 	res.render('customer-views/checkout', { title: 'Giỏ hàng' });
 };
 exports.payment = function (req, res) {
 	res.render('customer-views/payment', { title: 'Thanh toán' });
 };
-exports.payment_post = function (req, res) {
-	res.render('customer-views/payment', { title: 'Thanh toán' });
+exports.payment_post = async function (req, res) {
+	console.log("on payment post:");
+	const address = req.body.address || '';
+	// console.log("cart shop in res.locals: ", req.session.cartShop);
+	res.locals.cartShop = req.session.cartShop;
+	if (address === '') {
+		return res.render('customer-views/checkout', { title: 'Giỏ hàng' });
+	}
+	else {
+		// const sum = req.query.sum || 0;
+		const cart = [...req.session.cartShop];
+		console.log("cart in: ", cart);
+		let products = [];
+		let sum = 0;
+		await cart.map((item) => {
+			products.push({
+				id_product: item._id,
+				amount: item.quantity
+			});
+			sum = sum + item.price * (1 - item.discount) * item.quantity;
+		})
+
+		console.log("products: ", products);
+
+		console.log("save bill");
+		const bill = new Bill({
+			id_customer: req.user._id,
+			address,
+			total: sum,
+			products: products
+		});
+		bill.save((err, result, row) => {
+			// console.log("result save bill: ", result);
+			if (result) {
+				console.log("bill: ", result);
+				// req.session.cartShop = [];
+				// res.locals.cartShop = [];
+
+				res.render("customer-views/infor", {
+					title: "Xác nhận đơn hàng thành công",
+					message: `Xác nhận đơn hàng thành công. Đơn hàng của bạn sẽ được giao trong vòng 3 ngày tới. Vui lòng kiểm tra email để biết thông tin chi tiết.`,
+					link: "/"
+				});
+			}
+			// req.session.destroy();
+
+		});
+
+
+	}
 };
 
 getConditionShowProduct = (conditionShow) => {
@@ -90,6 +129,10 @@ getConditionShowProduct = (conditionShow) => {
 };
 exports.shop = async function (req, res) {
 	console.log('on shop controller');
+	if (!req.session.cartShop) {
+		req.session.cartShop = [];
+	}
+	res.locals.cartShop = req.session.cartShop;
 	//get type
 	const type = await Type.find({}, (err, type) => {
 		if (err) {
@@ -163,6 +206,11 @@ exports.shop = async function (req, res) {
 	}
 };
 exports.single = async function (req, res) {
+	if (!req.session.cartShop) {
+		req.session.cartShop = [];
+	}
+	res.locals.cartShop = req.session.cartShop;
+
 	typeProduct = await Type.find({}, (err, type) => {
 		if (err) {
 			return next(err);
@@ -247,16 +295,21 @@ exports.single_post = function (req, res) {
 		nameProduct: name
 	});
 };
-exports.detail_receipt = function (req, res) {
-	res.render('customer-views/detail-receipt', { title: 'Chi tiết hóa đơn' });
-};
-exports.history = function (req, res) {
-	res.render('customer-views/history', { title: 'Lịch sử mua hàng' });
+exports.detail_receipt = async function (req, res) {
+	const id = req.query.id;
+	await Bill.findById(id).populate("products.id_product").sort({ date: 1 })
+		.exec((err, result) => {
+			console.log("detail-bill:", result);
+			res.render('customer-views/detail-receipt', { title: 'Chi tiết hóa đơn', bill: result });
+		});
 };
 
 exports.addToCart = async (req, res) => {
 	const id = req.query.id;
 	await Product.findById(id, (err, product) => {
+		if (err) {
+			return res.send({ isSuccess: false });
+		}
 		if (!req.session.cartShop) {
 			req.session.cartShop = [];
 			// console.log('cart in session empty: ', req.session.cartShop);
@@ -535,11 +588,13 @@ exports.search = async (req, res) => {
 				currentPage: page,
 				origin,
 				producer,
-				sum
+				sum,
+				show=0
 			});
 		}
 	});
 };
+
 getSumSearchAdvanced = async (type, discount, origin, producer) => {
 	return await Product.find({
 		type,
@@ -633,4 +688,19 @@ exports.searchAdvanced = async (req, res) => {
 			show: conditionShow
 		});
 	}
+};
+
+exports.history = async function (req, res) {
+	//get history bill
+	await Bill.find({ id_customer: req.user._id }, (err, bills) => {
+		if (err) {
+			return res.render("customer-views/infor", {
+				title: "Chưa đăng nhập",
+				message: "Bạn cần đăng nhập để thực hiện chức năng này",
+				link: "/login"
+			});
+		} else {
+			res.render('customer-views/history', { title: 'Lịch sử mua hàng', bills });
+		}
+	})
 };
