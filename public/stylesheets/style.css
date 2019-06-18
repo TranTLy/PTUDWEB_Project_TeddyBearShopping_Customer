@@ -733,10 +733,10 @@ ul.short_ls li {
 }
 .nbs-flexisel-item {
   float: left;
-  margin: 0;
+  margin: 10px;
   padding: 0px;
   position: relative;
-  line-height: 35px;
+  line-height: 30px;
 }
 .nbs-flexisel-item > img {
   cursor: pointer;
@@ -1768,4 +1768,7 @@ footer {
 }
 #btn-pay{
   float: right;
+}
+#standout-product-home-big{
+  background-color: #26bb48;
 }
