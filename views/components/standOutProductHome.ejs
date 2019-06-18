@@ -1,15 +1,15 @@
 <li>
-<div class="agileinfo_port_grid standout-product-img-home">
-  <a href="single/<%=product._id%>">
-  <img src= "<%=product.imgs%>" alt=" " class="img-fluid" />
-</a>
-  <div class="banner-right-icon">
-      <a href="single/<%=product._id%>">
-    <h4 class="pt-3"><%=product.name%></h4>
+  <div class="agileinfo_port_grid standout-product-img-home">
+    <a href="single?id=<%=product._id%>">
+      <img src="<%=product.imgs%>" alt=" " class="img-fluid" />
     </a>
+    <div class="banner-right-icon">
+      <a href="single?id=<%=product._id%>">
+        <h4 class="pt-3"><%=product.name%></h4>
+      </a>
+    </div>
+    <div class="outs_more-buttn btn-home-buy-produc">
+      <a href="single?id=<%=product._id%>">Mua ngay</a>
+    </div>
   </div>
-  <div class="outs_more-buttn btn-home-buy-produc">
-      <a href="single/<%=product._id%>">Mua ngay</a>
-  </div>
-</div>
 </li>
