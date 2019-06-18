@@ -11,7 +11,8 @@
 
 .label-input-signup {
 	display: inline-block;
-	color: #26bb48;
+	color: #000;
+	font-weight: bold;
 	margin-left: 34px;
 }
 .label-input-signup span {
@@ -83,4 +84,12 @@
 	color: #ea4335;
 	font-style: italic;
 	font-size: 16px;
+}
+#gender-select{
+	padding: 6px 5px 6px 15px;
+    margin: 20px -8px 20px 10px;
+    border: 1px solid #d2d2d2;
+}
+#gender-select div{
+	margin-right: 15px;
 }

@@ -8,7 +8,8 @@ var UserSchema = new Schema(
       type: String
     },
     birthday: {
-      type: Date
+      type: Date,
+      default: Date.now()
     },
     email: {
       type: String
@@ -20,7 +21,8 @@ var UserSchema = new Schema(
       type: String
     },
     gender: {
-      type: String
+      type: String,
+      default: "Nữ"
     },
     reset_password_token: {
       type: String

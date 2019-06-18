@@ -1750,3 +1750,20 @@ footer {
 	text-align: right;
     margin: 10px 8px;
 }
+#btn-sign-in{
+  float: right;
+}
+
+.shop_inner_inf{
+  display: flex;
+  flex-direction: column;
+}
+.sum-cart-shop-wrap{
+  display: flex;
+}
+.sum-cart-shop {
+  float: right !important;
+}
+#btn-pay{
+  float: right;
+}

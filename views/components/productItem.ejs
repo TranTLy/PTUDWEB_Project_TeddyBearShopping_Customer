@@ -52,16 +52,17 @@
     </div>
     <div class="toys single-item hvr-outline-out">
       <!-- <form action="" method="get"> -->
-        <input type="hidden" name="cmd" value="_cart" />
-        <input type="hidden" name="add" value="1" />
-        <input type="hidden" name="toys_item" value="toys(barbie)" />
-        <input type="hidden" name="amount" value="575.000" />
-        <button type="" class="toys-cart ptoys-cart" onclick="addItem({id:'<%=product._id%>'})">
-          <i class="fas fa-cart-plus"></i>
-        </button>
+      <input type="hidden" name="cmd" value="_cart" />
+      <input type="hidden" name="add" value="1" />
+      <input type="hidden" name="toys_item" value="toys(barbie)" />
+      <input type="hidden" name="amount" value="575.000" />
+      <button type="" class="toys-cart ptoys-cart"
+        onclick="addItem({id:'<%=product._id%>', name: '<%=product.name%>'})">
+        <i class="fas fa-cart-plus"></i>
+      </button>
       <!-- </form> -->
 
-      
+
       <!-- <form action="/addToCart/<%=product._id%>" method="POST">
         <button type="submit" class="toys-cart ptoys-cart">
           <i class="fas fa-cart-plus"></i>
@@ -74,21 +75,28 @@
 </div>
 </div>
 </div>
-<script>
-  addItem= (idItem) =>{
-    const id = idItem.id;
-        $.ajax({
-          url: "/addToCart?id=" + id,
-          type: "get",
-          contentType: "application/json; charset=utf-8",
-          dataType: "json"
-        })
-          .done(function(success) {
-            console.log("success", success);
-          })
-          .fail(function(err) {
-            console.log("fail", success);
 
-          });
-        }
-  </script>
+<script>
+  addItem = (item) => {
+    const id = item.id;
+    const name = item.name;
+    // console.log("iditem: ", idItem, "- id: ", id);
+    $.ajax({
+      url: "/addToCart?id=" + id,
+      type: "get",
+      contentType: "application/json; charset=utf-8",
+      dataType: "json"
+    })
+      .done(function (success) {
+        console.log("success", success);
+        const cart = document.getElementById("cart-shop-message");
+        cart.style.width = "400px";
+        cart.style.display = "block";
+        cart.innerHTML = `Đã thêm <span>${name}</span> vào giỏ hàng`;
+      })
+      .fail(function (err) {
+        console.log("fail");
+
+      });
+  }
+</script>

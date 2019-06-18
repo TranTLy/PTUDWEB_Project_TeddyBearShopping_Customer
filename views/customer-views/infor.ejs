@@ -1,13 +1,17 @@
 <%include ../components/header%> <% if(message) {%>
-<div
-  style="text-align: center; display: flex; flex-direction: column; justify-content: center; margin-top: 20px"
->
+<div style="text-align: center; display: flex; flex-direction: column; justify-content: center; margin-top: 20px">
   <label><%=message %></label>
   <%}%>
   <div style="text-align: center; margin-bottom: 10px">
-    <button class="btn subscrib-btnn" onclick="window.location.href = '<%=link %>'">
-      OK
-    </button>
+    <%if (link === '/login') {%>
+  <button class="btn subscrib-btnn" data-toggle="modal" data-target="#exampleModal">
+    Đăng nhập
+  </button>
+  <%} else {%>
+  <button class="btn subscrib-btnn" onclick="window.location.href = '<%=link %>'">
+    OK
+  </button>
+  <%}%>
   </div>
 </div>
 <!--//Customers Review -->

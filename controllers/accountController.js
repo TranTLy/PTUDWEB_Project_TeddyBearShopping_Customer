@@ -1,5 +1,6 @@
 const User = require("../model/user");
 const Comment = require("../model/comment");
+const shoppingController = require('../controllers/shoppingControllers')
 var passport = require("passport");
 require("../config/passport");
 var Bcrypt = require("bcryptjs");
@@ -18,31 +19,31 @@ var transporter = nodemailer.createTransport({
   }
 });
 
-exports.signup = function(req, res) {
+exports.signup = function (req, res) {
   res.render("customer-views/signup", { title: "Đăng ký" });
 };
-exports.forget_password = function(req, res) {
+exports.forget_password = function (req, res) {
   res.render("customer-views/forget-password", { title: "Quên mật khẩu" });
 };
 
-exports.reset_password = function(req, res) {
+exports.reset_password = function (req, res) {
   res.render("customer-views/reset-password", {
     title: "Thay đổi mật khẩu",
     token: req.query.token || ""
   });
 };
 
-exports.change_password = function(req, res) {
+exports.change_password = function (req, res) {
   res.render("customer-views/change-password", { title: "Đổi mật khẩu" });
 };
-exports.update_infor = function(req, res) {
+exports.update_infor = function (req, res) {
   // res.locals.user = req.cookies.user;
   // console.log('3 req.user is: ', req.user);
   // console.log('user before go to update infor: ', req.cookies.user);
-  res.render("customer-views/update-infor", { title: "Thay đổi thông tin" });
+  res.render("customer-views/update-infor", shoppingController.getTypeProduct, { title: "Thay đổi thông tin" });
 };
 
-exports.infor = function(req, res) {
+exports.infor = function (req, res) {
   if (req.query.token) {
     const token = req.query.token;
     const jwtdecode = jwtDecode(token);
@@ -68,7 +69,7 @@ exports.infor = function(req, res) {
   }
 };
 
-exports.post_signin = async function(req, res) {
+exports.post_signin = async function (req, res) {
   passport.authenticate("local", { session: false }, (err, user, info) => {
     if (err || !user) {
       console.log("login failed");
@@ -95,7 +96,7 @@ exports.post_signin = async function(req, res) {
   })(req, res);
 };
 
-exports.post_signup = async function(req, res) {
+exports.post_signup = async function (req, res) {
   if (
     !req.body.name ||
     !req.body.password ||
@@ -112,7 +113,7 @@ exports.post_signup = async function(req, res) {
           title: "Đăng ký thất bại",
           message: `Email ${
             req.body.email
-          } đã tồn tại. Vui lòng đăng ký tài khoản bằng email khác.`
+            } đã tồn tại. Vui lòng đăng ký tài khoản bằng email khác.`
         });
       } else {
         req.body.password = Bcrypt.hashSync(req.body.password, 10);
@@ -137,7 +138,7 @@ exports.post_signup = async function(req, res) {
           res.cookie("token", token);
           res.cookie("user", user);
           console.log("sign up successfully!");
-          res.render("customer-views/update-infor", {
+          res.render("customer-views/update-infor", shoppingController.getTypeProduct, {
             title: "Thay đổi thông tin",
             message: "Đăng ký thành công",
             name: req.body.name,
@@ -158,14 +159,20 @@ exports.signout = (req, res, next) => {
   res.send({ success: true });
 };
 
-exports.isLogin = function(req, res, next) {
+exports.isLogin = function (req, res, next) {
   console.log("is authen 3: ", req.isAuthenticated());
   if (req.isAuthenticated()) {
     return next();
   } else {
-    return res.send({
-      message: "Bạn cần đăng nhập để thực hiện chức năng này."
+    console.log("islogin: not login")
+    return res.render("customer-views/infor", {
+      title: "Chưa đăng nhập",
+      message: "Bạn cần đăng nhập để thực hiện chức năng này",
+      link: "/login"
     });
+    // res.send({
+    //   message: "Bạn cần đăng nhập để thực hiện chức năng này."
+    // });
   }
 };
 
@@ -190,14 +197,14 @@ exports.checkEmail = async (req, res) => {
   }
 };
 
-exports.post_forget_password = function(req, res) {
+exports.post_forget_password = function (req, res) {
   console.log("post forgot password", req.body.email);
   async.waterfall(
     [
-      function(done) {
+      function (done) {
         User.findOne({
           email: req.body.email
-        }).exec(function(err, account) {
+        }).exec(function (err, account) {
           if (account) {
             done(err, account);
           } else {
@@ -205,14 +212,14 @@ exports.post_forget_password = function(req, res) {
           }
         });
       },
-      function(account, done) {
+      function (account, done) {
         // create the random token
-        crypto.randomBytes(20, function(err, buffer) {
+        crypto.randomBytes(20, function (err, buffer) {
           var token = buffer.toString("hex");
           done(err, account, token);
         });
       },
-      function(account, token, done) {
+      function (account, token, done) {
         User.findByIdAndUpdate(
           { _id: account._id },
           {
@@ -223,11 +230,11 @@ exports.post_forget_password = function(req, res) {
             upsert: true,
             new: true
           }
-        ).exec(function(err, new_account) {
+        ).exec(function (err, new_account) {
           done(err, token, new_account);
         });
       },
-      function(token, account, done) {
+      function (token, account, done) {
         console.log("headers", req.headers.host);
         const url =
           "https://" + req.headers.host + "/reset-password?token=" + token;
@@ -242,7 +249,7 @@ exports.post_forget_password = function(req, res) {
             url +
             " để tạo lại mật khẩu</p>"
         };
-        transporter.sendMail(mainOptions, function(err) {
+        transporter.sendMail(mainOptions, function (err) {
           if (!err) {
             console.log("main Otiopnsdfsdf", mainOptions.subject);
             return res.json({
@@ -254,20 +261,20 @@ exports.post_forget_password = function(req, res) {
         });
       }
     ],
-    function(err) {
+    function (err) {
       return res.status(422).json({ message: err });
     }
   );
 };
 
-exports.post_reset_password = function(req, res, next) {
+exports.post_reset_password = function (req, res, next) {
   console.log("token", req.body.token);
   User.findOne({
     reset_password_token: req.body.token,
     reset_password_expires: {
       $gt: Date.now()
     }
-  }).exec(function(err, user) {
+  }).exec(function (err, user) {
     if (!err && user) {
       const objUser = {
         password: bcrypt.hashSync(req.body.repassword, 10),
@@ -304,14 +311,14 @@ exports.post_reset_password = function(req, res, next) {
   });
 };
 
-exports.checkpassword = function(req, res) {
+exports.checkpassword = function (req, res) {
   const pass = req.query.pass;
   const match = bcrypt.compareSync(pass, req.cookies.user.password);
   if (match) res.send({ check: true });
   else res.send({ check: false });
 };
 
-exports.post_change_password = function(req, res) {
+exports.post_change_password = function (req, res) {
   const user = req.cookies.user;
   console.log("pass", user.password);
   password = bcrypt.hashSync(req.body.newpassword, 10);
@@ -338,7 +345,7 @@ exports.post_change_password = function(req, res) {
   });
 };
 
-exports.post_authenticate = function(req, res) {
+exports.post_authenticate = function (req, res) {
   const userAu = req.cookies.user;
   const token = jwt.sign({ userAu }, "secret", { expiresIn: 1440 });
   const url = "https://" + req.headers.host + "/infor?token=" + token;
@@ -353,7 +360,7 @@ exports.post_authenticate = function(req, res) {
       url +
       " để xác thực tài khoản</p>"
   };
-  transporter.sendMail(mainOptions, function(err) {
+  transporter.sendMail(mainOptions, function (err) {
     if (!err) {
       return res.json({
         message: "Mời bạn kiểm tra mail để xác thực tài khoản!!"
@@ -364,7 +371,7 @@ exports.post_authenticate = function(req, res) {
   });
 };
 
-exports.post_update_infor = function(req, res) {
+exports.post_update_infor = function (req, res) {
   console.log("link", req.body.avatar);
   User.updateOne(
     { _id: req.cookies.user._id },

@@ -14,7 +14,7 @@ router.get('/404', shopping_controller.getTypeProduct, information_controller.no
 router.get('/checkout', shopping_controller.getTypeProduct, shopping_controller.checkout);
 router.post('/checkout', shopping_controller.checkout_post);
 router.get('/payment', shopping_controller.getTypeProduct, shopping_controller.payment);
-router.post('/payment', account_controller.isLogin, account_controller.isAuthenUser, shopping_controller.payment_post);
+router.post('/payment-post', shopping_controller.getTypeProduct, account_controller.isLogin, account_controller.isAuthenUser, shopping_controller.payment_post);
 // router.get("/product", shopping_controller.product);
 // router.get('/product-barbie', shopping_controller.product_barbie);
 // router.get('/product-car', shopping_controller.product_car);
@@ -33,11 +33,7 @@ router.get('/searchAdvanced', shopping_controller.getTypeProduct, shopping_contr
 router.get('/single', shopping_controller.getTypeProduct, shopping_controller.single);
 router.post('/single', shopping_controller.single_post);
 router.get('/detail-receipt', shopping_controller.getTypeProduct, shopping_controller.detail_receipt);
-router.get('/history', shopping_controller.getTypeProduct, shopping_controller.history);
-
-
-
-
+router.get('/history', shopping_controller.getTypeProduct, account_controller.isLogin, shopping_controller.history);
 
 router.post('/signin', account_controller.post_signin);
 router.get('/signup', shopping_controller.getTypeProduct, account_controller.signup);
