@@ -43,39 +43,48 @@ onDeleteProduct = (id) => {
 };
 
 checkAddress = () => {
+	let result = false;
 	const address = document.getElementById("address").value;
 	const message = document.getElementById("message-address");
 	if (address === '') {
 		message.innerHTML = "Bạn cần nhập địa chỉ giao hàng";
+		document.getElementById("address").focus();
 	} else if (address.length < 10) {
 		message.innerHTML = "Địa chỉ giao hàng cần cụ thể hơn";
+		document.getElementById("address").focus();
 	} else {
 		message.innerHTML = "";
+		result = true;
 	}
+	return result;
 }
 
-onPayment = (sum) => {
+
+onPayment = () => {
 	console.log("onpayment btn");
 	const address = document.getElementById("address").value;
 	const message = document.getElementById("message-address");
-	if (address === '') {
-		message.innerHTML = "Bạn cần nhập địa chỉ giao hàng";
-	} else if (address.length < 10) {
-		message.innerHTML = "Địa chỉ giao hàng cần cụ thể hơn";
-	} else {
-		message.innerHTML = "";
-		$.ajax({
-			url: 'payment?address=' + address + '&sum=' + sum,
-			type: 'post',
-			contentType: 'application/json; charset=utf-8',
-			dataType: 'json'
-		})
-			.done((result) => {
-				console.log('result: ', result);
-				location.reload();
-			})
-			.fail(function (err) {
-				console.log('fail', err);
-			});
+	if (checkAddress()) {
+		document.getElementById("from-payment-post").submit();
 	}
+	// if (address === '') {
+	// 	message.innerHTML = "Bạn cần nhập địa chỉ giao hàng";
+	// } else if (address.length < 10) {
+	// 	message.innerHTML = "Địa chỉ giao hàng cần cụ thể hơn";
+	// } else {
+	// 	message.innerHTML = "";
+	// 	$.ajax({
+	// 		url: 'payment?address=' + address + '&sum=' + sum,
+	// 		type: 'post',
+	// 		contentType: 'application/json; charset=utf-8',
+	// 		dataType: 'json'
+	// 	})
+	// 		.done((result) => {
+	// 			console.log('result: ', result);
+	// 			location.reload();
+	// 		})
+	// 		.fail(function (err) {
+	// 			console.log('fail', err);
+	// 		});
+	// }
 }

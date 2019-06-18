@@ -58,7 +58,7 @@
               <tr class="rem1 product-item-session" id="product-<%=item._id%>">
                 <td class="invert"><%=index +1%></td>
                 <td class="invert-image" id="img-product-checkout">
-                  <a href="/single/<%=item._id%>"><img src="<%=item.imgs%>" alt=" " class="img-responsive" /></a>
+                  <a href="/single?id=<%=item._id%>"><img src="<%=item.imgs%>" alt=" " class="img-responsive" /></a>
                 </td>
                 <td class="invert">
                   <div class="quantity">
@@ -99,15 +99,15 @@
       </div>
 
 
-      <form action="/payment-post" method="post" class="creditly-card-form agileinfo_form">
+      <form action="/payment-post" method="post" id="from-payment-post" class="creditly-card-form agileinfo_form">
         <div class="col-6 controls">
           <label class="control-label">Nhập địa chỉ giao hàng <span>*</span></label>
           <div id="message-address"></div>
           <input name="address" id="address" class="form-control" type="text"
             placeholder="Ghi rõ địa chỉ (số nhà, đường, quận, huyện ..)" onkeyup="checkAddress()" />
         </div>
-        <button id="btn-pay" type="submit" class="btn subscrib-btnn">Xác nhận đặt hàng</button>
       </form>
+      <button id="btn-pay" type="" onclick="onPayment()" class="btn subscrib-btnn">Xác nhận đặt hàng</button>
     </div>
   </div>
   <!-- //top products -->

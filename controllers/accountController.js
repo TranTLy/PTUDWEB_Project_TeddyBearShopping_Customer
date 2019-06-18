@@ -4,7 +4,6 @@ const shoppingController = require('../controllers/shoppingControllers')
 var passport = require("passport");
 require("../config/passport");
 var Bcrypt = require("bcryptjs");
-var bcrypt = require("bcrypt");
 var async = require("async");
 var config = require("../config/database");
 var nodemailer = require("nodemailer");
@@ -27,7 +26,7 @@ exports.forget_password = function (req, res) {
 };
 
 exports.reset_password = function (req, res) {
-  res.render("customer-views/reset-password", {
+  res.render("customer-views/reset-password", shoppingController.getTypeProduct, {
     title: "Thay đổi mật khẩu",
     token: req.query.token || ""
   });
@@ -277,7 +276,7 @@ exports.post_reset_password = function (req, res, next) {
   }).exec(function (err, user) {
     if (!err && user) {
       const objUser = {
-        password: bcrypt.hashSync(req.body.repassword, 10),
+        password: Bcrypt.hashSync(req.body.repassword, 10),
         reset_password_token: undefined,
         reset_password_expires: undefined
       };
@@ -313,23 +312,32 @@ exports.post_reset_password = function (req, res, next) {
 
 exports.checkpassword = function (req, res) {
   const pass = req.query.pass;
-  const match = bcrypt.compareSync(pass, req.cookies.user.password);
+  const match = Bcrypt.compareSync(pass, req.cookies.user.password);
+  console.log("oncheck pass");
   if (match) res.send({ check: true });
   else res.send({ check: false });
 };
 
-exports.post_change_password = function (req, res) {
+exports.post_change_password = async function (req, res) {
+  console.log("on post new pass");
+
   const user = req.cookies.user;
-  console.log("pass", user.password);
-  password = bcrypt.hashSync(req.body.newpassword, 10);
+  const newpassword = req.body.newpassword || '';
+  // console.log("pass", user.password);
+  password = Bcrypt.hashSync(newpassword, 10);
   res.cookie("user", user);
-  console.log("pass hash", user.password);
-  const userUpdate = { password: password };
-  User.findByIdAndUpdate(user._id, userUpdate, (err, user) => {
-    if (err)
+  // console.log("pass hash", user.password);
+  // const userUpdate = { password: password };
+  console.log("before update");
+
+  User.updateOne({ _id: user._id }, { password }, (err, user) => {
+
+    console.log("after update");
+    if (err) {
       return res.send({
         message: err + "Đã có lỗi xảy ra trong quá trình thay đổi mật khẩu"
       });
+    }
     else {
       req.login(user, err => {
         if (err) {
