@@ -12,7 +12,7 @@ var BillSchema = new Schema(
             type: SchemaTypes.ObjectId,
             ref: 'User'
         },
-        city: String,
+        address: String,
         status: { type: String, default: "Chưa giao" },
         discount: Number,
         total: Number,

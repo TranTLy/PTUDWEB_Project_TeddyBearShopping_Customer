@@ -43,6 +43,7 @@ exports.payment = function (req, res) {
 exports.payment_post = async function (req, res) {
 	console.log("on payment post:");
 	const address = req.body.address || '';
+	console.log("address: ", address);
 	// console.log("cart shop in res.locals: ", req.session.cartShop);
 	res.locals.cartShop = req.session.cartShop;
 	if (address === '') {
@@ -67,7 +68,7 @@ exports.payment_post = async function (req, res) {
 		console.log("save bill");
 		const bill = new Bill({
 			id_customer: req.user._id,
-			address,
+			address: req.body.address,
 			total: sum,
 			products: products
 		});
@@ -75,8 +76,8 @@ exports.payment_post = async function (req, res) {
 			// console.log("result save bill: ", result);
 			if (result) {
 				console.log("bill: ", result);
-				// req.session.cartShop = [];
-				// res.locals.cartShop = [];
+				req.session.cartShop = [];
+				res.locals.cartShop = [];
 
 				res.render("customer-views/infor", {
 					title: "Xác nhận đơn hàng thành công",
@@ -589,7 +590,7 @@ exports.search = async (req, res) => {
 				origin,
 				producer,
 				sum,
-				show=0
+				show: 0
 			});
 		}
 	});
